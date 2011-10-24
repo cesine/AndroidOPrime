@@ -1,6 +1,4 @@
-This is code for the Morphological Awareness Experiment designed by Alexandra Marquis and Phaedra Royle. 
-
-This presents a story book to pre-k children to elicit sentences. It does eye gaze and audio recording. The children or experimentor can turn the page. It will show a page turning animation which was built by harism and his collaborators https://github.com/harism/android_page_curl
+This is code to run background Video and Audio recorder services for experimentaiton on Android tablets. 
 
 
 The audience of this project:
