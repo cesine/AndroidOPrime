@@ -77,7 +77,7 @@ public class VideoRecorderSubExperiment extends Activity implements
 	private String mSubExperimentShortTitle = "";
 	private String mSubExperimentTitle = "";
 	String mAudioResultsFile = "";
-	private ArrayList<Integer> mStimuliImages = new ArrayList<Integer>();;
+	private ArrayList<Integer> mStimuliImages = new ArrayList<Integer>();
 	private ArrayList<String> mStimuliResponses = new ArrayList<String>();
 	private ArrayList<Long> mReactionTimes = new ArrayList<Long>();;
 	private int mStimuliIndex = 0;
@@ -120,6 +120,10 @@ public class VideoRecorderSubExperiment extends Activity implements
 		 */
 		mStimuliImages = getIntent().getExtras().getIntegerArrayList(
 				OPrime.EXTRA_STIMULI);
+		if (mStimuliImages == null ){
+			mStimuliImages = new ArrayList<Integer>();
+			mStimuliImages.add(R.drawable.androids_experimenter_kids);
+		}
 		
 		setContentView(R.layout.video_recorder);
 		
@@ -131,12 +135,12 @@ public class VideoRecorderSubExperiment extends Activity implements
 		mParticipantId = getIntent().getExtras().getString(
 				OPrime.EXTRA_PARTICIPANT_ID);
 		mExperimentTrialHeader = getIntent().getExtras().getString(OPrime.EXTRA_EXPERIMENT_TRIAL_INFORMATION);
-		mLanguageOfSubExperiment = getIntent().getExtras().getString(
-				OPrime.EXTRA_LANGUAGE);
-		mSubExperimentTitle = getIntent().getExtras().getString(
-				OPrime.EXTRA_SUB_EXPERIMENT_TITLE);
-		mSubExperimentShortTitle = mSubExperimentTitle.replaceAll(
-				"[^\\w\\.\\-\\_]", "_");
+		mLanguageOfSubExperiment = getIntent().getExtras().getString(OPrime.EXTRA_LANGUAGE);
+		mSubExperimentTitle = getIntent().getExtras().getString(OPrime.EXTRA_SUB_EXPERIMENT_TITLE);
+		if(mSubExperimentTitle == null){
+			mSubExperimentTitle = "";
+		}
+		mSubExperimentShortTitle = mSubExperimentTitle.replaceAll("[^\\w\\.\\-\\_]", "_");
 		if (mSubExperimentShortTitle.length() >= 50) {
 			mSubExperimentShortTitle = mSubExperimentShortTitle
 					.substring(0, 49);
@@ -172,7 +176,7 @@ public class VideoRecorderSubExperiment extends Activity implements
 		holder.addCallback(this);
 		holder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
 
-		if (! mUseExternalStimuliActivity){
+		if (! mUseExternalStimuliActivity && mStimuliImages != null){
 			presentStimuli();
 		}
 

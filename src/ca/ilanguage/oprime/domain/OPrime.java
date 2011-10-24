@@ -23,7 +23,7 @@ public class OPrime {
 	public static final String EXTRA_TAKE_PICTURE_AT_END = "takepictureatend";
 	public static final String EXTRA_REPLAY_PARTICIPANT_CODE = "replayparticipantcode";
 	public static final String OUTPUT_DIRECTORY = "/sdcard/OPrime/BAT/video/";
-
+	public static final String EXTRA_USE_FRONT_FACING_CAMERA = "usefrontcamera";
 	private long mExperimentLaunch;
 	private long mExperimentQuit;
 	
