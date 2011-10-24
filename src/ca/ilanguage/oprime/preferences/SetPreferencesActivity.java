@@ -20,7 +20,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceActivity;
 import android.widget.Toast;
-import ca.ilanguage.oprime.morphologicalawareness.*;
+import ca.ilanguage.oprime.R;
 
 public class SetPreferencesActivity extends PreferenceActivity implements 
 		YesNoDialogPreference.YesNoDialogListener {

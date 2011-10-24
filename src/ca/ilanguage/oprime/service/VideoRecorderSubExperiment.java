@@ -6,7 +6,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 import ca.ilanguage.oprime.domain.OPrime;
-import ca.ilanguage.oprime.morphologicalawareness.R;
+import ca.ilanguage.oprime.R;
 
 import android.app.Activity;
 import android.content.Context;

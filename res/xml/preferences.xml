@@ -38,22 +38,7 @@
      </PreferenceCategory>
 	<PreferenceCategory
             android:title="Experiment settings">
-            <CheckBoxPreference
-       			android:key="participantworstlanguage"
-                android:title="Which Language is First? (Their worst language should be first.)"
-                android:summaryOn="English is first"
-                android:summaryOff="French is first"
-                android:defaultValue="true"
-                android:persistent="true"
-                />
-             <CheckBoxPreference
-       			android:key="tabletfirst"
-                android:title="Tablet First?"
-                android:summaryOn="Tablet BAT is first"
-                android:summaryOff="Paper BAT is first"
-                android:defaultValue="true"
-                android:persistent="true"
-                />
+            
       <!-- 
     public static final String PREFERENCE_NAME = "BilingualAphasiaPrefs";
     public static final String PREFERENCE_PARTICIPANT_ID = "participantId";
@@ -125,6 +110,23 @@
 				android:summary="First test: EnglishPaper, EnglishTablet, FrenchPaper, FenchTablet" android:dialogTitle="Please check to see if this participant got the paper or the tablet bat first."
 				android:defaultValue="1"
 				android:persistent="true"/>
+				
+			<CheckBoxPreference
+       			android:key="participantworstlanguage"
+                android:title="Which Language is First? (Their worst language should be first.)"
+                android:summaryOn="English is first"
+                android:summaryOff="French is first"
+                android:defaultValue="true"
+                android:persistent="true"
+                />
+             <CheckBoxPreference
+       			android:key="tabletfirst"
+                android:title="Tablet First?"
+                android:summaryOn="Tablet BAT is first"
+                android:summaryOff="Paper BAT is first"
+                android:defaultValue="true"
+                android:persistent="true"
+                />
     </PreferenceCategory>
     
     <PreferenceCategory
