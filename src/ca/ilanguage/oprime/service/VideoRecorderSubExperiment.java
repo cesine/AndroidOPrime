@@ -9,7 +9,9 @@ import ca.ilanguage.oprime.domain.OPrime;
 import ca.ilanguage.oprime.R;
 
 import android.app.Activity;
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.IntentFilter;
 import android.hardware.Camera;
 import android.content.Intent;
 import android.media.MediaRecorder;
@@ -57,8 +59,6 @@ public class VideoRecorderSubExperiment extends Activity implements
 	/*
 	 * Recording variables
 	 */
-	public static final String EXTRA_USE_FRONT_FACING_CAMERA = "frontcamera";
-	public static final String EXTRA_STIMULI_IMAGE_ID = "stimuliimageid";
 	private static final String TAG = "VideoRecorderSubExperiment";
 	private Boolean mRecording = false;
 	private Boolean mUseFrontFacingCamera = false;
@@ -110,6 +110,22 @@ public class VideoRecorderSubExperiment extends Activity implements
 												// then wait until user input.
 	private Boolean mUseExternalStimuliActivity = false;
 	private String mImageResultFileName = "";
+	private VideoStatusReceiver videoStatusReceiver;
+
+	
+	@Override
+	protected void onResume() {
+		// TODO Auto-generated method stub
+		super.onResume();
+		
+		if (videoStatusReceiver == null){
+		      videoStatusReceiver = new VideoStatusReceiver();
+		    }
+
+		    IntentFilter intentStopped = new IntentFilter(OPrime.INTENT_STOP_VIDEO_RECORDING);
+		    registerReceiver(videoStatusReceiver, intentStopped);
+
+	}
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -150,7 +166,7 @@ public class VideoRecorderSubExperiment extends Activity implements
 		
 		
 		mUseFrontFacingCamera = getIntent().getExtras().getBoolean(
-				EXTRA_USE_FRONT_FACING_CAMERA, true);
+				OPrime.EXTRA_USE_FRONT_FACING_CAMERA, true);
 		if (mUseFrontFacingCamera) {
 			// If caller wants to use front facing camera, then make sure the
 			// device has one...
@@ -350,8 +366,38 @@ as is the case for most desktop recognition software.
 		super.onPause();
 	}
 
+	/* 
+	 * Notes:
+	 * -Beware of security hazard of running code in this reviecer.
+	 * In this case, ony stopping and saving  the recording. 
+	 * -Recievers should be registerd in the manifest, but this is an inner class so that it can access the member functions of this class so it 
+	 * doesnt need to be registered in the manifest.xml.
+	 * 
+	 * http://stackoverflow.com/questions/2463175/how-to-have-android-service-communicate-with-activity
+	 * http://thinkandroid.wordpress.com/2010/02/02/custom-intents-and-broadcasting-with-receivers/
+	 * 
+	 * could pass data in the Intent instead of updating database tables
+	 * 
+	 * @author cesine
+	 */
+	public class VideoStatusReceiver extends BroadcastReceiver {
+		@Override
+		public void onReceive(Context context, Intent intent) {
+			if (intent.getAction().equals(OPrime.INTENT_STOP_VIDEO_RECORDING)) {
+//				Toast.makeText(
+//						 getApplicationContext(),
+//						 "Saving video."+ intent.getAction() ,
+//						 Toast.LENGTH_LONG).show();
+				finish();
+			}
+		}
+	}
 	@Override
 	protected void onDestroy() {
+		Toast.makeText(
+				 getApplicationContext(),
+				 "Saving video." ,
+				 Toast.LENGTH_LONG).show();
 		try {
 			stopRecording();
 		} catch (Exception e) {
@@ -359,6 +405,9 @@ as is the case for most desktop recognition software.
 			e.printStackTrace();
 		}
 		super.onDestroy();
+		if (videoStatusReceiver != null) {
+		      unregisterReceiver(videoStatusReceiver);
+		    }
 
 	}
 

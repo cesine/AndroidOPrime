@@ -24,6 +24,10 @@ public class OPrime {
 	public static final String EXTRA_REPLAY_PARTICIPANT_CODE = "replayparticipantcode";
 	public static final String OUTPUT_DIRECTORY = "/sdcard/OPrime/BAT/video/";
 	public static final String EXTRA_USE_FRONT_FACING_CAMERA = "usefrontcamera";
+	
+	public static final String EXTRA_STIMULI_IMAGE_ID = "stimuliimageid";
+	public static final String INTENT_STOP_VIDEO_RECORDING = "ca.ilanguage.oprime.intent.action.BROADCAST_STOP_VIDEO_SERVICE";
+	
 	private long mExperimentLaunch;
 	private long mExperimentQuit;
 	

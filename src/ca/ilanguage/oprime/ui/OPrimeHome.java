@@ -13,7 +13,7 @@ public class OPrimeHome extends Activity {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		this.setContentView(R.layout.main);
-		//startVideoRecorder();
+		startVideoRecorder();
     	
 	}
 	public void startVideoRecorder(){
@@ -28,7 +28,7 @@ public class OPrimeHome extends Activity {
 		intent.putExtra(OPrime.EXTRA_PARTICIPANT_ID, "00");
 		intent.putExtra(OPrime.EXTRA_EXPERIMENT_TRIAL_INFORMATION, "somes stuff");
 		
-		startActivityForResult(intent, OPrime.EXPERIMENT_COMPLETED);
+		startActivity(intent);
 		
 	}
 
