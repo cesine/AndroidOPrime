@@ -439,7 +439,10 @@ as is the case for most desktop recognition software.
 			mCamera = null;
 		}
 
-		mAudioResultsFile = mOutputDir+
+		String mDateString = (String) android.text.format.DateFormat.format("yyyy-MM-dd_kk.mm", new java.util.Date());
+	      mDateString = mDateString.replaceAll("/","-").replaceAll(" ","-");
+
+		mAudioResultsFile = mOutputDir+mDateString+"_"
 				+ System.currentTimeMillis() + "_" + mParticipantId + "_"
 				+ mLanguageOfSubExperiment + mSubExperimentShortTitle + ".3gp";
 

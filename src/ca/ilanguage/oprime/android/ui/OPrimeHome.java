@@ -13,7 +13,7 @@ public class OPrimeHome extends Activity {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		this.setContentView(R.layout.main);
-		startVideoRecorder();
+		//startVideoRecorder();
     	
 	}
 	public void startVideoRecorder(){
