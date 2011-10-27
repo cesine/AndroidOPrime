@@ -1,7 +1,7 @@
-package ca.ilanguage.oprime.ui;
+package ca.ilanguage.oprime.android.ui;
 
-import ca.ilanguage.oprime.R;
-import ca.ilanguage.oprime.domain.OPrime;
+import ca.ilanguage.oprime.android.R;
+import ca.ilanguage.oprime.android.domain.OPrime;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;

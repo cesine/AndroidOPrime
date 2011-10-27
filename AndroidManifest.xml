@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-      package="ca.ilanguage.oprime"
+      package="ca.ilanguage.oprime.android"
       android:versionCode="2"
       android:versionName="1.2"
       android:installLocation="preferExternal">
@@ -22,8 +22,7 @@
             <intent-filter>
                 <action android:name="ca.ilanguage.oprime.intent.action.START_VIDEO_RECORDER" />
                 <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
-                  
+            </intent-filter>  
         </activity>
         
 		<activity android:name=".preferences.SetPreferencesActivity"

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
  
-package ca.ilanguage.oprime.preferences;
+package ca.ilanguage.oprime.android.preferences;
 
 import android.content.Context;
 import android.preference.DialogPreference;

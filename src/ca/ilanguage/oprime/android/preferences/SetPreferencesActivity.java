@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-package ca.ilanguage.oprime.preferences;
+package ca.ilanguage.oprime.android.preferences;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceActivity;
 import android.widget.Toast;
-import ca.ilanguage.oprime.R;
+import ca.ilanguage.oprime.android.R;
 
 public class SetPreferencesActivity extends PreferenceActivity implements 
 		YesNoDialogPreference.YesNoDialogListener {

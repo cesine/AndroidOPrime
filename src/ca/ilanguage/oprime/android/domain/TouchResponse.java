@@ -1,4 +1,4 @@
-package ca.ilanguage.oprime.domain;
+package ca.ilanguage.oprime.android.domain;
 
 public class TouchResponse {
 	public Long stimulusOnset = System.currentTimeMillis();

@@ -1,12 +1,12 @@
-package ca.ilanguage.oprime.service;
+package ca.ilanguage.oprime.android.service;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import ca.ilanguage.oprime.domain.OPrime;
-import ca.ilanguage.oprime.R;
+import ca.ilanguage.oprime.android.domain.OPrime;
+import ca.ilanguage.oprime.android.R;
 
 import android.app.Activity;
 import android.content.BroadcastReceiver;
@@ -15,6 +15,7 @@ import android.content.IntentFilter;
 import android.hardware.Camera;
 import android.content.Intent;
 import android.media.MediaRecorder;
+import android.media.AudioTrack.OnPlaybackPositionUpdateListener;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
@@ -77,6 +78,7 @@ public class VideoRecorderSubExperiment extends Activity implements
 	private String mSubExperimentShortTitle = "";
 	private String mSubExperimentTitle = "";
 	String mAudioResultsFile = "";
+	String mOutputDir = OPrime.OUTPUT_DIRECTORY;
 	private ArrayList<Integer> mStimuliImages = new ArrayList<Integer>();
 	private ArrayList<String> mStimuliResponses = new ArrayList<String>();
 	private ArrayList<Long> mReactionTimes = new ArrayList<Long>();;
@@ -146,10 +148,12 @@ public class VideoRecorderSubExperiment extends Activity implements
 		mVideoView = (VideoView) this.findViewById(R.id.videoView);
 		mImage = (ImageView) findViewById(R.id.mainimage);
 		
-		
+		mOutputDir = getIntent().getExtras().getString(OPrime.EXTRA_OUTPUT_DIR);
+		if(mOutputDir == null){
+			mOutputDir = OPrime.OUTPUT_DIRECTORY;
+		}
 		mTakePictureAtEnd = getIntent().getExtras().getBoolean(OPrime.EXTRA_TAKE_PICTURE_AT_END, false);
-		mParticipantId = getIntent().getExtras().getString(
-				OPrime.EXTRA_PARTICIPANT_ID);
+		mParticipantId = getIntent().getExtras().getString(OPrime.EXTRA_PARTICIPANT_ID);
 		mExperimentTrialHeader = getIntent().getExtras().getString(OPrime.EXTRA_EXPERIMENT_TRIAL_INFORMATION);
 		mLanguageOfSubExperiment = getIntent().getExtras().getString(OPrime.EXTRA_LANGUAGE);
 		mSubExperimentTitle = getIntent().getExtras().getString(OPrime.EXTRA_SUB_EXPERIMENT_TITLE);
@@ -388,6 +392,7 @@ as is the case for most desktop recognition software.
 //						 getApplicationContext(),
 //						 "Saving video."+ intent.getAction() ,
 //						 Toast.LENGTH_LONG).show();
+				writeResultsTable();
 				finish();
 			}
 		}
@@ -434,7 +439,7 @@ as is the case for most desktop recognition software.
 			mCamera = null;
 		}
 
-		mAudioResultsFile = OPrime.OUTPUT_DIRECTORY
+		mAudioResultsFile = mOutputDir+
 				+ System.currentTimeMillis() + "_" + mParticipantId + "_"
 				+ mLanguageOfSubExperiment + mSubExperimentShortTitle + ".3gp";
 
@@ -486,7 +491,7 @@ as is the case for most desktop recognition software.
 													// YouTube HD: 1280x720
 			mVideoRecorder.setVideoFrameRate(20); // might be auto-determined
 													// due to lighting
-//			 mVideoRecorder.setVideoEncodingBitRate(3000000);// 3 megapixel,
+			 mVideoRecorder.setVideoEncodingBitRate(3000000);// 3 megapixel,
 			// or the max of
 			// the camera
 			mVideoRecorder.setVideoEncoder(MediaRecorder.VideoEncoder.H264);// MPEG_4_SP
