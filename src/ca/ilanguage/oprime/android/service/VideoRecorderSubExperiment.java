@@ -54,6 +54,22 @@ import android.widget.VideoView;
  * 
  * Tested Date: October 2 2011 with manifest.xml <uses-sdk
  * android:minSdkVersion="8" android:targetSdkVersion="11"/>
+ * 
+ * To call it, the following Extras are available:
+ * 
+ * Intent intent;
+			intent = new Intent(
+					"ca.ilanguage.oprime.intent.action.START_VIDEO_RECORDER");
+
+			intent.putExtra(OPrime.EXTRA_USE_FRONT_FACING_CAMERA, true);
+			intent.putExtra(OPrime.EXTRA_LANGUAGE, OPrime.ENGLISH);
+			intent.putExtra(OPrime.EXTRA_VIDEO_QUALITY, OPrime.DEFAULT_DEBUGGING_QUALITY); // will record low quality videos to save space and runtime memory
+			intent.putExtra(OPrime.EXTRA_PARTICIPANT_ID, mParticipantId);
+			intent.putExtra(OPrime.EXTRA_OUTPUT_DIR, OUTPUT_DIRECTORY);
+			intent.putExtra(OPrime.EXTRA_EXPERIMENT_TRIAL_INFORMATION,
+					mExperimentTrialHeader);
+
+			startActivityForResult(intent, OPrime.EXPERIMENT_COMPLETED);
  */
 public class VideoRecorderSubExperiment extends Activity implements
 		SurfaceHolder.Callback {
@@ -67,7 +83,7 @@ public class VideoRecorderSubExperiment extends Activity implements
 	private MediaRecorder mVideoRecorder = null;
 	private Camera mCamera;
 	Context mContext;
-
+	private int mVideoQuality = OPrime.DEFAULT_HIGH_QUALITY;
 	/*
 	 * Sub experiment variables
 	 */
@@ -152,11 +168,13 @@ public class VideoRecorderSubExperiment extends Activity implements
 		if(mOutputDir == null){
 			mOutputDir = OPrime.OUTPUT_DIRECTORY;
 		}
-		mTakePictureAtEnd = getIntent().getExtras().getBoolean(OPrime.EXTRA_TAKE_PICTURE_AT_END, false);
-		mParticipantId = getIntent().getExtras().getString(OPrime.EXTRA_PARTICIPANT_ID);
+		mTakePictureAtEnd = 	getIntent().getExtras().getBoolean(OPrime.EXTRA_TAKE_PICTURE_AT_END, false);
+		mParticipantId = 		getIntent().getExtras().getString(OPrime.EXTRA_PARTICIPANT_ID);
 		mExperimentTrialHeader = getIntent().getExtras().getString(OPrime.EXTRA_EXPERIMENT_TRIAL_INFORMATION);
 		mLanguageOfSubExperiment = getIntent().getExtras().getString(OPrime.EXTRA_LANGUAGE);
-		mSubExperimentTitle = getIntent().getExtras().getString(OPrime.EXTRA_SUB_EXPERIMENT_TITLE);
+		mVideoQuality = 		getIntent().getExtras().getInt(OPrime.EXTRA_VIDEO_QUALITY, OPrime.DEFAULT_HIGH_QUALITY); //default is high quality
+		mSubExperimentTitle = 	getIntent().getExtras().getString(OPrime.EXTRA_SUB_EXPERIMENT_TITLE);
+		
 		if(mSubExperimentTitle == null){
 			mSubExperimentTitle = "";
 		}
@@ -494,7 +512,7 @@ as is the case for most desktop recognition software.
 													// YouTube HD: 1280x720
 			mVideoRecorder.setVideoFrameRate(20); // might be auto-determined
 													// due to lighting
-			 mVideoRecorder.setVideoEncodingBitRate(3000000);// 3 megapixel,
+			 mVideoRecorder.setVideoEncodingBitRate(mVideoQuality);// 3000000=3 megapixel,
 			// or the max of
 			// the camera
 			mVideoRecorder.setVideoEncoder(MediaRecorder.VideoEncoder.H264);// MPEG_4_SP
