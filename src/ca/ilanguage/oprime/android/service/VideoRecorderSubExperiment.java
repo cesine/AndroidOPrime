@@ -149,6 +149,8 @@ public class VideoRecorderSubExperiment extends Activity implements
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		
+		
+		
 		/*
 		 * Get extras from the Experiment Home screen and set up layout depending on extras
 		 */
@@ -563,7 +565,7 @@ as is the case for most desktop recognition software.
 			mRecording = true;
 		} catch (Exception e) {
 			Log.e(TAG, e.toString());
-			e.printStackTrace();
+			
 		}
 	}
 }
