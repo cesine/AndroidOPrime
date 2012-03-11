@@ -22,7 +22,7 @@ public class SubExperimentBlock {
 	
 	public SubExperimentBlock(String title) {
 		super();
-		this.title = OPrime.EMPTYSTRING;
+		this.title = title;
 		this.language = OPrime.NOTSPECIFIED;
 		this.description = OPrime.EMPTYSTRING;
 		
@@ -38,6 +38,46 @@ public class SubExperimentBlock {
 		this.language = language;
 		this.description = description;
 		
+		this.stimuli = stimuli;
+	}
+
+
+	public String getTitle() {
+		return title;
+	}
+
+
+	public void setTitle(String title) {
+		this.title = title;
+	}
+
+
+	public int getLanguage() {
+		return language;
+	}
+
+
+	public void setLanguage(int language) {
+		this.language = language;
+	}
+
+
+	public String getDescription() {
+		return description;
+	}
+
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
+
+
+	public ArrayList<Stimulus> getStimuli() {
+		return stimuli;
+	}
+
+
+	public void setStimuli(ArrayList<Stimulus> stimuli) {
 		this.stimuli = stimuli;
 	}
 	
