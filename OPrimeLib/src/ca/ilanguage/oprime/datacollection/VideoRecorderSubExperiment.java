@@ -1,10 +1,5 @@
 package ca.ilanguage.oprime.datacollection;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.util.ArrayList;
-
 import ca.ilanguage.oprime.R;
 import ca.ilanguage.oprime.content.OPrime;
 import ca.ilanguage.oprime.content.Participant;
@@ -17,9 +12,7 @@ import android.hardware.Camera;
 import android.content.Intent;
 import android.media.MediaRecorder;
 import android.os.Bundle;
-import android.os.Handler;
 import android.util.Log;
-import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.widget.Toast;
 import android.widget.VideoView;
@@ -90,22 +83,10 @@ public class VideoRecorderSubExperiment extends Activity implements
 	private Camera mCamera;
 	Context mContext;
 	private int mVideoQuality = DEFAULT_HIGH_QUALITY;
-	/*
-	 * Sub experiment variables
-	 */
-	String mLanguageOfSubExperiment = OPrime.ENGLISH;
-	private String mParticipantId = Participant.PARTICIPANT_ID_DEFAULT;
-	private String mExperimentTrialHeader = "";
-	private String mSubExperimentShortTitle = "";
-	private String mSubExperimentTitle = "";
+
 	String mAudioResultsFile = "";
 	String mOutputDir = OPrime.OUTPUT_DIRECTORY;
-	private int mStimuliIndex = 0;
-	private Long mStartTime = System.currentTimeMillis();
-	private Long mEndTime = System.currentTimeMillis();
 	
-	
-	private String mImageResultFileName = "";
 	private VideoStatusReceiver videoStatusReceiver;
 
 	
@@ -133,19 +114,8 @@ public class VideoRecorderSubExperiment extends Activity implements
 		if(mOutputDir == null){
 			mOutputDir = OPrime.OUTPUT_DIRECTORY;
 		}
-		mParticipantId = 		getIntent().getExtras().getString(OPrime.EXTRA_PARTICIPANT_ID);
-		mExperimentTrialHeader = getIntent().getExtras().getString(OPrime.EXTRA_EXPERIMENT_TRIAL_INFORMATION);
-		mLanguageOfSubExperiment = getIntent().getExtras().getString(OPrime.EXTRA_LANGUAGE);
 		mVideoQuality = 		getIntent().getExtras().getInt(EXTRA_VIDEO_QUALITY, DEFAULT_HIGH_QUALITY); //default is high quality
-		mSubExperimentTitle = 	getIntent().getExtras().getString(OPrime.EXTRA_SUB_EXPERIMENT_TITLE);
-		if(mSubExperimentTitle == null){
-			mSubExperimentTitle = "";
-		}
-		mSubExperimentShortTitle = mSubExperimentTitle.replaceAll("[^\\w\\.\\-\\_]", "_");
-		if (mSubExperimentShortTitle.length() >= 50) {
-			mSubExperimentShortTitle = mSubExperimentShortTitle
-					.substring(0, 49);
-		}
+		mAudioResultsFile = 	getIntent().getExtras().getString(OPrime.EXTRA_RESULT_FILENAME);
 		mUseFrontFacingCamera = getIntent().getExtras().getBoolean(
 				EXTRA_USE_FRONT_FACING_CAMERA, true);
 		if (mUseFrontFacingCamera) {
@@ -281,10 +251,6 @@ public class VideoRecorderSubExperiment extends Activity implements
 
 		String mDateString = (String) android.text.format.DateFormat.format("yyyy-MM-dd_kk.mm", new java.util.Date());
 	      mDateString = mDateString.replaceAll("/","-").replaceAll(" ","-");
-
-		mAudioResultsFile = mOutputDir+mDateString+"_"
-				+ System.currentTimeMillis() + "_" + mParticipantId + "_"
-				+ mLanguageOfSubExperiment + mSubExperimentShortTitle + ".3gp";
 
 		try {
 			if (mUseFrontFacingCamera) {
