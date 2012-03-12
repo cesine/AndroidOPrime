@@ -14,7 +14,7 @@
    limitations under the License.
 */
 
-package ca.ilanguage.oprime.morphologicalawareness.ui;
+package ca.ilanguage.oprime.storybook;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;

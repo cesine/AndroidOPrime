@@ -14,9 +14,10 @@
    limitations under the License.
 */
 
-package ca.ilanguage.oprime.morphologicalawareness.ui;
+package ca.ilanguage.oprime.storybook;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -29,8 +30,7 @@ import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.view.KeyEvent;
 
-import ca.ilanguage.oprime.domain.OPrime;
-import ca.ilanguage.oprime.morphologicalawareness.R;
+import ca.ilanguage.oprime.R;
 /**
  * Simple Activity for curl testing.
  * 
@@ -41,6 +41,7 @@ public class StoryBookSubExperiment extends Activity {
 	private Boolean mShowTwoPageBook = false;
 	private int mBorderSize = 0;
 	private CurlView mCurlView;
+	private ArrayList<Integer> mBitmapIds;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -54,6 +55,8 @@ public class StoryBookSubExperiment extends Activity {
 			index = (Integer) getLastNonConfigurationInstance();
 		}
 		mCurlView = (CurlView) findViewById(R.id.curl);
+		mBitmapIds = new ArrayList<Integer>();
+		mBitmapIds.add(R.drawable.androids_experimenter_kids);
 		mCurlView.setBitmapProvider(new BitmapProvider());
 		mCurlView.setSizeChangedObserver(new SizeChangedObserver());
 		mCurlView.setCurrentIndex(index);
@@ -101,20 +104,6 @@ public class StoryBookSubExperiment extends Activity {
 	 */
 	private class BitmapProvider implements CurlView.BitmapProvider {
 
-		private int[] mBitmapIds = { R.drawable.stimulus_9_nonpublic,
-				R.drawable.stimulus_12_nonpublic,
-				R.drawable.stimulus_8_nonpublic,
-				R.drawable.stimulus_25_nonpublic,
-				R.drawable.stimulus_15_nonpublic,
-				R.drawable.stimulus_26_nonpublic,
-				R.drawable.stimulus_21_nonpublic,//4
-				R.drawable.stimulus_18_nonpublic,
-				R.drawable.stimulus_5_nonpublic,
-				R.drawable.stimulus_17_nonpublic,
-				R.drawable.stimulus_13_nonpublic,
-				R.drawable.stimulus_22_nonpublic,
-				R.drawable.stimulus_24_nonpublic };
-		
 		@Override
 		public void playSound(){
 			MediaPlayer mediaPlayer = MediaPlayer.create(getApplicationContext(), R.raw.gammatone);
@@ -136,7 +125,7 @@ public class StoryBookSubExperiment extends Activity {
 					Bitmap.Config.ARGB_8888);
 			b.eraseColor(0xFFFFFFFF);
 			Canvas c = new Canvas(b);
-			Drawable d = getResources().getDrawable(mBitmapIds[index]);
+			Drawable d = getResources().getDrawable(mBitmapIds.get(index));
 			
 
 			int margin = mBorderSize;
@@ -181,7 +170,7 @@ public class StoryBookSubExperiment extends Activity {
 
 		@Override
 		public int getBitmapCount() {
-			return mBitmapIds.length;
+			return mBitmapIds.size();
 		}
 	}
 
