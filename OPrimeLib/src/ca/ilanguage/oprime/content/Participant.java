@@ -9,6 +9,8 @@ public class Participant {
 	private static final int MALE = 1;
 	private static final int FEMALE = 2;
 	
+	public static final String PARTICIPANT_ID_DEFAULT = "0000en";
+
 	String code = OPrime.EMPTYSTRING;
 	String experimenterCode = "NA";
 	String firstname = OPrime.EMPTYSTRING;
