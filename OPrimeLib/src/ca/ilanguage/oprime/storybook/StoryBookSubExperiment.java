@@ -42,21 +42,24 @@ public class StoryBookSubExperiment extends Activity {
 	private int mBorderSize = 0;
 	private CurlView mCurlView;
 	private ArrayList<Integer> mBitmapIds;
+	private ArrayList<String> mLabels;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.page_curl);
-		//this.setTitle("Practique");
 		
 
+		mBitmapIds = new ArrayList<Integer>();
+		mBitmapIds.add(R.drawable.androids_experimenter_kids);
+		mLabels = new ArrayList<String>();
+		mLabels.add("Item 1");
+		
 		int index = 0;
 		if (getLastNonConfigurationInstance() != null) {
 			index = (Integer) getLastNonConfigurationInstance();
 		}
 		mCurlView = (CurlView) findViewById(R.id.curl);
-		mBitmapIds = new ArrayList<Integer>();
-		mBitmapIds.add(R.drawable.androids_experimenter_kids);
 		mCurlView.setBitmapProvider(new BitmapProvider());
 		mCurlView.setSizeChangedObserver(new SizeChangedObserver());
 		mCurlView.setCurrentIndex(index);
@@ -146,17 +149,16 @@ public class StoryBookSubExperiment extends Activity {
 			r.top += ((r.height() - imageHeight) / 2) - border;
 			r.bottom = r.top + imageHeight + border + border;
 
-			Paint p = new Paint();
-			p.setColor(0xFFC0C0C0);
-			c.drawRect(r, p);
-			p.setColor(0xFF0000C0);
-			int itemNumber = index+1;
-			if(index < 3){
-				c.drawText("Pratique "+itemNumber, 50, 40, p);
-			}else{
-				itemNumber = index-2;
-				c.drawText("Item "+itemNumber, 50, 40, p);
+			if(mLabels != null){
+				if(mLabels.size() == mBitmapIds.size()){
+					Paint p = new Paint();
+					p.setColor(0xFFC0C0C0);
+					c.drawRect(r, p);
+					p.setColor(0xFF0000C0);
+					c.drawText(mLabels.get(index), 50, 40, p);
+				}
 			}
+			
 			r.left += border;
 			r.right -= border;
 			r.top += border;
