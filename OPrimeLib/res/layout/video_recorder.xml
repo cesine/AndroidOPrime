@@ -5,6 +5,6 @@
 	android:orientation="vertical" android:layout_width="fill_parent"
 	android:background="#ffffff" android:layout_height="fill_parent">
 			<VideoView android:id="@+id/videoView"
-				android:layout_width="10px" android:layout_height="10px" />
+				android:layout_width="1dp" android:layout_height="1dp" />
 </LinearLayout>
 
