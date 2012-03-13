@@ -32,6 +32,7 @@ import android.view.KeyEvent;
 
 import ca.ilanguage.oprime.R;
 import ca.ilanguage.oprime.content.OPrime;
+import ca.ilanguage.oprime.content.Stimulus;
 /**
  * Simple Activity for curl testing.
  * 
@@ -42,22 +43,20 @@ public class StoryBookSubExperiment extends Activity {
 	private Boolean mShowTwoPageBook = false;
 	private int mBorderSize = 0;
 	private CurlView mCurlView;
-	private ArrayList<Integer> mBitmapIds;
-	private ArrayList mLabels;
+	private ArrayList<Stimulus> mStimuli;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.page_curl);
 		
-		ArrayList<Integer> ids = new ArrayList<Integer>();
-		ids.add(R.drawable.androids_experimenter_kids);
+		ArrayList<Stimulus> ids = new ArrayList<Stimulus>();
+		ids.add(new Stimulus(R.drawable.androids_experimenter_kids));
 	
-		mBitmapIds = (ArrayList<Integer>) getIntent().getExtras().getSerializable(OPrime.EXTRA_STIMULI_IMAGE_ID); 
+		mStimuli = (ArrayList<Stimulus>) getIntent().getExtras().getSerializable(OPrime.EXTRA_STIMULI_IMAGE_ID); 
 		
-		if(mBitmapIds == null){
-			mBitmapIds = ids;
-			mLabels = mBitmapIds;
+		if(mStimuli == null){
+			mStimuli = ids;
 		}
 		
 		int index = 0;
@@ -133,7 +132,7 @@ public class StoryBookSubExperiment extends Activity {
 					Bitmap.Config.ARGB_8888);
 			b.eraseColor(0xFFFFFFFF);
 			Canvas c = new Canvas(b);
-			Drawable d = getResources().getDrawable(mBitmapIds.get(index));
+			Drawable d = getResources().getDrawable(mStimuli.get(index).getImageFileId());
 			
 
 			int margin = mBorderSize;
@@ -154,15 +153,12 @@ public class StoryBookSubExperiment extends Activity {
 			r.top += ((r.height() - imageHeight) / 2) - border;
 			r.bottom = r.top + imageHeight + border + border;
 
-			if(mLabels != null){
-				if(mLabels.size() == mBitmapIds.size()){
-					Paint p = new Paint();
-					p.setColor(0xFFC0C0C0);
-					c.drawRect(r, p);
-					p.setColor(0xFF0000C0);
-					c.drawText(""+mLabels.get(index), 50, 40, p);
-				}
-			}
+			Paint p = new Paint();
+			p.setColor(0xFFC0C0C0);
+			c.drawRect(r, p);
+			p.setColor(0xFF0000C0);
+			c.drawText(""+mStimuli.get(index).getLabel(), 50, 40, p);
+			
 			
 			r.left += border;
 			r.right -= border;
@@ -177,7 +173,7 @@ public class StoryBookSubExperiment extends Activity {
 
 		@Override
 		public int getBitmapCount() {
-			return mBitmapIds.size();
+			return mStimuli.size();
 		}
 	}
 

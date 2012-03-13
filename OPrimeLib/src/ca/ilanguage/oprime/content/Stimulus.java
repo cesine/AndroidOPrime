@@ -1,9 +1,15 @@
 package ca.ilanguage.oprime.content;
 
+import ca.ilanguage.oprime.R;
+
 public class Stimulus {
-	String audioFilePath;
-	String imageFilePath;
-	String videoFilePath;
+	String audioFilePath = "";
+	int audioFileId;
+	String imageFilePath = "";
+	int imageFileId;
+	String videoFilePath = "";
+	
+	String label = ""; 
 	
 	float touchX;
 	float touchY;
@@ -14,15 +20,28 @@ public class Stimulus {
 	
 	public Stimulus() {
 		super();
-		this.audioFilePath = "file://android_assets/chime.mp3";
-		this.imageFilePath = "file://android_assets/androids_experimenter_kids.png";
+		this.audioFilePath = "";
+		this.audioFileId= R.raw.gammatone;
+		this.imageFilePath = "";
+		this.imageFileId = R.drawable.androids_experimenter_kids;
 		this.videoFilePath = "";
 		this.touchX = 0;
 		this.touchY = 0;
 		this.totalReactionTime = 0;
 		this.reactionTimePostOffset = 0;
 	}
-	
+	public Stimulus(int imageid) {
+		super();
+		this.audioFilePath = "";
+		this.audioFileId= R.raw.gammatone;
+		this.imageFilePath = "";
+		this.imageFileId = imageid;
+		this.videoFilePath = "";
+		this.touchX = 0;
+		this.touchY = 0;
+		this.totalReactionTime = 0;
+		this.reactionTimePostOffset = 0;
+	}
 	
 	public Stimulus(String audioFilePath, String imageFilePath,
 			String videoFilePath) {
@@ -46,6 +65,66 @@ public class Stimulus {
 		this.touchX = touchX;
 		this.touchY = touchY;
 		this.totalReactionTime = totalReactionTime;
+		this.reactionTimePostOffset = reactionTimePostOffset;
+	}
+	public String getAudioFilePath() {
+		return audioFilePath;
+	}
+	public void setAudioFilePath(String audioFilePath) {
+		this.audioFilePath = audioFilePath;
+	}
+	public int getAudioFileId() {
+		return audioFileId;
+	}
+	public void setAudioFileId(int audioFileId) {
+		this.audioFileId = audioFileId;
+	}
+	public String getImageFilePath() {
+		return imageFilePath;
+	}
+	public void setImageFilePath(String imageFilePath) {
+		this.imageFilePath = imageFilePath;
+	}
+	public int getImageFileId() {
+		return imageFileId;
+	}
+	public void setImageFileId(int imageFileId) {
+		this.imageFileId = imageFileId;
+	}
+	public String getVideoFilePath() {
+		return videoFilePath;
+	}
+	public void setVideoFilePath(String videoFilePath) {
+		this.videoFilePath = videoFilePath;
+	}
+	public String getLabel() {
+		return label;
+	}
+	public void setLabel(String label) {
+		this.label = label;
+	}
+	public float getTouchX() {
+		return touchX;
+	}
+	public void setTouchX(float touchX) {
+		this.touchX = touchX;
+	}
+	public float getTouchY() {
+		return touchY;
+	}
+	public void setTouchY(float touchY) {
+		this.touchY = touchY;
+	}
+	public long getTotalReactionTime() {
+		return totalReactionTime;
+	}
+	public void setTotalReactionTime(long totalReactionTime) {
+		this.totalReactionTime = totalReactionTime;
+	}
+	public long getReactionTimePostOffset() {
+		return reactionTimePostOffset;
+	}
+	public void setReactionTimePostOffset(long reactionTimePostOffset) {
 		this.reactionTimePostOffset = reactionTimePostOffset;
 	}
 	
