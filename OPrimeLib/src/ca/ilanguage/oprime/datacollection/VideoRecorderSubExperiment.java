@@ -54,13 +54,8 @@ import android.widget.VideoView;
 					"ca.ilanguage.oprime.intent.action.START_VIDEO_RECORDER");
 
 			intent.putExtra(OPrime.EXTRA_USE_FRONT_FACING_CAMERA, true);
-			intent.putExtra(OPrime.EXTRA_LANGUAGE, OPrime.ENGLISH);
 			intent.putExtra(OPrime.EXTRA_VIDEO_QUALITY, OPrime.DEFAULT_DEBUGGING_QUALITY); // will record low quality videos to save space and runtime memory
-			intent.putExtra(OPrime.EXTRA_PARTICIPANT_ID, mParticipantId);
-			intent.putExtra(OPrime.EXTRA_OUTPUT_DIR, OUTPUT_DIRECTORY);
-			intent.putExtra(OPrime.EXTRA_EXPERIMENT_TRIAL_INFORMATION,
-					mExperimentTrialHeader);
-
+			
 			startActivityForResult(intent, OPrime.EXPERIMENT_COMPLETED);
  */
 public class VideoRecorderSubExperiment extends Activity implements
@@ -70,7 +65,6 @@ public class VideoRecorderSubExperiment extends Activity implements
 	public static final String EXTRA_USE_FRONT_FACING_CAMERA = "usefrontcamera";
 	public static final int DEFAULT_DEBUGGING_QUALITY = 500000; //.5 megapixel
 	public static final int DEFAULT_HIGH_QUALITY = 3000000;// 3 megapixel,
-	public static final String INTENT_STOP_VIDEO_RECORDING = "ca.ilanguage.oprime.intent.action.BROADCAST_STOP_VIDEO_SERVICE";
 	
 	/*
 	 * Recording variables
@@ -98,7 +92,7 @@ public class VideoRecorderSubExperiment extends Activity implements
 		if (videoStatusReceiver == null){
 		      videoStatusReceiver = new VideoStatusReceiver();
 		    }
-			IntentFilter intentStopped = new IntentFilter(INTENT_STOP_VIDEO_RECORDING);
+			IntentFilter intentStopped = new IntentFilter(OPrime.INTENT_STOP_VIDEO_RECORDING);
 		    registerReceiver(videoStatusReceiver, intentStopped);
 	}
 
@@ -198,11 +192,7 @@ public class VideoRecorderSubExperiment extends Activity implements
 	public class VideoStatusReceiver extends BroadcastReceiver {
 		@Override
 		public void onReceive(Context context, Intent intent) {
-			if (intent.getAction().equals(INTENT_STOP_VIDEO_RECORDING)) {
-//				Toast.makeText(
-//						 getApplicationContext(),
-//						 "Saving video."+ intent.getAction() ,
-//						 Toast.LENGTH_LONG).show();
+			if (intent.getAction().equals(OPrime.INTENT_STOP_VIDEO_RECORDING)) {
 				finish();
 			}
 		}

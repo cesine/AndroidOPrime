@@ -7,6 +7,10 @@ public class OPrime {
 	public static final String ENGLISH = "en";
 	public static final String FRENCH = "fr";
 	
+	public static final String INTENT_STOP_VIDEO_RECORDING = "ca.ilanguage.oprime.intent.action.BROADCAST_STOP_VIDEO_SERVICE";
+	public static final String INTENT_START_VIDEO_RECORDING = "ca.ilanguage.oprime.intent.action.START_VIDEO_SERVICE";
+	
+	
 	public static final String EXTRA_LANGUAGE ="language";
 	public static final String EXTRA_PARTICIPANT_ID ="participant";
 	public static final String EXTRA_SUB_EXPERIMENT_TITLE = "subexperimenttitle";

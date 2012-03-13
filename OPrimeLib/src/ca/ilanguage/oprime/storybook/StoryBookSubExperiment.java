@@ -31,6 +31,7 @@ import android.os.Bundle;
 import android.view.KeyEvent;
 
 import ca.ilanguage.oprime.R;
+import ca.ilanguage.oprime.content.OPrime;
 /**
  * Simple Activity for curl testing.
  * 
@@ -42,18 +43,22 @@ public class StoryBookSubExperiment extends Activity {
 	private int mBorderSize = 0;
 	private CurlView mCurlView;
 	private ArrayList<Integer> mBitmapIds;
-	private ArrayList<String> mLabels;
+	private ArrayList mLabels;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.page_curl);
 		
-
-		mBitmapIds = new ArrayList<Integer>();
-		mBitmapIds.add(R.drawable.androids_experimenter_kids);
-		mLabels = new ArrayList<String>();
-		mLabels.add("Item 1");
+		ArrayList<Integer> ids = new ArrayList<Integer>();
+		ids.add(R.drawable.androids_experimenter_kids);
+	
+		mBitmapIds = (ArrayList<Integer>) getIntent().getExtras().getSerializable(OPrime.EXTRA_STIMULI_IMAGE_ID); 
+		
+		if(mBitmapIds == null){
+			mBitmapIds = ids;
+			mLabels = mBitmapIds;
+		}
 		
 		int index = 0;
 		if (getLastNonConfigurationInstance() != null) {
@@ -155,7 +160,7 @@ public class StoryBookSubExperiment extends Activity {
 					p.setColor(0xFFC0C0C0);
 					c.drawRect(r, p);
 					p.setColor(0xFF0000C0);
-					c.drawText(mLabels.get(index), 50, 40, p);
+					c.drawText(""+mLabels.get(index), 50, 40, p);
 				}
 			}
 			
