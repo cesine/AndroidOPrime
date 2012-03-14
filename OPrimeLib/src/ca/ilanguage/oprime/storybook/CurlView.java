@@ -128,34 +128,23 @@ public class CurlView extends GLSurfaceView implements View.OnTouchListener,
 		// If animation is done.
 		if (currentTime >= mAnimationStartTime + mAnimationDurationTime) {
 			if (mAnimationTargetEvent == SET_CURL_TO_RIGHT) {
-				// If we were curling left page update current index.
-				if (mCurlState == CURL_LEFT) {
-					mCurrentIndex = mCurrentIndex - 2;
-				}
-				Bitmap bitmap = mBitmapProvider.getBitmap(mPageBitmapWidth, mPageBitmapHeight, mCurrentIndex);
-				mPageCurl.setBitmap(bitmap);
-				
 				// Switch curled page to right.
 				CurlMesh right = mPageCurl;
-				CurlMesh curl = mPageRight;
+				CurlMesh curl = mPageRight;//the new page
 				right.setRect(mRenderer.getPageRect(CurlRenderer.PAGE_RIGHT));
 				right.setFlipTexture(false);
 				right.reset();
 				mRenderer.removeCurlMesh(curl);
 				mPageCurl = curl;
 				mPageRight = right;
-				
-			} else if (mAnimationTargetEvent == SET_CURL_TO_LEFT) {
-				// If we were curling right page update current index.
-				if (mCurlState == CURL_RIGHT) {
-					mCurrentIndex = mCurrentIndex + 2;
+				// If we were curling left page update current index.
+				if (mCurlState == CURL_LEFT) {
+					mCurrentIndex = mCurrentIndex - 2;
 				}
-				Bitmap bitmap = mBitmapProvider.getBitmap(mPageBitmapWidth, mPageBitmapHeight, mCurrentIndex);
-				mPageCurl.setBitmap(bitmap);
-				
+			} else if (mAnimationTargetEvent == SET_CURL_TO_LEFT) {
 				// Switch curled page to left.
 				CurlMesh left = mPageCurl;
-				CurlMesh curl = mPageLeft; 
+				CurlMesh curl = mPageLeft; //the new page
 				left.setRect(mRenderer.getPageRect(CurlRenderer.PAGE_LEFT));
 				left.setFlipTexture(false);
 				left.reset();
@@ -165,7 +154,10 @@ public class CurlView extends GLSurfaceView implements View.OnTouchListener,
 				}
 				mPageCurl = curl;
 				mPageLeft = left;
-				
+				// If we were curling right page update current index.
+				if (mCurlState == CURL_RIGHT) {
+					mCurrentIndex = mCurrentIndex + 2;
+				}
 			}
 			mCurlState = CURL_NONE;
 			mAnimate = false;
