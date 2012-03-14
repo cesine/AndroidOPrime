@@ -18,9 +18,11 @@ package ca.ilanguage.oprime.storybook;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Locale;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Paint;
@@ -29,6 +31,7 @@ import android.graphics.drawable.Drawable;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.view.KeyEvent;
+import android.widget.Toast;
 
 import ca.ilanguage.oprime.R;
 import ca.ilanguage.oprime.content.OPrime;
@@ -44,7 +47,7 @@ public class StoryBookSubExperiment extends Activity {
 	private int mBorderSize = 0;
 	private CurlView mCurlView;
 	private ArrayList<Stimulus> mStimuli;
-
+	private Locale language;
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -56,6 +59,8 @@ public class StoryBookSubExperiment extends Activity {
 //		ids.add(new Stimulus(R.drawable.s013));
 		
 		mStimuli = (ArrayList<Stimulus>) getIntent().getExtras().getSerializable(OPrime.EXTRA_STIMULI_IMAGE_ID); 
+		String lang = getIntent().getExtras().getString(OPrime.EXTRA_LANGUAGE);
+		forceLocale(lang);
 		
 		if(mStimuli == null){
 			mStimuli = ids;
@@ -79,6 +84,25 @@ public class StoryBookSubExperiment extends Activity {
 		// mCurlView.setEnableTouchPressure(true);
 	}
 
+	/**
+	 * Forces the locale for the duration of the app to the language needed for that version of the Bilingual Aphasia Test
+	 * @param lang
+	 * @return
+	 */
+	public String forceLocale(String lang){
+		if (lang.equals(Locale.getDefault().getLanguage())){
+			language = Locale.getDefault();
+			return Locale.getDefault().getDisplayLanguage();
+		}
+		Configuration config = getBaseContext().getResources().getConfiguration();
+		Locale locale = new Locale(lang);
+        Locale.setDefault(locale);
+        config.locale = locale;
+        getBaseContext().getResources().updateConfiguration(config, getBaseContext().getResources().getDisplayMetrics());
+        language = Locale.getDefault();
+       
+		return Locale.getDefault().getDisplayLanguage();
+    }
 	@Override
 	public void onPause() {
 		super.onPause();

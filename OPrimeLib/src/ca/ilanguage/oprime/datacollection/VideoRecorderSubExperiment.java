@@ -10,6 +10,7 @@ import android.content.Context;
 import android.content.IntentFilter;
 import android.hardware.Camera;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.media.MediaRecorder;
 import android.os.Bundle;
 import android.util.Log;
@@ -103,6 +104,22 @@ public class VideoRecorderSubExperiment extends Activity implements
 		 * Get extras from the Experiment Home screen and set up layout depending on extras
 		 */
 		setContentView(R.layout.video_recorder);
+		PackageManager pm = getPackageManager();
+		if(pm.hasSystemFeature(PackageManager.FEATURE_CAMERA)){
+			Toast.makeText(
+					 getApplicationContext(),
+					 "This Android has no camera" ,
+					 Toast.LENGTH_LONG).show();
+					finish();
+		}else{
+			Toast.makeText(
+					 getApplicationContext(),
+					 "yes camera" ,
+					 Toast.LENGTH_LONG).show();
+		}
+		
+		
+		
 		mVideoView = (VideoView) this.findViewById(R.id.videoView);
 		mOutputDir = getIntent().getExtras().getString(OPrime.EXTRA_OUTPUT_DIR);
 		if(mOutputDir == null){
@@ -143,7 +160,7 @@ public class VideoRecorderSubExperiment extends Activity implements
 			beginRecording(holder);
 		} catch (Exception e) {
 			Log.e(TAG, e.toString());
-			e.printStackTrace();
+			beginRecordingAudio();
 		}
 	}
 
@@ -154,13 +171,19 @@ public class VideoRecorderSubExperiment extends Activity implements
 			int height) {
 		Log.v(TAG, "Width x Height = " + width + "x" + height);
 	}
-
+	private void beginRecordingAudio(){
+		//TODO If the video fails, record audio.
+	}
 	private void stopRecording() throws Exception {
 		mRecording = false;
 		if (mVideoRecorder != null) {
 			mVideoRecorder.stop();
 			mVideoRecorder.release();
 			mVideoRecorder = null;
+			Toast.makeText(
+					 getApplicationContext(),
+					 "Saving video." ,
+					 Toast.LENGTH_LONG).show();
 		}
 		if (mCamera != null) {
 			mCamera.reconnect();
@@ -199,10 +222,6 @@ public class VideoRecorderSubExperiment extends Activity implements
 	}
 	@Override
 	protected void onDestroy() {
-		Toast.makeText(
-				 getApplicationContext(),
-				 "Saving video." ,
-				 Toast.LENGTH_LONG).show();
 		try {
 			stopRecording();
 		} catch (Exception e) {
@@ -239,9 +258,7 @@ public class VideoRecorderSubExperiment extends Activity implements
 			mCamera = null;
 		}
 
-		String mDateString = (String) android.text.format.DateFormat.format("yyyy-MM-dd_kk.mm", new java.util.Date());
-	      mDateString = mDateString.replaceAll("/","-").replaceAll(" ","-");
-
+		
 		try {
 			if (mUseFrontFacingCamera) {
 				// hard coded assuming 1 is the front facing camera

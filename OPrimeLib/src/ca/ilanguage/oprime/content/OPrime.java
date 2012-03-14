@@ -23,4 +23,6 @@ public class OPrime {
 
 	public static final String OUTPUT_DIRECTORY = "/sdcard/OPrime/video/";
 
+	
+	
 }
