@@ -52,19 +52,20 @@ public class StoryBookSubExperiment extends Activity {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.page_curl);
-		
+		/*
+		 * Prepare Stimuli
+		 */
 		ArrayList<Stimulus> ids = new ArrayList<Stimulus>();
 		ids.add(new Stimulus(R.drawable.androids_experimenter_kids));
-//		ids.add(new Stimulus(R.drawable.s012));
-//		ids.add(new Stimulus(R.drawable.s013));
-		
 		mStimuli = (ArrayList<Stimulus>) getIntent().getExtras().getSerializable(OPrime.EXTRA_STIMULI_IMAGE_ID); 
-		String lang = getIntent().getExtras().getString(OPrime.EXTRA_LANGUAGE);
-		forceLocale(lang);
-		
 		if(mStimuli == null){
 			mStimuli = ids;
 		}
+		/*
+		 * Prepare language of Stimuli
+		 */
+		String lang = getIntent().getExtras().getString(OPrime.EXTRA_LANGUAGE);
+		forceLocale(lang);
 		
 		int index = 0;
 		if (getLastNonConfigurationInstance() != null) {
@@ -73,12 +74,17 @@ public class StoryBookSubExperiment extends Activity {
 		mCurlView = (CurlView) findViewById(R.id.curl);
 		mCurlView.setBitmapProvider(new BitmapProvider());
 		mCurlView.setSizeChangedObserver(new SizeChangedObserver());
-		mCurlView.setCurrentIndex(index);
+		mCurlView.setCurrentIndex(index+1);
 		mCurlView.setBackgroundColor(0xFF202830);
-		mCurlView.setRenderLeftPage(false);
 		mCurlView.setMargins(.0f, .0f, .0f, .0f);
 	
-
+		/*
+		 * Set 1 or 2 page view mode
+		 */
+		mShowTwoPageBook = true;
+		mCurlView.setViewMode(CurlView.SHOW_TWO_PAGES);
+		mCurlView.setRenderLeftPage(true);
+		
 		// This is something somewhat experimental. Before uncommenting next
 		// line, please see method comments in CurlView.
 		// mCurlView.setEnableTouchPressure(true);
@@ -115,16 +121,6 @@ public class StoryBookSubExperiment extends Activity {
 		mCurlView.onResume();
 	}
 
-	
-	public boolean onKeyDown(int keyCode, KeyEvent event) {
-
-	    if (keyCode == KeyEvent.KEYCODE_BACK) {
-	    	Intent i = new Intent("ca.ilanguage.oprime.intent.action.BROADCAST_STOP_VIDEO_SERVICE");
-	        sendBroadcast(i);
-	    }
-	    return super.onKeyDown(keyCode, event);
-
-	}
 	
 	@Override
 	public Object onRetainNonConfigurationInstance() {
@@ -179,11 +175,11 @@ public class StoryBookSubExperiment extends Activity {
 			r.top += ((r.height() - imageHeight) / 2) - border;
 			r.bottom = r.top + imageHeight + border + border;
 
-			Paint p = new Paint();
-			p.setColor(0xFFC0C0C0);
-			c.drawRect(r, p);
-			p.setColor(0xFF0000C0);
-			c.drawText(""+mStimuli.get(index).getLabel(), 50, 40, p);
+//			Paint p = new Paint();
+//			p.setColor(0xFFC0C0C0);
+//			c.drawRect(r, p);
+//			p.setColor(0xFF0000C0);
+//			c.drawText(""+mStimuli.get(index).getLabel(), 50, 40, p);
 			
 			
 			r.left += border;
