@@ -471,6 +471,13 @@ public class CurlView extends GLSurfaceView implements View.OnTouchListener,
 		// First reposition curl so that page doesn't 'rip off' from book.
 		if (mCurlState == CURL_RIGHT
 				|| (mCurlState == CURL_LEFT && mViewMode == SHOW_ONE_PAGE)) {
+			
+			if( mCurrentIndex + 1 <= mBitmapProvider.getBitmapCount() -1 ){
+				Bitmap bitmap = mBitmapProvider.getBitmap(mPageBitmapWidth,
+						mPageBitmapHeight, mCurrentIndex + 1);
+				mPageCurl.setBitmap(bitmap);
+			}
+			
 			RectF pageRect = mRenderer.getPageRect(CurlRenderer.PAGE_RIGHT);
 			if (curlPos.x >= pageRect.right) {
 				mPageCurl.reset();
@@ -492,6 +499,13 @@ public class CurlView extends GLSurfaceView implements View.OnTouchListener,
 				}
 			}
 		} else if (mCurlState == CURL_LEFT) {
+			
+			if( mCurrentIndex -2  >= 0 ){
+				Bitmap bitmap = mBitmapProvider.getBitmap(mPageBitmapWidth,
+					mPageBitmapHeight, mCurrentIndex -2 );
+				mPageCurl.setBitmap(bitmap);
+			}
+			
 			RectF pageRect = mRenderer.getPageRect(CurlRenderer.PAGE_LEFT);
 			if (curlPos.x <= pageRect.left) {
 				mPageCurl.reset();
@@ -594,7 +608,7 @@ public class CurlView extends GLSurfaceView implements View.OnTouchListener,
 
 			// If there is new/previous bitmap available load it to left page.
 			if (mCurrentIndex > 1) {
-				Bitmap bitmap = mBitmapProvider.getBitmap(mPageBitmapWidth, mPageBitmapHeight, mCurrentIndex - 2);
+				Bitmap bitmap = mBitmapProvider.getBitmap(mPageBitmapWidth, mPageBitmapHeight, mCurrentIndex - 3);
 				mPageLeft.setBitmap(bitmap);
 				mPageLeft.setRect(mRenderer.getPageRect(CurlRenderer.PAGE_LEFT));
 				mPageLeft.setFlipTexture(false);
@@ -648,10 +662,10 @@ public class CurlView extends GLSurfaceView implements View.OnTouchListener,
 		int rightIdx = mCurrentIndex;
 		int curlIdx = -1;
 		if (mCurlState == CURL_LEFT) {
-			curlIdx = leftIdx;
+			curlIdx = leftIdx -1;
 			leftIdx--;
 		} else if (mCurlState == CURL_RIGHT) {
-			curlIdx = rightIdx;
+			curlIdx = rightIdx +2;
 			rightIdx++;
 		}
 
