@@ -52,7 +52,9 @@ public class StoryBookSubExperiment extends Activity {
 		
 		ArrayList<Stimulus> ids = new ArrayList<Stimulus>();
 		ids.add(new Stimulus(R.drawable.androids_experimenter_kids));
-	
+//		ids.add(new Stimulus(R.drawable.s012));
+//		ids.add(new Stimulus(R.drawable.s013));
+		
 		mStimuli = (ArrayList<Stimulus>) getIntent().getExtras().getSerializable(OPrime.EXTRA_STIMULI_IMAGE_ID); 
 		
 		if(mStimuli == null){

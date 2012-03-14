@@ -1,8 +1,10 @@
 package ca.ilanguage.oprime.content;
 
+import java.io.Serializable;
+
 import ca.ilanguage.oprime.R;
 
-public class Stimulus {
+public class Stimulus implements Serializable{
 	String audioFilePath = "";
 	int audioFileId;
 	String imageFilePath = "";
@@ -126,6 +128,11 @@ public class Stimulus {
 	}
 	public void setReactionTimePostOffset(long reactionTimePostOffset) {
 		this.reactionTimePostOffset = reactionTimePostOffset;
+	}
+	@Override
+	public String toString() {
+		// TODO Auto-generated method stub
+		return super.toString();
 	}
 	
 	
