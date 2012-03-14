@@ -139,7 +139,7 @@ public class CurlView extends GLSurfaceView implements View.OnTouchListener,
 				mPageRight = right;
 				// If we were curling left page update current index.
 				if (mCurlState == CURL_LEFT) {
-					mCurrentIndex--;
+					mCurrentIndex = mCurrentIndex-2;
 				}
 			} else if (mAnimationTargetEvent == SET_CURL_TO_LEFT) {
 				// Switch curled page to left.
@@ -156,7 +156,7 @@ public class CurlView extends GLSurfaceView implements View.OnTouchListener,
 				mPageLeft = left;
 				// If we were curling right page update current index.
 				if (mCurlState == CURL_RIGHT) {
-					mCurrentIndex++;
+					mCurrentIndex = mCurrentIndex + 2;
 				}
 			}
 			mCurlState = CURL_NONE;
@@ -562,7 +562,7 @@ public class CurlView extends GLSurfaceView implements View.OnTouchListener,
 			// If there is new/next available, set it to right page.
 			if (mCurrentIndex < mBitmapProvider.getBitmapCount() - 1) {
 				Bitmap bitmap = mBitmapProvider.getBitmap(mPageBitmapWidth,
-						mPageBitmapHeight, mCurrentIndex + 1);
+						mPageBitmapHeight, mCurrentIndex + 2);
 				mPageRight.setBitmap(bitmap);
 				mPageRight.setRect(mRenderer
 						.getPageRect(CurlRenderer.PAGE_RIGHT));
