@@ -139,14 +139,14 @@ public class CurlView extends GLSurfaceView implements View.OnTouchListener,
 				mPageRight = right;
 				// If we were curling left page update current index.
 				if (mCurlState == CURL_LEFT) {
-					mCurrentIndex = mCurrentIndex-2;
+					mCurrentIndex = mCurrentIndex - 2;
 				}
 			} else if (mAnimationTargetEvent == SET_CURL_TO_LEFT) {
 				// Switch curled page to left.
 				CurlMesh left = mPageCurl;
 				CurlMesh curl = mPageLeft;
 				left.setRect(mRenderer.getPageRect(CurlRenderer.PAGE_LEFT));
-				left.setFlipTexture(true);
+				left.setFlipTexture(false);
 				left.reset();
 				mRenderer.removeCurlMesh(curl);
 				if (!mRenderLeftPage) {
@@ -458,7 +458,7 @@ public class CurlView extends GLSurfaceView implements View.OnTouchListener,
 		mPageLeft = new CurlMesh(10);
 		mPageRight = new CurlMesh(10);
 		mPageCurl = new CurlMesh(10);
-		mPageLeft.setFlipTexture(true);
+		mPageLeft.setFlipTexture(false);
 		mPageRight.setFlipTexture(false);
 	}
 
@@ -548,11 +548,11 @@ public class CurlView extends GLSurfaceView implements View.OnTouchListener,
 			mPageRight = mPageCurl;
 			mPageCurl = curl;
 
-			// If there is something to show on left page, simply add it to
-			// renderer.
+			// If there is something to show on left page, show one page previous to the right page
 			if (mCurrentIndex > 0) {
-				mPageLeft
-						.setRect(mRenderer.getPageRect(CurlRenderer.PAGE_LEFT));
+				Bitmap bitmap = mBitmapProvider.getBitmap(mPageBitmapWidth, mPageBitmapHeight, mCurrentIndex + 3);
+				mPageLeft.setBitmap(bitmap);
+				mPageLeft.setRect(mRenderer.getPageRect(CurlRenderer.PAGE_LEFT));
 				mPageLeft.reset();
 				if (mRenderLeftPage) {
 					mRenderer.addCurlMesh(mPageLeft);
@@ -561,11 +561,9 @@ public class CurlView extends GLSurfaceView implements View.OnTouchListener,
 
 			// If there is new/next available, set it to right page.
 			if (mCurrentIndex < mBitmapProvider.getBitmapCount() - 1) {
-				Bitmap bitmap = mBitmapProvider.getBitmap(mPageBitmapWidth,
-						mPageBitmapHeight, mCurrentIndex + 2);
+				Bitmap bitmap = mBitmapProvider.getBitmap(mPageBitmapWidth, mPageBitmapHeight, mCurrentIndex + 2);
 				mPageRight.setBitmap(bitmap);
-				mPageRight.setRect(mRenderer
-						.getPageRect(CurlRenderer.PAGE_RIGHT));
+				mPageRight.setRect(mRenderer.getPageRect(CurlRenderer.PAGE_RIGHT));
 				mPageRight.setFlipTexture(false);
 				mPageRight.reset();
 				mRenderer.addCurlMesh(mPageRight);
@@ -597,35 +595,32 @@ public class CurlView extends GLSurfaceView implements View.OnTouchListener,
 
 			// If there is new/previous bitmap available load it to left page.
 			if (mCurrentIndex > 1) {
-				Bitmap bitmap = mBitmapProvider.getBitmap(mPageBitmapWidth,
-						mPageBitmapHeight, mCurrentIndex - 2);
+				Bitmap bitmap = mBitmapProvider.getBitmap(mPageBitmapWidth, mPageBitmapHeight, mCurrentIndex - 2);
 				mPageLeft.setBitmap(bitmap);
-				mPageLeft
-						.setRect(mRenderer.getPageRect(CurlRenderer.PAGE_LEFT));
-				mPageLeft.setFlipTexture(true);
+				mPageLeft.setRect(mRenderer.getPageRect(CurlRenderer.PAGE_LEFT));
+				mPageLeft.setFlipTexture(false);
 				mPageLeft.reset();
 				if (mRenderLeftPage) {
 					mRenderer.addCurlMesh(mPageLeft);
 				}
 			}
 
-			// If there is something to show on right page add it to renderer.
+			// If there is something to show on right page load one past it on the right page.
 			if (mCurrentIndex < mBitmapProvider.getBitmapCount()) {
-				mPageRight.setRect(mRenderer
-						.getPageRect(CurlRenderer.PAGE_RIGHT));
+				Bitmap bitmap = mBitmapProvider.getBitmap(mPageBitmapWidth, mPageBitmapHeight, mCurrentIndex - 3);
+				mPageRight.setBitmap(bitmap);
+				mPageRight.setRect(mRenderer.getPageRect(CurlRenderer.PAGE_RIGHT));
 				mPageRight.reset();
 				mRenderer.addCurlMesh(mPageRight);
 			}
 
 			// How dragging previous page happens depends on view mode.
 			if (mViewMode == SHOW_ONE_PAGE) {
-				mPageCurl.setRect(mRenderer
-						.getPageRect(CurlRenderer.PAGE_RIGHT));
+				mPageCurl.setRect(mRenderer.getPageRect(CurlRenderer.PAGE_RIGHT));
 				mPageCurl.setFlipTexture(false);
 			} else {
-				mPageCurl
-						.setRect(mRenderer.getPageRect(CurlRenderer.PAGE_LEFT));
-				mPageCurl.setFlipTexture(true);
+				mPageCurl.setRect(mRenderer.getPageRect(CurlRenderer.PAGE_LEFT));
+				mPageCurl.setFlipTexture(false);
 			}
 			mPageCurl.reset();
 			mRenderer.addCurlMesh(mPageCurl);
