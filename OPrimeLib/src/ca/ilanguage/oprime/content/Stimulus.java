@@ -1,10 +1,13 @@
 package ca.ilanguage.oprime.content;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 
 import ca.ilanguage.oprime.R;
 
 public class Stimulus implements Serializable{
+	
+	private static final long serialVersionUID = -4023355491498842498L;
 	String audioFilePath = "";
 	int audioFileId;
 	String imageFilePath = "";
@@ -13,8 +16,7 @@ public class Stimulus implements Serializable{
 	
 	String label = ""; 
 	
-	float touchX;
-	float touchY;
+	public ArrayList<Touch> touches = new ArrayList<Touch>();
 	
 	long totalReactionTime;
 	long reactionTimePostOffset;
@@ -27,8 +29,7 @@ public class Stimulus implements Serializable{
 		this.imageFilePath = "";
 		this.imageFileId = R.drawable.androids_experimenter_kids;
 		this.videoFilePath = "";
-		this.touchX = 0;
-		this.touchY = 0;
+		this.touches = new ArrayList<Touch>();
 		this.totalReactionTime = 0;
 		this.reactionTimePostOffset = 0;
 	}
@@ -39,8 +40,7 @@ public class Stimulus implements Serializable{
 		this.imageFilePath = "";
 		this.imageFileId = imageid;
 		this.videoFilePath = "";
-		this.touchX = 0;
-		this.touchY = 0;
+		this.touches = new ArrayList<Touch>();
 		this.totalReactionTime = 0;
 		this.reactionTimePostOffset = 0;
 	}
@@ -51,21 +51,18 @@ public class Stimulus implements Serializable{
 		this.audioFilePath = audioFilePath;
 		this.imageFilePath = imageFilePath;
 		this.videoFilePath = videoFilePath;
-		this.touchX = 0;
-		this.touchY = 0;
+		this.touches = new ArrayList<Touch>();
 		this.totalReactionTime = 0;
 		this.reactionTimePostOffset = 0;
 	}
 	
 	public Stimulus(String audioFilePath, String imageFilePath,
-			String videoFilePath, float touchX, float touchY,
+			String videoFilePath, ArrayList<Touch> touches,
 			long totalReactionTime, long reactionTimePostOffset) {
 		super();
 		this.audioFilePath = audioFilePath;
 		this.imageFilePath = imageFilePath;
 		this.videoFilePath = videoFilePath;
-		this.touchX = touchX;
-		this.touchY = touchY;
 		this.totalReactionTime = totalReactionTime;
 		this.reactionTimePostOffset = reactionTimePostOffset;
 	}
@@ -105,17 +102,11 @@ public class Stimulus implements Serializable{
 	public void setLabel(String label) {
 		this.label = label;
 	}
-	public float getTouchX() {
-		return touchX;
+	public ArrayList<Touch> getTouches() {
+		return touches;
 	}
-	public void setTouchX(float touchX) {
-		this.touchX = touchX;
-	}
-	public float getTouchY() {
-		return touchY;
-	}
-	public void setTouchY(float touchY) {
-		this.touchY = touchY;
+	public void setTouches(ArrayList<Touch> touches) {
+		this.touches = touches;
 	}
 	public long getTotalReactionTime() {
 		return totalReactionTime;

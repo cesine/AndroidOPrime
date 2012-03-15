@@ -31,11 +31,12 @@ import android.graphics.drawable.Drawable;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.view.KeyEvent;
-import android.widget.Toast;
 
 import ca.ilanguage.oprime.R;
 import ca.ilanguage.oprime.content.OPrime;
+import android.widget.Toast;
 import ca.ilanguage.oprime.content.Stimulus;
+import ca.ilanguage.oprime.content.Touch;
 /**
  * Simple Activity for curl testing.
  * 
@@ -128,11 +129,28 @@ public class StoryBookSubExperiment extends Activity {
 	}
 
 	
+	@Override
+	protected void onDestroy() {
+		// TODO Auto-generated method stub
+		super.onDestroy();
+		 Intent intent = new Intent(OPrime.INTENT_FINISHED_SUB_EXPERIMENT);
+	     intent.putExtra(OPrime.EXTRA_STIMULI,mStimuli);
+	     setResult(1,intent);
+	     finish();
+	}
+
+
 	/**
 	 * Bitmap provider.
 	 */
 	private class BitmapProvider implements CurlView.BitmapProvider {
 
+
+		@Override
+		public void recordTouchPoint(Touch touch, int stimuli) {
+			mStimuli.get(stimuli).touches.add(touch);
+			Toast.makeText(getApplicationContext(), touch.x + ":" + touch.y, Toast.LENGTH_LONG).show();
+		}
 		@Override
 		public void playSound(){
 			MediaPlayer mediaPlayer = MediaPlayer.create(getApplicationContext(), R.raw.pageflip2);

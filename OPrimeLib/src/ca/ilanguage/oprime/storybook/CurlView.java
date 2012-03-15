@@ -16,6 +16,7 @@
 
 package ca.ilanguage.oprime.storybook;
 
+import ca.ilanguage.oprime.content.Touch;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.PointF;
@@ -221,6 +222,12 @@ public class CurlView extends GLSurfaceView implements View.OnTouchListener,
 			mPointerPos.mPressure = 0.8f;
 		}
 
+		Touch t = new Touch();
+		t.x = me.getX();
+	    t.y = me.getY();
+		mBitmapProvider.recordTouchPoint(t, mCurrentIndex);
+	
+
 		switch (me.getAction()) {
 		case MotionEvent.ACTION_DOWN: {
 
@@ -340,6 +347,9 @@ public class CurlView extends GLSurfaceView implements View.OnTouchListener,
 				mAnimate = true;
 				requestRender();
 			}
+			
+				
+			
 			break;
 		}
 		}
@@ -776,7 +786,7 @@ public class CurlView extends GLSurfaceView implements View.OnTouchListener,
 
 		setCurlPos(mCurlPos, mCurlDir, radius);
 	}
-
+	
 	/**
 	 * Provider for feeding 'book' with bitmaps which are used for rendering
 	 * pages.
@@ -793,7 +803,7 @@ public class CurlView extends GLSurfaceView implements View.OnTouchListener,
 		 */
 		public Bitmap getBitmap(int width, int height, int index);
 		public void playSound();
-		
+		public void recordTouchPoint(Touch touch, int stimuli);
 
 		/**
 		 * Return number of pages/bitmaps available.

@@ -9,6 +9,7 @@ public class OPrime {
 	
 	public static final String INTENT_STOP_VIDEO_RECORDING = "ca.ilanguage.oprime.intent.action.BROADCAST_STOP_VIDEO_SERVICE";
 	public static final String INTENT_START_VIDEO_RECORDING = "ca.ilanguage.oprime.intent.action.START_VIDEO_SERVICE";
+	public static final String INTENT_FINISHED_SUB_EXPERIMENT = "ca.ilanguage.oprime.intent.action.FINISHED_SUB_EXPERIMENT";
 	
 	
 	public static final String EXTRA_LANGUAGE ="language";
