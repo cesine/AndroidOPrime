@@ -135,7 +135,7 @@ public class StoryBookSubExperiment extends Activity {
 		super.onDestroy();
 		 Intent intent = new Intent(OPrime.INTENT_FINISHED_SUB_EXPERIMENT);
 	     intent.putExtra(OPrime.EXTRA_STIMULI,mStimuli);
-	     setResult(1,intent);
+	     setResult(OPrime.EXPERIMENT_COMPLETED,intent);
 	     finish();
 	}
 

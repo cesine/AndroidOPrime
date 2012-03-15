@@ -122,7 +122,7 @@ public class Stimulus implements Serializable{
 	}
 	@Override
 	public String toString() {
-		// TODO Auto-generated method stub
+		String s = label+touches.get(touches.size()).toString();
 		return super.toString();
 	}
 	

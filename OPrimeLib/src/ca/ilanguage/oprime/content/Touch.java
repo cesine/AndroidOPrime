@@ -1,6 +1,9 @@
 package ca.ilanguage.oprime.content;
 
-public class Touch {
+import java.io.Serializable;
+
+public class Touch implements Serializable{
+	private static final long serialVersionUID = -6910004898670050860L;
 	public float x;
 	public float y;
 	public long time;
@@ -16,5 +19,8 @@ public class Touch {
 		this.x = 0;
 		this.y = 0;
 		this.time = System.currentTimeMillis();
+	}
+	public String toString(){
+		return x+":"+y;
 	}
 }

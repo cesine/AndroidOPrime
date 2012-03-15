@@ -4,8 +4,8 @@ public class OPrime {
 	public static final int NOTSPECIFIED = 0;
 	public static final String EMPTYSTRING = "";
 	
-	public static final String ENGLISH = "en";
-	public static final String FRENCH = "fr";
+	public static final int EXPERIMENT_COMPLETED = 9;
+	
 	
 	public static final String INTENT_STOP_VIDEO_RECORDING = "ca.ilanguage.oprime.intent.action.BROADCAST_STOP_VIDEO_SERVICE";
 	public static final String INTENT_START_VIDEO_RECORDING = "ca.ilanguage.oprime.intent.action.START_VIDEO_SERVICE";
