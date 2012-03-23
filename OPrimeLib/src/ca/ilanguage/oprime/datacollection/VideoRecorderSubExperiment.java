@@ -106,10 +106,10 @@ public class VideoRecorderSubExperiment extends Activity implements
 		setContentView(R.layout.video_recorder);
 		PackageManager pm = getPackageManager();
 		if(pm.hasSystemFeature(PackageManager.FEATURE_CAMERA)){
-			Toast.makeText(
-					 getApplicationContext(),
-					 "This Android has no camera" ,
-					 Toast.LENGTH_LONG).show();
+//			Toast.makeText(
+//					 getApplicationContext(),
+//					 "This Android has no camera" ,
+//					 Toast.LENGTH_LONG).show();
 					finish();
 		}else{
 			Toast.makeText(

@@ -156,7 +156,7 @@ public class StoryBookSubExperiment extends Activity {
 		@Override
 		public void recordTouchPoint(Touch touch, int stimuli) {
 			mStimuli.get(stimuli).touches.add(touch);
-			Toast.makeText(getApplicationContext(), touch.x + ":" + touch.y, Toast.LENGTH_LONG).show();
+			//Toast.makeText(getApplicationContext(), touch.x + ":" + touch.y, Toast.LENGTH_LONG).show();
 		}
 		@Override
 		public void playSound(){

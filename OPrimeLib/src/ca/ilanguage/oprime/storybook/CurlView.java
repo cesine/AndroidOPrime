@@ -263,7 +263,7 @@ public class CurlView extends GLSurfaceView implements View.OnTouchListener,
 				// page we'll mark drag position to left edge of left page.
 				// Additionally checking mCurrentIndex is higher than zero tells
 				// us there is a visible page at all.
-				if (mDragStartPos.x < rightRect.left && mCurrentIndex > 0) {
+				if (mDragStartPos.x < rightRect.left && mCurrentIndex > 1) {
 					mDragStartPos.x = leftRect.left;
 					startCurl(CURL_LEFT);
 				}
