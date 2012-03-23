@@ -269,11 +269,11 @@ public class CurlView extends GLSurfaceView implements View.OnTouchListener,
 				}
 				// Otherwise check pointer is on right page's side.
 				else if (mDragStartPos.x >= rightRect.left
-						&& mCurrentIndex < mBitmapProvider.getBitmapCount()) {
+						&& mCurrentIndex < mBitmapProvider.getBitmapCount() -2) {
 					mDragStartPos.x = rightRect.right;
 					if (!mAllowLastPageCurl
 							&& mCurrentIndex >= mBitmapProvider
-									.getBitmapCount() - 1) {
+									.getBitmapCount() ) {
 						return false;
 					}
 					startCurl(CURL_RIGHT);
@@ -288,7 +288,7 @@ public class CurlView extends GLSurfaceView implements View.OnTouchListener,
 					mDragStartPos.x = rightRect.right;
 					if (!mAllowLastPageCurl
 							&& mCurrentIndex >= mBitmapProvider
-									.getBitmapCount() - 1) {
+									.getBitmapCount() ) {
 						return false;
 					}
 					startCurl(CURL_RIGHT);
@@ -482,7 +482,7 @@ public class CurlView extends GLSurfaceView implements View.OnTouchListener,
 		if (mCurlState == CURL_RIGHT
 				|| (mCurlState == CURL_LEFT && mViewMode == SHOW_ONE_PAGE)) {
 			
-			if( mCurrentIndex + 1 <= mBitmapProvider.getBitmapCount() -1 ){
+			if( mCurrentIndex + 1 <= mBitmapProvider.getBitmapCount() -2 ){
 				Bitmap bitmap = mBitmapProvider.getBitmap(mPageBitmapWidth,
 						mPageBitmapHeight, mCurrentIndex + 1);
 				mPageCurl.setBitmap(bitmap);
@@ -583,7 +583,7 @@ public class CurlView extends GLSurfaceView implements View.OnTouchListener,
 			}
 
 			// If there is new/next available, set it to right page.
-			if (mCurrentIndex < mBitmapProvider.getBitmapCount() - 1) {
+			if (mCurrentIndex < mBitmapProvider.getBitmapCount() - 2) {
 				Bitmap bitmap = mBitmapProvider.getBitmap(mPageBitmapWidth, mPageBitmapHeight, mCurrentIndex + 2);
 				mPageRight.setBitmap(bitmap);
 				mPageRight.setRect(mRenderer.getPageRect(CurlRenderer.PAGE_RIGHT));
@@ -629,7 +629,7 @@ public class CurlView extends GLSurfaceView implements View.OnTouchListener,
 			}
 
 			// If there is something to show on right page add it to renderer.
-			if (mCurrentIndex < mBitmapProvider.getBitmapCount()) {
+			if (mCurrentIndex < mBitmapProvider.getBitmapCount() - 2) {
 				mPageRight.setRect(mRenderer.getPageRect(CurlRenderer.PAGE_RIGHT));
 				mPageRight.reset();
 				mRenderer.addCurlMesh(mPageRight);
@@ -679,7 +679,7 @@ public class CurlView extends GLSurfaceView implements View.OnTouchListener,
 			rightIdx++;
 		}
 
-		if (rightIdx >= 0 && rightIdx < mBitmapProvider.getBitmapCount()) {
+		if (rightIdx >= 0 && rightIdx < mBitmapProvider.getBitmapCount() -1) {
 			Bitmap bitmap = mBitmapProvider.getBitmap(mPageBitmapWidth,
 					mPageBitmapHeight, rightIdx);
 			mPageRight.setBitmap(bitmap);
@@ -687,7 +687,7 @@ public class CurlView extends GLSurfaceView implements View.OnTouchListener,
 			mPageRight.reset();
 			mRenderer.addCurlMesh(mPageRight);
 		}
-		if (leftIdx >= 0 && leftIdx < mBitmapProvider.getBitmapCount()) {
+		if (leftIdx >= 0 && leftIdx < mBitmapProvider.getBitmapCount() -1) {
 			Bitmap bitmap = mBitmapProvider.getBitmap(mPageBitmapWidth,
 					mPageBitmapHeight, leftIdx);
 			mPageLeft.setBitmap(bitmap);
@@ -697,7 +697,7 @@ public class CurlView extends GLSurfaceView implements View.OnTouchListener,
 				mRenderer.addCurlMesh(mPageLeft);
 			}
 		}
-		if (curlIdx >= 0 && curlIdx < mBitmapProvider.getBitmapCount()) {
+		if (curlIdx >= 0 && curlIdx < mBitmapProvider.getBitmapCount() -1) {
 			Bitmap bitmap = mBitmapProvider.getBitmap(mPageBitmapWidth,
 					mPageBitmapHeight, curlIdx);
 			mPageCurl.setBitmap(bitmap);
