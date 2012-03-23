@@ -1,12 +1,15 @@
 package ca.ilanguage.oprime.content;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class SubExperimentBlock {
+public class SubExperimentBlock implements Serializable{
+	private static final long serialVersionUID = -3637915995040502723L;
 	String title;
 	int language;
 	String description;
 	ArrayList<Stimulus> stimuli;
+	String resultsFileWithoutSuffix;
 	
 	
 	public SubExperimentBlock() {
@@ -32,12 +35,12 @@ public class SubExperimentBlock {
 	
 	
 	public SubExperimentBlock(String title, int language,
-			String description, ArrayList<Stimulus> stimuli) {
+			String description, ArrayList<Stimulus> stimuli, String resultsFile) {
 		super();
 		this.title = title;
 		this.language = language;
 		this.description = description;
-		
+		this.resultsFileWithoutSuffix = resultsFile;
 		this.stimuli = stimuli;
 	}
 
@@ -79,6 +82,16 @@ public class SubExperimentBlock {
 
 	public void setStimuli(ArrayList<Stimulus> stimuli) {
 		this.stimuli = stimuli;
+	}
+
+
+	public String getResultsFileWithoutSuffix() {
+		return resultsFileWithoutSuffix;
+	}
+
+
+	public void setResultsFileWithoutSuffix(String resultsFileWithoutSuffix) {
+		this.resultsFileWithoutSuffix = resultsFileWithoutSuffix;
 	}
 	
 	

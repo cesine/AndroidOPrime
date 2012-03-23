@@ -133,12 +133,19 @@ public class StoryBookSubExperiment extends Activity {
 	protected void onDestroy() {
 		// TODO Auto-generated method stub
 		super.onDestroy();
-		 Intent intent = new Intent(OPrime.INTENT_FINISHED_SUB_EXPERIMENT);
-	     intent.putExtra(OPrime.EXTRA_STIMULI,mStimuli);
-	     setResult(OPrime.EXPERIMENT_COMPLETED,intent);
-	     finish();
+		 
 	}
+	@Override
+	  public boolean onKeyDown(int keyCode, KeyEvent event) {
+	    if ((keyCode == KeyEvent.KEYCODE_BACK)) {
+	    	Intent intent = new Intent(OPrime.INTENT_FINISHED_SUB_EXPERIMENT);
+		     intent.putExtra(OPrime.EXTRA_STIMULI,mStimuli);
+		     setResult(OPrime.EXPERIMENT_COMPLETED,intent);
+		     finish();
+	    }
+	    return super.onKeyDown(keyCode, event);
 
+	 }
 
 	/**
 	 * Bitmap provider.

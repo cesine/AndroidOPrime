@@ -10,10 +10,12 @@ public class OPrime {
 	public static final String INTENT_STOP_VIDEO_RECORDING = "ca.ilanguage.oprime.intent.action.BROADCAST_STOP_VIDEO_SERVICE";
 	public static final String INTENT_START_VIDEO_RECORDING = "ca.ilanguage.oprime.intent.action.START_VIDEO_SERVICE";
 	public static final String INTENT_FINISHED_SUB_EXPERIMENT = "ca.ilanguage.oprime.intent.action.FINISHED_SUB_EXPERIMENT";
+	public static final String INTENT_SAVE_SUB_EXPERIMENT_JSON = "ca.ilanguage.oprime.intent.action.SAVE_SUB_EXPERIMENT_JSON";
 	
 	
 	public static final String EXTRA_LANGUAGE ="language";
 	public static final String EXTRA_PARTICIPANT_ID ="participant";
+	public static final String EXTRA_SUB_EXPERIMENT = "subexperiment";
 	public static final String EXTRA_SUB_EXPERIMENT_TITLE = "subexperimenttitle";
 	public static final String EXTRA_EXPERIMENT_TRIAL_INFORMATION = "experimenttrialinfo";
 	public static final String EXTRA_RESULT_FILENAME = "resultfilename";
