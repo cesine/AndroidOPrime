@@ -59,6 +59,7 @@ public class StoryBookSubExperiment extends Activity {
 		ArrayList<Stimulus> ids = new ArrayList<Stimulus>();
 		ids.add(new Stimulus(R.drawable.androids_experimenter_kids));
 		mStimuli = (ArrayList<Stimulus>) getIntent().getExtras().getSerializable(OPrime.EXTRA_STIMULI_IMAGE_ID); 
+		mShowTwoPageBook =getIntent().getExtras().getBoolean(OPrime.EXTRA_TWO_PAGE_STORYBOOK, false);
 		if(mStimuli == null){
 			mStimuli = ids;
 		}
@@ -82,9 +83,14 @@ public class StoryBookSubExperiment extends Activity {
 		/*
 		 * Set 1 or 2 page view mode
 		 */
-		mShowTwoPageBook = true;
-		mCurlView.setViewMode(CurlView.SHOW_TWO_PAGES);
-		mCurlView.setRenderLeftPage(true);
+		if(mShowTwoPageBook){
+			mCurlView.setViewMode(CurlView.SHOW_TWO_PAGES);
+			mCurlView.setRenderLeftPage(true);
+		}else{
+			mCurlView.setViewMode(CurlView.SHOW_ONE_PAGE);
+			mCurlView.setRenderLeftPage(false);
+			
+		}
 		
 		// This is something somewhat experimental. Before uncommenting next
 		// line, please see method comments in CurlView.
