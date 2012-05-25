@@ -24,6 +24,7 @@ import android.graphics.RectF;
 import android.opengl.GLSurfaceView;
 import android.os.Handler;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 
@@ -35,10 +36,12 @@ import android.view.View;
 public class CurlView extends GLSurfaceView implements View.OnTouchListener,
 		CurlRenderer.Observer {
 
+	public static final String TAG = "CurlView";
 	// Shows one page at the center of view.
 	public static final int SHOW_ONE_PAGE = 1;
 	// Shows two pages side by side.
 	public static final int SHOW_TWO_PAGES = 2;
+	public int numberOfPages =1;
 	// One page is the default.
 	private int mViewMode = SHOW_ONE_PAGE;
 
@@ -140,7 +143,8 @@ public class CurlView extends GLSurfaceView implements View.OnTouchListener,
 				mPageRight = right;
 				// If we were curling left page update current index.
 				if (mCurlState == CURL_LEFT) {
-					mCurrentIndex = mCurrentIndex - 2;
+					mCurrentIndex = mCurrentIndex - numberOfPages;
+					Log.d(TAG, "Subtracting " +numberOfPages);
 				}
 			} else if (mAnimationTargetEvent == SET_CURL_TO_LEFT) {
 				// Switch curled page to left.
@@ -157,7 +161,8 @@ public class CurlView extends GLSurfaceView implements View.OnTouchListener,
 				mPageLeft = left;
 				// If we were curling right page update current index.
 				if (mCurlState == CURL_RIGHT) {
-					mCurrentIndex = mCurrentIndex + 2;
+					mCurrentIndex = mCurrentIndex + numberOfPages;
+					Log.d(TAG, "Adding "+numberOfPages);
 				}
 			}
 			mCurlState = CURL_NONE;
@@ -445,10 +450,12 @@ public class CurlView extends GLSurfaceView implements View.OnTouchListener,
 		case SHOW_ONE_PAGE:
 			mViewMode = viewMode;
 			mRenderer.setViewMode(CurlRenderer.SHOW_ONE_PAGE);
+			numberOfPages = 1;
 			break;
 		case SHOW_TWO_PAGES:
 			mViewMode = viewMode;
 			mRenderer.setViewMode(CurlRenderer.SHOW_TWO_PAGES);
+			numberOfPages = 2;
 			break;
 		}
 	}
@@ -509,7 +516,7 @@ public class CurlView extends GLSurfaceView implements View.OnTouchListener,
 				}
 			}
 		} else if (mCurlState == CURL_LEFT) {
-			
+			Log.d(TAG, "Curling left need to decide if its one or two pages to turn");
 			if( mCurrentIndex -2  >= 0 ){
 				Bitmap bitmap = mBitmapProvider.getBitmap(mPageBitmapWidth,
 					mPageBitmapHeight, mCurrentIndex -2 );

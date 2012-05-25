@@ -262,7 +262,7 @@ public class VideoRecorderSubExperiment extends Activity implements
 		try {
 			if (mUseFrontFacingCamera) {
 				// hard coded assuming 1 is the front facing camera
-				mCamera = Camera.open(1);
+				mCamera = Camera.open();//SDK 8 cant open different cameras
 			} else {
 				mCamera = Camera.open();
 			}
@@ -339,7 +339,7 @@ public class VideoRecorderSubExperiment extends Activity implements
 			// (Okay quality for human voice)
 			if (sdk >= 10) {
 				mVideoRecorder
-						.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_WB);
+						.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);//TODO SDK 8 cant record wide band audio
 				mVideoRecorder.setAudioSamplingRate(16000);
 			} else {
 				// Other devices only have narrow band, ie 8,000 hz
