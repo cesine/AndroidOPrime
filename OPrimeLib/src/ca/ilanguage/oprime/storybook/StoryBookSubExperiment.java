@@ -76,7 +76,11 @@ public class StoryBookSubExperiment extends Activity {
 		mCurlView = (CurlView) findViewById(R.id.curl);
 		mCurlView.setBitmapProvider(new BitmapProvider());
 		mCurlView.setSizeChangedObserver(new SizeChangedObserver());
-		mCurlView.setCurrentIndex(index+1);
+		if(mShowTwoPageBook){
+			mCurlView.setCurrentIndex(index+1);
+		}else{
+			mCurlView.setCurrentIndex(index);
+		}
 		mCurlView.setBackgroundColor(0xFF202830);
 		mCurlView.setMargins(.0f, .0f, .0f, .0f);
 	
