@@ -489,7 +489,7 @@ public class CurlView extends GLSurfaceView implements View.OnTouchListener,
 		if (mCurlState == CURL_RIGHT
 				|| (mCurlState == CURL_LEFT && mViewMode == SHOW_ONE_PAGE)) {
 			
-			if( mCurrentIndex + 1 <= mBitmapProvider.getBitmapCount() - numberOfPages ){
+			if( mCurrentIndex + 1 <= mBitmapProvider.getBitmapCount() - numberOfPages ){//TODO fix for 1 page here
 				Bitmap bitmap = mBitmapProvider.getBitmap(mPageBitmapWidth,
 						mPageBitmapHeight, mCurrentIndex + 1);
 				mPageCurl.setBitmap(bitmap);
@@ -517,7 +517,7 @@ public class CurlView extends GLSurfaceView implements View.OnTouchListener,
 			}
 		} else if (mCurlState == CURL_LEFT) {
 			Log.d(TAG, "Curling left need to decide if its one or two pages to turn");
-			if( mCurrentIndex - numberOfPages >= 0 ){
+			if( mCurrentIndex - numberOfPages >= 0 ){//TODO fix for 1 page here
 				Bitmap bitmap = mBitmapProvider.getBitmap(mPageBitmapWidth,
 					mPageBitmapHeight, mCurrentIndex -  numberOfPages );
 				mPageCurl.setBitmap(bitmap);
