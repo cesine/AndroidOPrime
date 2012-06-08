@@ -186,7 +186,7 @@ public class VideoRecorderSubExperiment extends Activity implements
 					 Toast.LENGTH_LONG).show();
 		}
 		if (mCamera != null) {
-			mCamera.reconnect();
+//			mCamera.reconnect();
 			mCamera.stopPreview();
 			mCamera.release();
 			mCamera = null;
@@ -252,7 +252,7 @@ public class VideoRecorderSubExperiment extends Activity implements
 			mVideoRecorder = null;
 		}
 		if (mCamera != null) {
-			mCamera.reconnect();
+//			mCamera.reconnect();
 			mCamera.stopPreview();
 			mCamera.release();
 			mCamera = null;
@@ -307,7 +307,7 @@ public class VideoRecorderSubExperiment extends Activity implements
 													// YouTube HD: 1280x720
 			mVideoRecorder.setVideoFrameRate(20); // might be auto-determined
 													// due to lighting
-			 mVideoRecorder.setVideoEncodingBitRate(mVideoQuality);// 3000000=3 megapixel,
+//			 mVideoRecorder.setVideoEncodingBitRate(mVideoQuality);// 3000000=3 megapixel,
 			// or the max of
 			// the camera
 			mVideoRecorder.setVideoEncoder(MediaRecorder.VideoEncoder.H264);// MPEG_4_SP
@@ -340,7 +340,7 @@ public class VideoRecorderSubExperiment extends Activity implements
 			if (sdk >= 10) {
 				mVideoRecorder
 						.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);//TODO SDK 8 cant record wide band audio
-				mVideoRecorder.setAudioSamplingRate(16000);
+//				mVideoRecorder.setAudioSamplingRate(16000);
 			} else {
 				// Other devices only have narrow band, ie 8,000 hz
 				// (Same quality as a phone call, not really good quality for
