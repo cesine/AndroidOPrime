@@ -13,6 +13,7 @@ public class OPrime {
 	public static final String INTENT_SAVE_SUB_EXPERIMENT_JSON = "ca.ilanguage.oprime.intent.action.SAVE_SUB_EXPERIMENT_JSON";
 	
 	public static final String INTENT_START_SUB_EXPERIMENT = "ca.ilanguage.oprime.intent.action.START_SUB_EXPERIMENT";
+	public static final String INTENT_START_TWO_IMAGE_SUB_EXPERIMENT = "ca.ilanguage.oprime.intent.action.START_TWO_IMAGE_SUB_EXPERIMENT";
 	public static final String INTENT_START_STORY_BOOK_SUB_EXPERIMENT = "ca.ilanguage.oprime.intent.action.START_STORY_BOOK_SUB_EXPERIMENT";
 	
 	public static final String EXTRA_LANGUAGE ="language";

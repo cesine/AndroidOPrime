@@ -22,13 +22,10 @@ import android.widget.Toast;
 
 public class SubExperiment extends Activity {
 
-	private Boolean mShowTwoPageBook = false;
-	private int mBorderSize = 0;
-	private ArrayList<Stimulus> mStimuli;
-	private Locale language;
-	private int mStimuliIndex = -1;
-	private int mNumberOfPages = 1;
-	private long mLastTouchTime = 0;
+	protected ArrayList<? extends Stimulus> mStimuli;
+	protected Locale language;
+	protected int mStimuliIndex = -1;
+	protected long mLastTouchTime = 0;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -36,13 +33,13 @@ public class SubExperiment extends Activity {
 		/*
 		 * Prepare Stimuli
 		 */
-		ArrayList<Stimulus> ids = new ArrayList<Stimulus>();
-		ids.add(new Stimulus(R.drawable.androids_experimenter_kids));
-		mStimuli = (ArrayList<Stimulus>) getIntent().getExtras()
+		
+		mStimuli = (ArrayList<? extends Stimulus>) getIntent().getExtras()
 				.getSerializable(OPrime.EXTRA_STIMULI_IMAGE_ID);
-		mShowTwoPageBook = getIntent().getExtras().getBoolean(
-				OPrime.EXTRA_TWO_PAGE_STORYBOOK, false);
-		if (mStimuli == null) {
+
+		if (mStimuli == null || mStimuli.size() == 0) {
+			ArrayList<Stimulus> ids = new ArrayList<Stimulus>();
+			ids.add(new Stimulus(R.drawable.androids_experimenter_kids));
 			mStimuli = ids;
 		}
 		/*
@@ -51,13 +48,7 @@ public class SubExperiment extends Activity {
 		String lang = getIntent().getExtras().getString(OPrime.EXTRA_LANGUAGE);
 		forceLocale(lang);
 
-		if (mShowTwoPageBook) {
-			setContentView(R.layout.two_images);
-			mNumberOfPages = 2;
-		} else {
-			setContentView(R.layout.one_image);
-			mNumberOfPages = 1;
-		}
+		setContentView(R.layout.one_image);
 
 		nextStimuli();
 
@@ -67,32 +58,18 @@ public class SubExperiment extends Activity {
 		if (mStimuliIndex < 0) {
 			mStimuliIndex = 0;
 		} else {
-			mStimuliIndex += mNumberOfPages;
+			mStimuliIndex += 1;
 		}
-		// 11+2 > 12, 11+1 > 12
-		if (mStimuliIndex + mNumberOfPages > mStimuli.size()) {
+		if (mStimuliIndex >= mStimuli.size()) {
 			finishSubExperiment();
 			return;
 		}
 
-		/*
-		 * Set 1 or 2 page view mode
-		 */
-		if (mShowTwoPageBook) {
-			ImageView left = (ImageView) findViewById(R.id.leftimage);
-			Drawable d = getResources().getDrawable(
-					mStimuli.get(mStimuliIndex).getImageFileId());
-			left.setImageDrawable(d);
-			ImageView right = (ImageView) findViewById(R.id.rightimage);
-			d = getResources().getDrawable(
-					mStimuli.get(mStimuliIndex + 1).getImageFileId());
-			right.setImageDrawable(d);
-		} else {
-			ImageView image = (ImageView) findViewById(R.id.onlyimage);
-			Drawable d = getResources().getDrawable(
-					mStimuli.get(mStimuliIndex).getImageFileId());
-			image.setImageDrawable(d);
-		}
+		ImageView image = (ImageView) findViewById(R.id.onlyimage);
+		Drawable d = getResources().getDrawable(
+				mStimuli.get(mStimuliIndex).getImageFileId());
+		image.setImageDrawable(d);
+
 		playAudioStimuli();
 	}
 
@@ -101,31 +78,18 @@ public class SubExperiment extends Activity {
 	}
 
 	public void previousStimuli() {
-		mStimuliIndex -= mNumberOfPages;
+		mStimuliIndex -= 1;
 
 		if (mStimuliIndex < 0) {
-			finishSubExperiment();
 			return;
 		}
 
-		/*
-		 * Set 1 or 2 page view mode
-		 */
-		if (mShowTwoPageBook) {
-			ImageView left = (ImageView) findViewById(R.id.leftimage);
-			Drawable d = getResources().getDrawable(
-					mStimuli.get(mStimuliIndex).getImageFileId());
-			left.setImageDrawable(d);
-			ImageView right = (ImageView) findViewById(R.id.rightimage);
-			d = getResources().getDrawable(
-					mStimuli.get(mStimuliIndex + 1).getImageFileId());
-			right.setImageDrawable(d);
-		} else {
-			ImageView image = (ImageView) findViewById(R.id.onlyimage);
-			Drawable d = getResources().getDrawable(
-					mStimuli.get(mStimuliIndex).getImageFileId());
-			image.setImageDrawable(d);
-		}
+		ImageView image = (ImageView) findViewById(R.id.onlyimage);
+		Drawable d = getResources().getDrawable(
+				mStimuli.get(mStimuliIndex).getImageFileId());
+		image.setImageDrawable(d);
+		
+		playAudioStimuli();
 
 	}
 

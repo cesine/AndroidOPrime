@@ -8,18 +8,18 @@ import ca.ilanguage.oprime.R;
 public class Stimulus implements Serializable{
 	
 	private static final long serialVersionUID = -4023355491498842498L;
-	String audioFilePath = "";
-	int audioFileId;
-	String imageFilePath = "";
-	int imageFileId;
-	String videoFilePath = "";
+	protected String audioFilePath = "";
+	protected int audioFileId;
+	protected String imageFilePath = "";
+	protected int imageFileId;
+	protected String videoFilePath = "";
 	
-	String label = ""; 
+	protected String label = ""; 
 	
 	public ArrayList<Touch> touches = new ArrayList<Touch>();
 	
-	long totalReactionTime;
-	long reactionTimePostOffset;
+	protected long totalReactionTime;
+	protected long reactionTimePostOffset;
 	
 	
 	public Stimulus() {

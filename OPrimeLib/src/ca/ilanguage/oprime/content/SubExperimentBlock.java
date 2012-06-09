@@ -8,7 +8,7 @@ public class SubExperimentBlock implements Serializable{
 	String title;
 	int language;
 	String description;
-	ArrayList<Stimulus> stimuli;
+	ArrayList<? extends Stimulus> stimuli;
 	String resultsFileWithoutSuffix;
 	
 	
@@ -19,7 +19,7 @@ public class SubExperimentBlock implements Serializable{
 		this.description = OPrime.EMPTYSTRING;
 		
 		this.stimuli = new ArrayList<Stimulus>();
-		this.stimuli.add(new Stimulus());
+		
 	}
 	
 	
@@ -30,7 +30,7 @@ public class SubExperimentBlock implements Serializable{
 		this.description = OPrime.EMPTYSTRING;
 		
 		this.stimuli = new ArrayList<Stimulus>();
-		this.stimuli.add(new Stimulus());
+		
 	}
 	
 	
@@ -75,12 +75,12 @@ public class SubExperimentBlock implements Serializable{
 	}
 
 
-	public ArrayList<Stimulus> getStimuli() {
+	public ArrayList<? extends Stimulus> getStimuli() {
 		return stimuli;
 	}
 
 
-	public void setStimuli(ArrayList<Stimulus> stimuli) {
+	public void setStimuli(ArrayList<? extends Stimulus> stimuli) {
 		this.stimuli = stimuli;
 	}
 
