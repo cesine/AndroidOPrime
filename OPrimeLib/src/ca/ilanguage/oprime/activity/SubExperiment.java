@@ -15,8 +15,10 @@ import android.graphics.drawable.Drawable;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.view.KeyEvent;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 public class SubExperiment extends Activity {
 
@@ -26,6 +28,7 @@ public class SubExperiment extends Activity {
 	private Locale language;
 	private int mStimuliIndex = -1;
 	private int mNumberOfPages = 1;
+	private long mLastTouchTime = 0;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -90,7 +93,7 @@ public class SubExperiment extends Activity {
 					mStimuli.get(mStimuliIndex).getImageFileId());
 			image.setImageDrawable(d);
 		}
-
+		playAudioStimuli();
 	}
 
 	public void onNextClick(View v) {
@@ -104,7 +107,7 @@ public class SubExperiment extends Activity {
 			finishSubExperiment();
 			return;
 		}
-		
+
 		/*
 		 * Set 1 or 2 page view mode
 		 */
@@ -170,9 +173,48 @@ public class SubExperiment extends Activity {
 
 	}
 
+	public boolean onTouchEvent(MotionEvent me) {
+		long timeBetweenTouches = System.currentTimeMillis() - mLastTouchTime;
+		if (timeBetweenTouches < 300) {
+			return super.onTouchEvent(me);
+		}
+		Touch t = new Touch();
+		t.x = me.getX();
+		t.y = me.getY();
+		t.time = System.currentTimeMillis();
+		recordTouchPoint(t, mStimuliIndex);
+		playSound();
+		mLastTouchTime = t.time;
+		return super.onTouchEvent(me);
+	}
+
+	public void recordTouchPoint(Touch touch, int stimuli) {
+		mStimuli.get(stimuli).touches.add(touch);
+		Toast.makeText(getApplicationContext(), touch.x + ":" + touch.y,
+				Toast.LENGTH_LONG).show();
+	}
+
+	public void playAudioStimuli() {
+		MediaPlayer mediaPlayer = MediaPlayer.create(getApplicationContext(),
+				mStimuli.get(mStimuliIndex).getAudioFileId());
+		try {
+			mediaPlayer.prepare();
+		} catch (IllegalStateException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		mediaPlayer.start();
+
+	}
+
 	public void playSound() {
 		MediaPlayer mediaPlayer = MediaPlayer.create(getApplicationContext(),
 				R.raw.chime);
+		// MediaPlayer mediaPlayer =
+		// MediaPlayer.create(getApplicationContext(),mStimuli.get(mStimuliIndex).getAudioFileId());
 		try {
 			mediaPlayer.prepare();
 		} catch (IllegalStateException e) {
