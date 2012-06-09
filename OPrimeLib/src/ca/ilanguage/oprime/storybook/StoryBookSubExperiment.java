@@ -37,11 +37,7 @@ import ca.ilanguage.oprime.content.OPrime;
 import android.widget.Toast;
 import ca.ilanguage.oprime.content.Stimulus;
 import ca.ilanguage.oprime.content.Touch;
-/**
- * Simple Activity for curl testing.
- * 
- * @author harism
- */
+
 public class StoryBookSubExperiment extends Activity {
 
 	private Boolean mShowTwoPageBook = false;
