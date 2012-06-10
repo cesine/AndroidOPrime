@@ -50,29 +50,29 @@ import android.widget.VideoView;
  * 
  * To call it, the following Extras are available:
  * 
- * Intent intent;
-			intent = new Intent(
-					"ca.ilanguage.oprime.intent.action.START_VIDEO_RECORDER");
-
-			intent.putExtra(OPrime.EXTRA_USE_FRONT_FACING_CAMERA, true);
-			intent.putExtra(OPrime.EXTRA_VIDEO_QUALITY, OPrime.DEFAULT_DEBUGGING_QUALITY); // will record low quality videos to save space and runtime memory
-			
-			startActivityForResult(intent, OPrime.EXPERIMENT_COMPLETED);
+ * Intent intent; intent = new Intent(
+ * "ca.ilanguage.oprime.intent.action.START_VIDEO_RECORDER");
+ * 
+ * intent.putExtra(OPrime.EXTRA_USE_FRONT_FACING_CAMERA, true);
+ * intent.putExtra(OPrime.EXTRA_VIDEO_QUALITY,
+ * OPrime.DEFAULT_DEBUGGING_QUALITY); // will record low quality videos to save
+ * space and runtime memory
+ * 
+ * startActivityForResult(intent, OPrime.EXPERIMENT_COMPLETED);
  */
-public class VideoRecorder extends Activity implements
-		SurfaceHolder.Callback {
-	
+public class VideoRecorder extends Activity implements SurfaceHolder.Callback {
+
 	public static final String EXTRA_VIDEO_QUALITY = "videoQuality";
 	public static final String EXTRA_USE_FRONT_FACING_CAMERA = "usefrontcamera";
-	public static final int DEFAULT_DEBUGGING_QUALITY = 500000; //.5 megapixel
+	public static final int DEFAULT_DEBUGGING_QUALITY = 500000; // .5 megapixel
 	public static final int DEFAULT_HIGH_QUALITY = 3000000;// 3 megapixel,
-	
+
 	/*
 	 * Recording variables
 	 */
-	private static final String TAG = "VideoRecorderSubExperiment";
-	private Boolean mRecordAudioInstead = false;
+	private static final String TAG = "VideoRecorder";
 	private Boolean mRecording = false;
+	private Boolean mRecordingAudioInstead =false;
 	private Boolean mUseFrontFacingCamera = false;
 	private VideoView mVideoView = null;
 	private MediaRecorder mVideoRecorder = null;
@@ -83,21 +83,30 @@ public class VideoRecorder extends Activity implements
 	String mAudioResultsFile = "";
 	private VideoStatusReceiver videoStatusReceiver;
 
-	
 	@Override
 	protected void onResume() {
 		// TODO Auto-generated method stub
 		super.onResume();
-		
-		if (videoStatusReceiver == null){
-		      videoStatusReceiver = new VideoStatusReceiver();
-		    }
-			IntentFilter intentStopped = new IntentFilter(OPrime.INTENT_STOP_VIDEO_RECORDING);
-		    registerReceiver(videoStatusReceiver, intentStopped);
+
+		if (videoStatusReceiver == null) {
+			videoStatusReceiver = new VideoStatusReceiver();
+		}
+		IntentFilter intentStopped = new IntentFilter(
+				OPrime.INTENT_STOP_VIDEO_RECORDING);
+		registerReceiver(videoStatusReceiver, intentStopped);
 	}
 
-		
-	
+	public void beginRecordingAudio() {
+		if (mRecordingAudioInstead){
+			return;
+		}
+		Intent intent;
+		intent = new Intent(OPrime.INTENT_START_AUDIO_RECORDING);
+		intent.putExtra(OPrime.EXTRA_RESULT_FILENAME, getIntent().getExtras()
+				.getString(OPrime.EXTRA_RESULT_FILENAME).replace(".3gp",".mp3"));
+		startService(intent);
+	}
+
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -109,51 +118,55 @@ public class VideoRecorder extends Activity implements
 		String deviceModel = android.os.Build.MODEL;
 		if (sdk <= 8) {
 			Toast.makeText(
-					 getApplicationContext(),
-					 "This Android doesn't have enough camera features, we will record audio instead." +
-							 "The device model is : " + deviceModel,
-					 Toast.LENGTH_LONG).show();
+					getApplicationContext(),
+					"This Android doesn't have enough camera features, we will record audio instead."
+							+ "The device model is : " + deviceModel,
+					Toast.LENGTH_LONG).show();
+			beginRecordingAudio();
 			finish();
-		}
-		else if (sdk >= 9 && Camera.getNumberOfCameras() <=1){
+		} else if (sdk >= 9 && Camera.getNumberOfCameras() <= 1) {
 			Toast.makeText(
-					 getApplicationContext(),
-					 "This Android doesn't have a front facing camera, we will record audio instead." +
-							 "The device model is : " + deviceModel,
-					 Toast.LENGTH_LONG).show();
+					getApplicationContext(),
+					"This Android doesn't have a front facing camera, we will record audio instead."
+							+ "The device model is : " + deviceModel,
+					Toast.LENGTH_LONG).show();
+			beginRecordingAudio();
 			finish();
-		}
-		else if(sdk >= 7 && ! pm.hasSystemFeature(PackageManager.FEATURE_CAMERA)){
+		} else if (sdk >= 7
+				&& !pm.hasSystemFeature(PackageManager.FEATURE_CAMERA)) {
 			Toast.makeText(
-					 getApplicationContext(),
-					 "This Android doesn't seem to have a camera, we will record audio instead." +
-							 "The device model is : " + deviceModel,
-					 Toast.LENGTH_LONG).show();
-					finish();
-		}else{
+					getApplicationContext(),
+					"This Android doesn't seem to have a camera, we will record audio instead."
+							+ "The device model is : " + deviceModel,
+					Toast.LENGTH_LONG).show();
+			beginRecordingAudio();
+			finish();
+		} else {
 			initalize();
 		}
-		
-		
-		
+
 	}
-	public void initalize(){
+
+	public void initalize() {
 		/*
-		 * Get extras from the Experiment Home screen and set up layout depending on extras
+		 * Get extras from the Experiment Home screen and set up layout
+		 * depending on extras
 		 */
 		setContentView(R.layout.video_recorder);
-		
-		
+
 		mVideoView = (VideoView) this.findViewById(R.id.videoView);
-		mVideoQuality = 		getIntent().getExtras().getInt(EXTRA_VIDEO_QUALITY, DEFAULT_HIGH_QUALITY); //default is high quality
-		mAudioResultsFile = 	getIntent().getExtras().getString(OPrime.EXTRA_RESULT_FILENAME);
+		mVideoQuality = getIntent().getExtras().getInt(EXTRA_VIDEO_QUALITY,
+				DEFAULT_HIGH_QUALITY); // default is high quality
+		mAudioResultsFile = getIntent().getExtras().getString(
+				OPrime.EXTRA_RESULT_FILENAME);
 		mUseFrontFacingCamera = getIntent().getExtras().getBoolean(
 				EXTRA_USE_FRONT_FACING_CAMERA, true);
-		
+
 		final SurfaceHolder holder = mVideoView.getHolder();
 		holder.addCallback(this);
 		holder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
 	}
+
 	public void surfaceCreated(SurfaceHolder holder) {
 		if (mRecording) {
 			return;
@@ -173,19 +186,16 @@ public class VideoRecorder extends Activity implements
 			int height) {
 		Log.v(TAG, "Width x Height = " + width + "x" + height);
 	}
-	private void beginRecordingAudio(){
-		//TODO If the video fails, record audio.
-	}
+
+
 	private void stopRecording() throws Exception {
 		mRecording = false;
 		if (mVideoRecorder != null) {
 			mVideoRecorder.stop();
 			mVideoRecorder.release();
 			mVideoRecorder = null;
-			Toast.makeText(
-					 getApplicationContext(),
-					 "Saving." ,
-					 Toast.LENGTH_LONG).show();
+			Toast.makeText(getApplicationContext(), "Saving.",
+					Toast.LENGTH_LONG).show();
 		}
 		if (mCamera != null) {
 			mCamera.reconnect();
@@ -200,15 +210,17 @@ public class VideoRecorder extends Activity implements
 		super.onPause();
 	}
 
-	/* 
-	 * Notes:
-	 * -Beware of security hazard of running code in this receiver.
-	 * In this case, only stopping and saving  the recording. 
-	 * -Receivers should be registered in the manifest, but this is an inner class so that it can access the member functions of this class so it 
-	 * doesn't need to be registered in the manifest.xml.
+	/*
+	 * Notes: -Beware of security hazard of running code in this receiver. In
+	 * this case, only stopping and saving the recording. -Receivers should be
+	 * registered in the manifest, but this is an inner class so that it can
+	 * access the member functions of this class so it doesn't need to be
+	 * registered in the manifest.xml.
 	 * 
-	 * http://stackoverflow.com/questions/2463175/how-to-have-android-service-communicate-with-activity
-	 * http://thinkandroid.wordpress.com/2010/02/02/custom-intents-and-broadcasting-with-receivers/
+	 * http://stackoverflow.com/questions/2463175/how-to-have-android-service-
+	 * communicate-with-activity
+	 * http://thinkandroid.wordpress.com/2010/02/02/custom
+	 * -intents-and-broadcasting-with-receivers/
 	 * 
 	 * could pass data in the Intent instead of updating database tables
 	 * 
@@ -222,18 +234,19 @@ public class VideoRecorder extends Activity implements
 			}
 		}
 	}
+
 	@Override
 	protected void onDestroy() {
 		try {
 			stopRecording();
 		} catch (Exception e) {
 			Log.e(TAG, e.toString());
-			//e.printStackTrace();
+			// e.printStackTrace();
 		}
 		super.onDestroy();
 		if (videoStatusReceiver != null) {
-		      unregisterReceiver(videoStatusReceiver);
-		    }
+			unregisterReceiver(videoStatusReceiver);
+		}
 
 	}
 
@@ -260,10 +273,14 @@ public class VideoRecorder extends Activity implements
 			mCamera = null;
 		}
 
-		
 		try {
 			if (mUseFrontFacingCamera) {
-				mCamera = Camera.open(Camera.CameraInfo.CAMERA_FACING_FRONT);//CAMERA_FACING_FRONT constant available since SDK 9 
+				mCamera = Camera.open(Camera.CameraInfo.CAMERA_FACING_FRONT);// CAMERA_FACING_FRONT
+																				// constant
+																				// available
+																				// since
+																				// SDK
+																				// 9
 			} else {
 				mCamera = Camera.open();
 			}
@@ -308,7 +325,8 @@ public class VideoRecorder extends Activity implements
 													// YouTube HD: 1280x720
 			mVideoRecorder.setVideoFrameRate(20); // might be auto-determined
 													// due to lighting
-			 mVideoRecorder.setVideoEncodingBitRate(mVideoQuality);// 3000000=3 megapixel,
+			mVideoRecorder.setVideoEncodingBitRate(mVideoQuality);// 3000000=3
+																	// megapixel,
 			// or the max of
 			// the camera
 			mVideoRecorder.setVideoEncoder(MediaRecorder.VideoEncoder.H264);// MPEG_4_SP
@@ -351,7 +369,9 @@ public class VideoRecorder extends Activity implements
 				mVideoRecorder
 						.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
 			}
-			mVideoRecorder.setMaxDuration(600000); // limite to 10min 600,000limit to 30 seconds 30,000
+			mVideoRecorder.setMaxDuration(600000); // limite to 10min
+													// 600,000limit to 30
+													// seconds 30,000
 			mVideoRecorder.setPreviewDisplay(holder.getSurface());
 			mVideoRecorder.setOutputFile(mAudioResultsFile);
 			mVideoRecorder.prepare();
@@ -359,7 +379,7 @@ public class VideoRecorder extends Activity implements
 			mRecording = true;
 		} catch (Exception e) {
 			Log.e(TAG, e.toString());
-			
+
 		}
 	}
 }
