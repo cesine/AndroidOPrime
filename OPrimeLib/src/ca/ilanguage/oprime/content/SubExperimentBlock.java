@@ -10,6 +10,7 @@ public class SubExperimentBlock implements Serializable{
 	String description;
 	ArrayList<? extends Stimulus> stimuli;
 	String resultsFileWithoutSuffix;
+	long startTime;
 	
 	
 	public SubExperimentBlock() {
@@ -17,7 +18,7 @@ public class SubExperimentBlock implements Serializable{
 		this.title = OPrime.EMPTYSTRING;
 		this.language = OPrime.DEFAULT_LANGUAGE;
 		this.description = OPrime.EMPTYSTRING;
-		
+		this.startTime = System.currentTimeMillis();
 //		this.stimuli = new ArrayList<Stimulus>();
 		
 	}
@@ -28,7 +29,7 @@ public class SubExperimentBlock implements Serializable{
 		this.title = title;
 		this.language = OPrime.DEFAULT_LANGUAGE;
 		this.description = OPrime.EMPTYSTRING;
-		
+		this.startTime = System.currentTimeMillis();
 //		this.stimuli = new ArrayList<Stimulus>();
 		
 	}
@@ -42,6 +43,7 @@ public class SubExperimentBlock implements Serializable{
 		this.description = description;
 		this.resultsFileWithoutSuffix = resultsFile;
 		this.stimuli = stimuli;
+		this.startTime = System.currentTimeMillis();
 	}
 
 
@@ -93,6 +95,16 @@ public class SubExperimentBlock implements Serializable{
 
 	public void setResultsFileWithoutSuffix(String resultsFileWithoutSuffix) {
 		this.resultsFileWithoutSuffix = resultsFileWithoutSuffix;
+	}
+
+
+	public long getStartTime() {
+		return startTime;
+	}
+
+
+	public void setStartTime(long startTime) {
+		this.startTime = startTime;
 	}
 	
 	

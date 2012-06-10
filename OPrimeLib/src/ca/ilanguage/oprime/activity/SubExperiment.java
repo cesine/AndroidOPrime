@@ -140,6 +140,9 @@ public class SubExperiment extends Activity {
 	}
 
 	public void finishSubExperiment() {
+		Intent i = new Intent(OPrime.INTENT_STOP_VIDEO_RECORDING);
+	    sendBroadcast(i);
+	    
 		Intent intent = new Intent(OPrime.INTENT_FINISHED_SUB_EXPERIMENT);
 		intent.putExtra(OPrime.EXTRA_SUB_EXPERIMENT, mSubExperiment);
 		setResult(OPrime.EXPERIMENT_COMPLETED, intent);
@@ -172,8 +175,8 @@ public class SubExperiment extends Activity {
 
 	public void recordTouchPoint(Touch touch, int stimuli) {
 		mStimuli.get(stimuli).touches.add(touch);
-		Toast.makeText(getApplicationContext(), touch.x + ":" + touch.y,
-				Toast.LENGTH_LONG).show();
+//		Toast.makeText(getApplicationContext(), touch.x + ":" + touch.y,
+//				Toast.LENGTH_LONG).show();
 	}
 
 	public void playAudioStimuli() {

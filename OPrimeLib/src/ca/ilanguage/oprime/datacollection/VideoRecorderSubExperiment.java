@@ -71,6 +71,7 @@ public class VideoRecorderSubExperiment extends Activity implements
 	 * Recording variables
 	 */
 	private static final String TAG = "VideoRecorderSubExperiment";
+	private Boolean mRecordAudioInstead = false;
 	private Boolean mRecording = false;
 	private Boolean mUseFrontFacingCamera = false;
 	private VideoView mVideoView = null;
@@ -80,8 +81,6 @@ public class VideoRecorderSubExperiment extends Activity implements
 	private int mVideoQuality = DEFAULT_HIGH_QUALITY;
 
 	String mAudioResultsFile = "";
-	String mOutputDir = OPrime.OUTPUT_DIRECTORY;
-	
 	private VideoStatusReceiver videoStatusReceiver;
 
 	
@@ -97,57 +96,60 @@ public class VideoRecorderSubExperiment extends Activity implements
 		    registerReceiver(videoStatusReceiver, intentStopped);
 	}
 
+		
+	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		/*
+		 * Handle various sorts of lacks of front facing camera
+		 */
+		int sdk = android.os.Build.VERSION.SDK_INT;
+		PackageManager pm = getPackageManager();
+		String deviceModel = android.os.Build.MODEL;
+		if (sdk <= 8) {
+			Toast.makeText(
+					 getApplicationContext(),
+					 "This Android doesn't have enough camera features, we will record audio instead." +
+							 "The device model is : " + deviceModel,
+					 Toast.LENGTH_LONG).show();
+			finish();
+		}
+		else if (sdk >= 9 && Camera.getNumberOfCameras() <=1){
+			Toast.makeText(
+					 getApplicationContext(),
+					 "This Android doesn't have a front facing camera, we will record audio instead." +
+							 "The device model is : " + deviceModel,
+					 Toast.LENGTH_LONG).show();
+			finish();
+		}
+		else if(sdk >= 7 && ! pm.hasSystemFeature(PackageManager.FEATURE_CAMERA)){
+			Toast.makeText(
+					 getApplicationContext(),
+					 "This Android doesn't seem to have a camera, we will record audio instead." +
+							 "The device model is : " + deviceModel,
+					 Toast.LENGTH_LONG).show();
+					finish();
+		}else{
+			initalize();
+		}
+		
+		
+		
+	}
+	public void initalize(){
+		/*
 		 * Get extras from the Experiment Home screen and set up layout depending on extras
 		 */
 		setContentView(R.layout.video_recorder);
-		PackageManager pm = getPackageManager();
-		if(pm.hasSystemFeature(PackageManager.FEATURE_CAMERA)){
-//			Toast.makeText(
-//					 getApplicationContext(),
-//					 "This Android has no camera" ,
-//					 Toast.LENGTH_LONG).show();
-					finish();
-		}else{
-			Toast.makeText(
-					 getApplicationContext(),
-					 "yes camera" ,
-					 Toast.LENGTH_LONG).show();
-		}
-		
 		
 		
 		mVideoView = (VideoView) this.findViewById(R.id.videoView);
-		mOutputDir = getIntent().getExtras().getString(OPrime.EXTRA_OUTPUT_DIR);
-		if(mOutputDir == null){
-			mOutputDir = OPrime.OUTPUT_DIRECTORY;
-		}
 		mVideoQuality = 		getIntent().getExtras().getInt(EXTRA_VIDEO_QUALITY, DEFAULT_HIGH_QUALITY); //default is high quality
 		mAudioResultsFile = 	getIntent().getExtras().getString(OPrime.EXTRA_RESULT_FILENAME);
 		mUseFrontFacingCamera = getIntent().getExtras().getBoolean(
 				EXTRA_USE_FRONT_FACING_CAMERA, true);
-		if (mUseFrontFacingCamera) {
-			// If caller wants to use front facing camera, then make sure the
-			// device has one...
-			// Hard coded to only open front facing camera on Xoom (model MZ604)
-			// For more universal solution try:
-			// http://stackoverflow.com/questions/2779002/how-to-open-front-camera-on-android-platform
-			String deviceModel = android.os.Build.MODEL;
-			if (deviceModel.contains("MZ604")) {
-				mUseFrontFacingCamera = true;
-			} else {
-				 Toast.makeText(
-				 getApplicationContext(),
-				 "The App isn't designed to use this Android's front facing camera.\n "
-				 +
-				 "The device model is : " + deviceModel,
-				 Toast.LENGTH_LONG).show();
-				mUseFrontFacingCamera = false;
-			}
-		}
+		
 		final SurfaceHolder holder = mVideoView.getHolder();
 		holder.addCallback(this);
 		holder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
@@ -182,7 +184,7 @@ public class VideoRecorderSubExperiment extends Activity implements
 			mVideoRecorder = null;
 			Toast.makeText(
 					 getApplicationContext(),
-					 "Saving video." ,
+					 "Saving." ,
 					 Toast.LENGTH_LONG).show();
 		}
 		if (mCamera != null) {
@@ -261,8 +263,7 @@ public class VideoRecorderSubExperiment extends Activity implements
 		
 		try {
 			if (mUseFrontFacingCamera) {
-				// hard coded assuming 1 is the front facing camera
-				mCamera = Camera.open();//SDK 8 cant open different cameras
+				mCamera = Camera.open(Camera.CameraInfo.CAMERA_FACING_FRONT);//CAMERA_FACING_FRONT constant available since SDK 9 
 			} else {
 				mCamera = Camera.open();
 			}
@@ -339,7 +340,7 @@ public class VideoRecorderSubExperiment extends Activity implements
 			// (Okay quality for human voice)
 			if (sdk >= 10) {
 				mVideoRecorder
-						.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);//TODO SDK 8 cant record wide band audio
+						.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_WB);
 				mVideoRecorder.setAudioSamplingRate(16000);
 			} else {
 				// Other devices only have narrow band, ie 8,000 hz

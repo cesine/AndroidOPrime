@@ -86,6 +86,48 @@ public class Participant {
 		}
 		return age;
 	}
+	public String getCode() {
+		return code;
+	}
+	public void setCode(String code) {
+		this.code = code;
+	}
+	public String getExperimenterCode() {
+		return experimenterCode;
+	}
+	public void setExperimenterCode(String experimenterCode) {
+		this.experimenterCode = experimenterCode;
+	}
+	public String getFirstname() {
+		return firstname;
+	}
+	public void setFirstname(String firstname) {
+		this.firstname = firstname;
+	}
+	public String getLastname() {
+		return lastname;
+	}
+	public void setLastname(String lastname) {
+		this.lastname = lastname;
+	}
+	public Date getBirthdate() {
+		return birthdate;
+	}
+	public void setBirthdate(Date birthdate) {
+		this.birthdate = birthdate;
+	}
+	public int getGender() {
+		return gender;
+	}
+	public void setGender(int gender) {
+		this.gender = gender;
+	}
+	public long getDateTested() {
+		return dateTested;
+	}
+	public void setDateTested(long dateTested) {
+		this.dateTested = dateTested;
+	}
 
 
 }
