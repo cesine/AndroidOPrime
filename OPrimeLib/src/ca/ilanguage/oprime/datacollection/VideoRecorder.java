@@ -2,7 +2,6 @@ package ca.ilanguage.oprime.datacollection;
 
 import ca.ilanguage.oprime.R;
 import ca.ilanguage.oprime.content.OPrime;
-import ca.ilanguage.oprime.content.Participant;
 
 import android.app.Activity;
 import android.content.BroadcastReceiver;
@@ -103,7 +102,7 @@ public class VideoRecorder extends Activity implements SurfaceHolder.Callback {
 		Intent intent;
 		intent = new Intent(OPrime.INTENT_START_AUDIO_RECORDING);
 		intent.putExtra(OPrime.EXTRA_RESULT_FILENAME, getIntent().getExtras()
-				.getString(OPrime.EXTRA_RESULT_FILENAME).replace(".3gp",".mp3"));
+				.getString(OPrime.EXTRA_RESULT_FILENAME));
 		startService(intent);
 	}
 
