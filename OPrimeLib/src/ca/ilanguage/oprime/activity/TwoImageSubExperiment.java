@@ -15,27 +15,24 @@ import ca.ilanguage.oprime.content.TwoImageStimulus;
 
 public class TwoImageSubExperiment extends SubExperiment {
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		
+	}
+	@Override
+	public void initalizeLayout(){
 		mStimuliIndex = -1;
 		setContentView(R.layout.two_images);
-		
-		/*
-		 * Prepare Stimuli
-		 */
-		mStimuli = (ArrayList<TwoImageStimulus>) getIntent().getExtras()
-				.getSerializable(OPrime.EXTRA_STIMULI_IMAGE_ID);
-
-		if (mStimuli == null || mStimuli.size() == 0) {
-			ArrayList<TwoImageStimulus> ids = new ArrayList<TwoImageStimulus>();
-			ids.add(new TwoImageStimulus(R.drawable.androids_experimenter_kids));
-			mStimuli = ids;
-		}
 		nextStimuli();
 	}
-
+	@Override
+	public void loadDefaults(){
+		ArrayList<TwoImageStimulus> ids = new ArrayList<TwoImageStimulus>();
+		ids.add(new TwoImageStimulus(R.drawable.androids_experimenter_kids));
+		mStimuli = ids;
+	}
+	
 	@Override
 	public void nextStimuli() {
 		if (mStimuliIndex < 0) {
@@ -62,8 +59,9 @@ public class TwoImageSubExperiment extends SubExperiment {
 			rightimage.setImageDrawable(d);
 		} catch (Exception e) {
 			Log.e(TAG, "Error getting images out." + e.getMessage());
-			playAudioStimuli();
+			
 		}
+		playAudioStimuli();
 		
 	}
 

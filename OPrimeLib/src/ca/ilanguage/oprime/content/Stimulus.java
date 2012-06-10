@@ -25,7 +25,7 @@ public class Stimulus implements Serializable{
 	public Stimulus() {
 		super();
 		this.audioFilePath = "";
-		this.audioFileId= R.raw.gammatone;
+		this.audioFileId= R.raw.chime;
 		this.imageFilePath = "";
 		this.imageFileId = R.drawable.androids_experimenter_kids;
 		this.videoFilePath = "";
@@ -36,7 +36,7 @@ public class Stimulus implements Serializable{
 	public Stimulus(int imageid) {
 		super();
 		this.audioFilePath = "";
-		this.audioFileId= R.raw.gammatone;
+		this.audioFileId= R.raw.chime;
 		this.imageFilePath = "";
 		this.imageFileId = imageid;
 		this.videoFilePath = "";

@@ -7,6 +7,7 @@ import java.util.Locale;
 import ca.ilanguage.oprime.R;
 import ca.ilanguage.oprime.content.OPrime;
 import ca.ilanguage.oprime.content.Stimulus;
+import ca.ilanguage.oprime.content.SubExperimentBlock;
 import ca.ilanguage.oprime.content.Touch;
 import android.app.Activity;
 import android.content.Intent;
@@ -23,6 +24,9 @@ import android.widget.Toast;
 public class SubExperiment extends Activity {
 
 	protected ArrayList<? extends Stimulus> mStimuli;
+	protected SubExperimentBlock mSubExperiment;
+	MediaPlayer mAudioStimuli;
+	MediaPlayer mTouchAudio;
 	protected Locale language;
 	protected int mStimuliIndex = -1;
 	protected long mLastTouchTime = 0;
@@ -33,25 +37,36 @@ public class SubExperiment extends Activity {
 		/*
 		 * Prepare Stimuli
 		 */
-		
-		mStimuli = (ArrayList<? extends Stimulus>) getIntent().getExtras()
-				.getSerializable(OPrime.EXTRA_STIMULI_IMAGE_ID);
+		mSubExperiment = (SubExperimentBlock) getIntent().getExtras()
+				.getSerializable(OPrime.EXTRA_SUB_EXPERIMENT);
+		mStimuli = mSubExperiment.getStimuli();
 
 		if (mStimuli == null || mStimuli.size() == 0) {
-			ArrayList<Stimulus> ids = new ArrayList<Stimulus>();
-			ids.add(new Stimulus(R.drawable.androids_experimenter_kids));
-			mStimuli = ids;
+			loadDefaults();
 		}
+		/*
+		 * Prepare touch audio
+		 */
+		mTouchAudio = MediaPlayer.create(getApplicationContext(),
+				R.raw.gammatone);
+		
 		/*
 		 * Prepare language of Stimuli
 		 */
-		String lang = getIntent().getExtras().getString(OPrime.EXTRA_LANGUAGE);
+		String lang = mSubExperiment.getLanguage();
 		forceLocale(lang);
 
+		initalizeLayout();
+
+	}
+	public void initalizeLayout(){
 		setContentView(R.layout.one_image);
-
 		nextStimuli();
-
+	}
+	public void loadDefaults(){
+		ArrayList<Stimulus> ids = new ArrayList<Stimulus>();
+		ids.add(new Stimulus(R.drawable.androids_experimenter_kids));
+		mStimuli = ids;
 	}
 
 	public void nextStimuli() {
@@ -124,7 +139,7 @@ public class SubExperiment extends Activity {
 
 	public void finishSubExperiment() {
 		Intent intent = new Intent(OPrime.INTENT_FINISHED_SUB_EXPERIMENT);
-		intent.putExtra(OPrime.EXTRA_STIMULI, mStimuli);
+		intent.putExtra(OPrime.EXTRA_SUB_EXPERIMENT, mSubExperiment);
 		setResult(OPrime.EXPERIMENT_COMPLETED, intent);
 		finish();
 	}
@@ -148,7 +163,7 @@ public class SubExperiment extends Activity {
 		t.y = me.getY();
 		t.time = System.currentTimeMillis();
 		recordTouchPoint(t, mStimuliIndex);
-		playSound();
+		playTouch();
 		mLastTouchTime = t.time;
 		return super.onTouchEvent(me);
 	}
@@ -160,10 +175,14 @@ public class SubExperiment extends Activity {
 	}
 
 	public void playAudioStimuli() {
-		MediaPlayer mediaPlayer = MediaPlayer.create(getApplicationContext(),
+		if(mAudioStimuli != null){
+			mAudioStimuli.release();
+			mAudioStimuli = null;
+		}
+		mAudioStimuli = MediaPlayer.create(getApplicationContext(),
 				mStimuli.get(mStimuliIndex).getAudioFileId());
 		try {
-			mediaPlayer.prepare();
+			mAudioStimuli.prepare();
 		} catch (IllegalStateException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -171,25 +190,33 @@ public class SubExperiment extends Activity {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		mediaPlayer.start();
+		mAudioStimuli.start();
+		mAudioStimuli.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+	        @Override
+	        public void onCompletion(MediaPlayer mp) {
+	            mp.release();
+	        }
+	    });
 
 	}
 
-	public void playSound() {
-		MediaPlayer mediaPlayer = MediaPlayer.create(getApplicationContext(),
-				R.raw.chime);
-		// MediaPlayer mediaPlayer =
-		// MediaPlayer.create(getApplicationContext(),mStimuli.get(mStimuliIndex).getAudioFileId());
-		try {
-			mediaPlayer.prepare();
-		} catch (IllegalStateException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+	public void playTouch() {
+		mTouchAudio.start();
+
+	}
+	@Override
+	protected void onDestroy() {
+		if(mAudioStimuli != null){
+			mAudioStimuli.release();
+			mAudioStimuli = null;
 		}
-		mediaPlayer.start();
+		if(mTouchAudio != null){
+			mTouchAudio.release();
+			mTouchAudio = null;
+		}
+		
+		super.onDestroy();
 	}
+	
 
 }
