@@ -34,11 +34,13 @@ public class SubExperiment extends Activity {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		
 		/*
 		 * Prepare Stimuli
 		 */
 		mSubExperiment = (SubExperimentBlock) getIntent().getExtras()
 				.getSerializable(OPrime.EXTRA_SUB_EXPERIMENT);
+		this.setTitle(mSubExperiment.getTitle());
 		mStimuli = mSubExperiment.getStimuli();
 
 		if (mStimuli == null || mStimuli.size() == 0) {
