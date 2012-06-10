@@ -26,7 +26,7 @@ public class SubExperiment extends Activity {
 	protected Locale language;
 	protected int mStimuliIndex = -1;
 	protected long mLastTouchTime = 0;
-
+	protected String TAG = "OPrime SubExperiment";
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -81,6 +81,7 @@ public class SubExperiment extends Activity {
 		mStimuliIndex -= 1;
 
 		if (mStimuliIndex < 0) {
+			mStimuliIndex = 0;
 			return;
 		}
 

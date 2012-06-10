@@ -9,10 +9,11 @@ public class TwoImageStimulus extends Stimulus {
 	 * 
 	 */
 	private static final long serialVersionUID = 4599224930707785294L;
-	String leftImageFilePath = "";
-	int leftImageFileId;
-	String rightImageFilePath = "";
-	int rightImageFileId;
+	protected String leftImageFilePath = "";
+	protected int leftImageFileId;
+	protected String rightImageFilePath = "";
+	protected int rightImageFileId;
+	
 	public TwoImageStimulus() {
 		super();
 		this.leftImageFileId=R.drawable.androids_experimenter_kids;

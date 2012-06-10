@@ -66,6 +66,7 @@ public class Stimulus implements Serializable{
 		this.totalReactionTime = totalReactionTime;
 		this.reactionTimePostOffset = reactionTimePostOffset;
 	}
+	
 	public String getAudioFilePath() {
 		return audioFilePath;
 	}
@@ -123,7 +124,7 @@ public class Stimulus implements Serializable{
 	@Override
 	public String toString() {
 		String s = label+touches.get(touches.size()).toString();
-		return super.toString();
+		return s;
 	}
 	
 	

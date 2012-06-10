@@ -3,6 +3,8 @@ package ca.ilanguage.oprime.content;
 public class OPrime {
 	public static final int NOTSPECIFIED = 0;
 	public static final String EMPTYSTRING = "";
+	public static final String DEFAULT_LANGUAGE = "en";
+	
 	
 	public static final int EXPERIMENT_COMPLETED = 9;
 	

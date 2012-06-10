@@ -6,7 +6,7 @@ import java.util.ArrayList;
 public class SubExperimentBlock implements Serializable{
 	private static final long serialVersionUID = -3637915995040502723L;
 	String title;
-	int language;
+	String language;
 	String description;
 	ArrayList<? extends Stimulus> stimuli;
 	String resultsFileWithoutSuffix;
@@ -15,10 +15,10 @@ public class SubExperimentBlock implements Serializable{
 	public SubExperimentBlock() {
 		super();
 		this.title = OPrime.EMPTYSTRING;
-		this.language = OPrime.NOTSPECIFIED;
+		this.language = OPrime.DEFAULT_LANGUAGE;
 		this.description = OPrime.EMPTYSTRING;
 		
-		this.stimuli = new ArrayList<Stimulus>();
+//		this.stimuli = new ArrayList<Stimulus>();
 		
 	}
 	
@@ -26,16 +26,16 @@ public class SubExperimentBlock implements Serializable{
 	public SubExperimentBlock(String title) {
 		super();
 		this.title = title;
-		this.language = OPrime.NOTSPECIFIED;
+		this.language = OPrime.DEFAULT_LANGUAGE;
 		this.description = OPrime.EMPTYSTRING;
 		
-		this.stimuli = new ArrayList<Stimulus>();
+//		this.stimuli = new ArrayList<Stimulus>();
 		
 	}
 	
 	
-	public SubExperimentBlock(String title, int language,
-			String description, ArrayList<Stimulus> stimuli, String resultsFile) {
+	public SubExperimentBlock(String title, String language,
+			String description, ArrayList<? extends Stimulus> stimuli, String resultsFile) {
 		super();
 		this.title = title;
 		this.language = language;
@@ -55,12 +55,12 @@ public class SubExperimentBlock implements Serializable{
 	}
 
 
-	public int getLanguage() {
+	public String getLanguage() {
 		return language;
 	}
 
 
-	public void setLanguage(int language) {
+	public void setLanguage(String language) {
 		this.language = language;
 	}
 
@@ -81,6 +81,7 @@ public class SubExperimentBlock implements Serializable{
 
 
 	public void setStimuli(ArrayList<? extends Stimulus> stimuli) {
+		this.stimuli = null;
 		this.stimuli = stimuli;
 	}
 
