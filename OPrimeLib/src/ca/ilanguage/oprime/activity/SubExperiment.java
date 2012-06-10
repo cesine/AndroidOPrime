@@ -140,12 +140,15 @@ public class SubExperiment extends Activity {
 	}
 
 	public void finishSubExperiment() {
-		Intent i = new Intent(OPrime.INTENT_STOP_VIDEO_RECORDING);
-	    sendBroadcast(i);
-	    
+		Intent video = new Intent(OPrime.INTENT_STOP_VIDEO_RECORDING);
+	    sendBroadcast(video);
+	    Intent audio = new Intent(OPrime.INTENT_START_AUDIO_RECORDING);
+		stopService(audio);
+		 
 		Intent intent = new Intent(OPrime.INTENT_FINISHED_SUB_EXPERIMENT);
 		intent.putExtra(OPrime.EXTRA_SUB_EXPERIMENT, mSubExperiment);
 		setResult(OPrime.EXPERIMENT_COMPLETED, intent);
+		
 		finish();
 	}
 
