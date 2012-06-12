@@ -141,6 +141,9 @@ public class SubExperiment extends Activity {
 
 	public void finishSubExperiment() {
 		mSubExperiment.setDisplayedStimuli(mStimuliIndex);
+		if(mStimuli.size() <=1){
+			mSubExperiment.setDisplayedStimuli(mStimuli.size());
+		}
 		mSubExperiment.setStimuli(mStimuli);
 		Intent video = new Intent(OPrime.INTENT_STOP_VIDEO_RECORDING);
 	    sendBroadcast(video);

@@ -5,6 +5,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 
+import android.graphics.Region.Op;
+
 public class Participant {
 	private static int counter = 0;
 	
@@ -23,6 +25,7 @@ public class Participant {
 	public static final  String participantCSVpublicString ="Code" +
 			",DateTested" +
 			",InterviewerCode"+
+			",Status"+
 			",Languages";
 	public static final String PARTICIPANT_ID_DEFAULT = "0000";
 
@@ -36,6 +39,7 @@ public class Participant {
 	String details = OPrime.EMPTYSTRING;
 	int gender = UNKNOWN_GENDER;
 	long dateTested = System.currentTimeMillis();
+	String status = OPrime.EMPTYSTRING;
 	
 	public Participant(){
 		this.firstname = "";
@@ -82,7 +86,7 @@ public class Participant {
 				+","
 				+this.experimenterCode
 				+","
-				+this.details
+				+this.details + ": " + this.status
 				+","
 				+this.languageCodes;
 	}
@@ -92,6 +96,8 @@ public class Participant {
 				+new Date(this.dateTested).toString()
 				+","
 				+this.experimenterCode
+				+","
+				+this.status
 				+","
 				+this.languageCodes;
 	}
@@ -350,6 +356,12 @@ public class Participant {
 	}
 	public void setLanguageCodes(ArrayList<String> languageCodes) {
 		this.languageCodes = languageCodes;
+	}
+	public String getStatus() {
+		return status;
+	}
+	public void setStatus(String status) {
+		this.status = status;
 	}
 
 

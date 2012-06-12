@@ -116,28 +116,28 @@ public class VideoRecorder extends Activity implements SurfaceHolder.Callback {
 		PackageManager pm = getPackageManager();
 		String deviceModel = android.os.Build.MODEL;
 		if (sdk <= 8) {
-			Toast.makeText(
-					getApplicationContext(),
-					"This Android doesn't have enough camera features, we will record audio instead."
-							+ "The device model is : " + deviceModel,
-					Toast.LENGTH_LONG).show();
+//			Toast.makeText(
+//					getApplicationContext(),
+//					"This Android doesn't have enough camera features, we will record audio instead."
+//							+ "The device model is : " + deviceModel,
+//					Toast.LENGTH_LONG).show();
 			beginRecordingAudio();
 			finish();
 		} else if (sdk >= 9 && Camera.getNumberOfCameras() <= 1) {
-			Toast.makeText(
-					getApplicationContext(),
-					"This Android doesn't have a front facing camera, we will record audio instead."
-							+ "The device model is : " + deviceModel,
-					Toast.LENGTH_LONG).show();
+//			Toast.makeText(
+//					getApplicationContext(),
+//					"This Android doesn't have a front facing camera, we will record audio instead."
+//							+ "The device model is : " + deviceModel,
+//					Toast.LENGTH_LONG).show();
 			beginRecordingAudio();
 			finish();
 		} else if (sdk >= 7
 				&& !pm.hasSystemFeature(PackageManager.FEATURE_CAMERA)) {
-			Toast.makeText(
-					getApplicationContext(),
-					"This Android doesn't seem to have a camera, we will record audio instead."
-							+ "The device model is : " + deviceModel,
-					Toast.LENGTH_LONG).show();
+//			Toast.makeText(
+//					getApplicationContext(),
+//					"This Android doesn't seem to have a camera, we will record audio instead."
+//							+ "The device model is : " + deviceModel,
+//					Toast.LENGTH_LONG).show();
 			beginRecordingAudio();
 			finish();
 		} else {
@@ -193,8 +193,8 @@ public class VideoRecorder extends Activity implements SurfaceHolder.Callback {
 			mVideoRecorder.stop();
 			mVideoRecorder.release();
 			mVideoRecorder = null;
-			Toast.makeText(getApplicationContext(), "Saving.",
-					Toast.LENGTH_LONG).show();
+//			Toast.makeText(getApplicationContext(), "Saving.",
+//					Toast.LENGTH_LONG).show();
 		}
 		if (mCamera != null) {
 			mCamera.reconnect();

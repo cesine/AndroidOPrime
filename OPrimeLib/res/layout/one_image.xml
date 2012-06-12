@@ -21,20 +21,20 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content" >
 
-            <Button
+            <ImageButton
                 android:id="@+id/buttonback"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:onClick="onPreviousClick"
-                android:text="Back" >
-            </Button>
+                android:src="@drawable/ic_back" >
+            </ImageButton>
 
             <ImageButton
                 android:id="@+id/button1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:onClick="onNextClick"
-                android:src="@drawable/ic_fast_forward" >
+                android:src="@drawable/ic_play" >
             </ImageButton>
         </TableRow>
 
