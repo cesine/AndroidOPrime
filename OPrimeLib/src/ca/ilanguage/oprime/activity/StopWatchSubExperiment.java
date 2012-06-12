@@ -19,19 +19,28 @@ package ca.ilanguage.oprime.activity;
 // Need the following import to get access to the app resources, since this
 // class is in a sub-package.
 
+import java.util.ArrayList;
+
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.SystemClock;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.Chronometer;
 import ca.ilanguage.oprime.R;
+import ca.ilanguage.oprime.content.OPrime;
+import ca.ilanguage.oprime.content.Stimulus;
+import ca.ilanguage.oprime.content.SubExperimentBlock;
 
 public class StopWatchSubExperiment extends Activity {
     Chronometer mChronometer;
     private long lastPause= 0;
-
+    protected ArrayList<? extends Stimulus> mStimuli;
+	protected SubExperimentBlock mSubExperiment;
+	
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -51,8 +60,44 @@ public class StopWatchSubExperiment extends Activity {
 
         button = (Button) findViewById(R.id.reset);
         button.setOnClickListener(mResetListener);
-    }
+        
+        /*
+		 * Prepare Stimuli
+		 */
+		mSubExperiment = (SubExperimentBlock) getIntent().getExtras()
+				.getSerializable(OPrime.EXTRA_SUB_EXPERIMENT);
+		this.setTitle(mSubExperiment.getTitle());
+		mStimuli = mSubExperiment.getStimuli();
 
+		if (mStimuli == null || mStimuli.size() == 0) {
+			ArrayList<Stimulus> ids = new ArrayList<Stimulus>();
+			ids.add(new Stimulus(R.drawable.androids_experimenter_kids));
+			mStimuli = ids;
+		}
+		
+    }
+    @Override
+	public boolean onKeyDown(int keyCode, KeyEvent event) {
+		if ((keyCode == KeyEvent.KEYCODE_BACK)) {
+			finishSubExperiment();
+		}
+		return super.onKeyDown(keyCode, event);
+
+	}
+    public void finishSubExperiment() {
+		mSubExperiment.setDisplayedStimuli(mStimuli.size());
+		mSubExperiment.setStimuli(mStimuli);
+		Intent video = new Intent(OPrime.INTENT_STOP_VIDEO_RECORDING);
+	    sendBroadcast(video);
+	    Intent audio = new Intent(OPrime.INTENT_START_AUDIO_RECORDING);
+		stopService(audio);
+		 
+		Intent intent = new Intent(OPrime.INTENT_FINISHED_SUB_EXPERIMENT);
+		intent.putExtra(OPrime.EXTRA_SUB_EXPERIMENT, mSubExperiment);
+		setResult(OPrime.EXPERIMENT_COMPLETED, intent);
+		
+		finish();
+	}
     View.OnClickListener mStartListener = new OnClickListener() {
         public void onClick(View v) {
             if(lastPause == 0) {

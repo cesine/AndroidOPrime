@@ -140,6 +140,8 @@ public class SubExperiment extends Activity {
 	}
 
 	public void finishSubExperiment() {
+		mSubExperiment.setDisplayedStimuli(mStimuliIndex);
+		mSubExperiment.setStimuli(mStimuli);
 		Intent video = new Intent(OPrime.INTENT_STOP_VIDEO_RECORDING);
 	    sendBroadcast(video);
 	    Intent audio = new Intent(OPrime.INTENT_START_AUDIO_RECORDING);

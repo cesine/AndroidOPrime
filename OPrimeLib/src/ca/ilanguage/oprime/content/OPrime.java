@@ -5,9 +5,14 @@ public class OPrime {
 	public static final String EMPTYSTRING = "";
 	public static final String DEFAULT_LANGUAGE = "en";
 	
-	
-	public static final int EXPERIMENT_COMPLETED = 9;
-	
+	/*
+	 * Control Flow constants
+	 */
+	public static final int EXPERIMENT_COMPLETED = 55;
+	public static final int PREPARE_TRIAL = 56;
+	public static final int SWITCH_LANGUAGE = 57;
+	public static final int REPLAY_RESULTS = 58;
+	public static final int AUTO_ADVANCE_NEXT_SUB_EXPERIMENT = 59;
 	
 	public static final String INTENT_START_VIDEO_RECORDING = "ca.ilanguage.oprime.intent.action.START_VIDEO_RECORDING_SERVICE";
 	public static final String INTENT_STOP_VIDEO_RECORDING = "ca.ilanguage.oprime.intent.action.BROADCAST_STOP_VIDEO_RECORDING_SERVICE";

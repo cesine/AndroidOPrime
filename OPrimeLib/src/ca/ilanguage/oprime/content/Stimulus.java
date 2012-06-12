@@ -9,17 +9,17 @@ public class Stimulus implements Serializable{
 	
 	private static final long serialVersionUID = -4023355491498842498L;
 	protected String audioFilePath = "";
-	protected int audioFileId;
+	protected int audioFileId = R.raw.chime;
 	protected String imageFilePath = "";
-	protected int imageFileId;
+	protected int imageFileId = R.drawable.androids_experimenter_kids;
 	protected String videoFilePath = "";
 	
 	protected String label = ""; 
 	
 	public ArrayList<Touch> touches = new ArrayList<Touch>();
 	
-	protected long totalReactionTime;
-	protected long reactionTimePostOffset;
+	protected long totalReactionTime = 0;
+	protected long reactionTimePostOffset = 0;
 	
 	
 	public Stimulus() {
