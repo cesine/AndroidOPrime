@@ -30,6 +30,7 @@ public class SubExperiment extends Activity {
 	protected Locale language;
 	protected int mStimuliIndex = -1;
 	protected long mLastTouchTime = 0;
+	protected boolean mTakePicture = false;
 	protected String TAG = "OPrime SubExperiment";
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -42,7 +43,7 @@ public class SubExperiment extends Activity {
 				.getSerializable(OPrime.EXTRA_SUB_EXPERIMENT);
 		this.setTitle(mSubExperiment.getTitle());
 		mStimuli = mSubExperiment.getStimuli();
-
+		mTakePicture = (boolean) getIntent().getExtras().getBoolean(OPrime.EXTRA_TAKE_PICTURE_AT_END,false);
 		if (mStimuli == null || mStimuli.size() == 0) {
 			loadDefaults();
 		}

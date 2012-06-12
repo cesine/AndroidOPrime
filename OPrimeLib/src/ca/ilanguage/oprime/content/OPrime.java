@@ -20,6 +20,7 @@ public class OPrime {
 	public static final String INTENT_START_AUDIO_RECORDING = "ca.ilanguage.oprime.intent.action.START_AUDIO_RECORDING_SERVICE";
 	public static final String INTENT_STOP_AUDIO_RECORDING = "ca.ilanguage.oprime.intent.action.BROADCAST_STOP_AUDIO_RECORDING_SERVICE";
 	
+	public static final String INTENT_TAKE_PICTURE = "ca.ilanguage.oprime.intent.action.TAKE_PICTURE";
 	public static final String INTENT_FINISHED_SUB_EXPERIMENT = "ca.ilanguage.oprime.intent.action.FINISHED_SUB_EXPERIMENT";
 	public static final String INTENT_SAVE_SUB_EXPERIMENT_JSON = "ca.ilanguage.oprime.intent.action.SAVE_SUB_EXPERIMENT_JSON";
 	
