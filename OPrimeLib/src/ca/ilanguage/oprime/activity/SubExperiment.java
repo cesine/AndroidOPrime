@@ -80,7 +80,6 @@ public class SubExperiment extends Activity {
 		if (mStimuliIndex < 0) {
 			mStimuliIndex = 0;
 		} else {
-			recordStimuliReactionTime(mStimuliIndex);
 			mStimuliIndex += 1;
 		}
 		if (mStimuliIndex >= mStimuli.size()) {
@@ -188,18 +187,20 @@ public class SubExperiment extends Activity {
 	}
 
 	public void recordStimuliReactionTime(int stimuli) {
+		if(mStimuliIndex >= mStimuli.size()){
+			return;
+		}
 		long endtime = System.currentTimeMillis();
 		mStimuli.get(stimuli).setTotalReactionTime(
-				endtime
-						- mStimuli.get(stimuli).getStartTime());
+				endtime - mStimuli.get(stimuli).getStartTime());
 		mStimuli.get(stimuli).setReactionTimePostOffset(
-				endtime
-						- mStimuli.get(stimuli).getAudioOffset());
+				endtime - mStimuli.get(stimuli).getAudioOffset());
 		
 	}
 
 	public void recordTouchPoint(Touch touch, int stimuli) {
 		mStimuli.get(stimuli).touches.add(touch);
+		recordStimuliReactionTime(mStimuliIndex);
 		// Toast.makeText(getApplicationContext(), touch.x + ":" + touch.y,
 		// Toast.LENGTH_LONG).show();
 	}
@@ -220,15 +221,18 @@ public class SubExperiment extends Activity {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		mAudioStimuli.start();
 		mAudioStimuli
 				.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
 					@Override
 					public void onCompletion(MediaPlayer mp) {
-						mStimuli.get(mStimuliIndex).setAudioOffset(System.currentTimeMillis());
+						if(mStimuliIndex < mStimuli.size()){
+							mStimuli.get(mStimuliIndex).setAudioOffset(System.currentTimeMillis());
+						}
 						mp.release();
 					}
 				});
+		mAudioStimuli.start();
+		
 
 	}
 

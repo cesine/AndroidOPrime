@@ -38,7 +38,6 @@ public class TwoImageSubExperiment extends SubExperiment {
 		if (mStimuliIndex < 0) {
 			mStimuliIndex = 0;
 		} else {
-			recordStimuliReactionTime(mStimuliIndex);
 			mStimuliIndex += 1;
 		}
 		
@@ -59,6 +58,8 @@ public class TwoImageSubExperiment extends SubExperiment {
 					((TwoImageStimulus) mStimuli.get(mStimuliIndex))
 							.getRightImageFileId());
 			rightimage.setImageDrawable(d);
+			mStimuli.get(mStimuliIndex).setStartTime(System.currentTimeMillis());
+			
 		} catch (Exception e) {
 			Log.e(TAG, "Error getting images out." + e.getMessage());
 			
