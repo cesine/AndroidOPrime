@@ -3,6 +3,8 @@ package ca.ilanguage.oprime.content;
 import java.io.Serializable;
 import java.util.ArrayList;
 
+import com.google.gson.Gson;
+
 public class SubExperimentBlock implements Serializable {
 	private static final long serialVersionUID = -3637915995040502723L;
 	String title = OPrime.EMPTYSTRING;
@@ -56,6 +58,11 @@ public class SubExperimentBlock implements Serializable {
 		return complete;
 	}
 
+	public String getResultsJson(){
+		Gson gson = new Gson();
+		String json = gson.toJson(this);
+		return json;
+	}
 	public String getTitle() {
 		return title;
 	}

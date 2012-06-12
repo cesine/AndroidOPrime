@@ -20,6 +20,8 @@ public class Stimulus implements Serializable{
 	
 	protected long totalReactionTime = 0;
 	protected long reactionTimePostOffset = 0;
+	protected long audioOffset = 0;
+	protected long startTime = 0;
 	
 	
 	public Stimulus() {
@@ -125,6 +127,18 @@ public class Stimulus implements Serializable{
 	public String toString() {
 		String s = label+touches.get(touches.size()).toString();
 		return s;
+	}
+	public long getStartTime() {
+		return startTime;
+	}
+	public void setStartTime(long startTime) {
+		this.startTime = startTime;
+	}
+	public long getAudioOffset() {
+		return audioOffset;
+	}
+	public void setAudioOffset(long audioOffset) {
+		this.audioOffset = audioOffset;
 	}
 	
 	

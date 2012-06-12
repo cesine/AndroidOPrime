@@ -32,10 +32,11 @@ public class SubExperiment extends Activity {
 	protected long mLastTouchTime = 0;
 	protected boolean mTakePicture = false;
 	protected String TAG = "OPrime SubExperiment";
+
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		
+
 		/*
 		 * Prepare Stimuli
 		 */
@@ -43,7 +44,8 @@ public class SubExperiment extends Activity {
 				.getSerializable(OPrime.EXTRA_SUB_EXPERIMENT);
 		this.setTitle(mSubExperiment.getTitle());
 		mStimuli = mSubExperiment.getStimuli();
-		mTakePicture = (boolean) getIntent().getExtras().getBoolean(OPrime.EXTRA_TAKE_PICTURE_AT_END,false);
+		mTakePicture = (boolean) getIntent().getExtras().getBoolean(
+				OPrime.EXTRA_TAKE_PICTURE_AT_END, false);
 		if (mStimuli == null || mStimuli.size() == 0) {
 			loadDefaults();
 		}
@@ -52,7 +54,7 @@ public class SubExperiment extends Activity {
 		 */
 		mTouchAudio = MediaPlayer.create(getApplicationContext(),
 				R.raw.gammatone);
-		
+
 		/*
 		 * Prepare language of Stimuli
 		 */
@@ -62,11 +64,13 @@ public class SubExperiment extends Activity {
 		initalizeLayout();
 
 	}
-	public void initalizeLayout(){
+
+	public void initalizeLayout() {
 		setContentView(R.layout.one_image);
 		nextStimuli();
 	}
-	public void loadDefaults(){
+
+	public void loadDefaults() {
 		ArrayList<Stimulus> ids = new ArrayList<Stimulus>();
 		ids.add(new Stimulus(R.drawable.androids_experimenter_kids));
 		mStimuli = ids;
@@ -76,6 +80,7 @@ public class SubExperiment extends Activity {
 		if (mStimuliIndex < 0) {
 			mStimuliIndex = 0;
 		} else {
+			recordStimuliReactionTime(mStimuliIndex);
 			mStimuliIndex += 1;
 		}
 		if (mStimuliIndex >= mStimuli.size()) {
@@ -87,7 +92,7 @@ public class SubExperiment extends Activity {
 		Drawable d = getResources().getDrawable(
 				mStimuli.get(mStimuliIndex).getImageFileId());
 		image.setImageDrawable(d);
-
+		mStimuli.get(mStimuliIndex).setStartTime(System.currentTimeMillis());
 		playAudioStimuli();
 	}
 
@@ -107,7 +112,7 @@ public class SubExperiment extends Activity {
 		Drawable d = getResources().getDrawable(
 				mStimuli.get(mStimuliIndex).getImageFileId());
 		image.setImageDrawable(d);
-		
+
 		playAudioStimuli();
 
 	}
@@ -142,19 +147,19 @@ public class SubExperiment extends Activity {
 
 	public void finishSubExperiment() {
 		mSubExperiment.setDisplayedStimuli(mStimuliIndex);
-		if(mStimuli.size() <=1){
+		if (mStimuli.size() <= 1) {
 			mSubExperiment.setDisplayedStimuli(mStimuli.size());
 		}
 		mSubExperiment.setStimuli(mStimuli);
 		Intent video = new Intent(OPrime.INTENT_STOP_VIDEO_RECORDING);
-	    sendBroadcast(video);
-	    Intent audio = new Intent(OPrime.INTENT_START_AUDIO_RECORDING);
+		sendBroadcast(video);
+		Intent audio = new Intent(OPrime.INTENT_START_AUDIO_RECORDING);
 		stopService(audio);
-		 
+
 		Intent intent = new Intent(OPrime.INTENT_FINISHED_SUB_EXPERIMENT);
 		intent.putExtra(OPrime.EXTRA_SUB_EXPERIMENT, mSubExperiment);
 		setResult(OPrime.EXPERIMENT_COMPLETED, intent);
-		
+
 		finish();
 	}
 
@@ -182,19 +187,30 @@ public class SubExperiment extends Activity {
 		return super.onTouchEvent(me);
 	}
 
+	public void recordStimuliReactionTime(int stimuli) {
+		long endtime = System.currentTimeMillis();
+		mStimuli.get(stimuli).setTotalReactionTime(
+				endtime
+						- mStimuli.get(stimuli).getStartTime());
+		mStimuli.get(stimuli).setReactionTimePostOffset(
+				endtime
+						- mStimuli.get(stimuli).getAudioOffset());
+		
+	}
+
 	public void recordTouchPoint(Touch touch, int stimuli) {
 		mStimuli.get(stimuli).touches.add(touch);
-//		Toast.makeText(getApplicationContext(), touch.x + ":" + touch.y,
-//				Toast.LENGTH_LONG).show();
+		// Toast.makeText(getApplicationContext(), touch.x + ":" + touch.y,
+		// Toast.LENGTH_LONG).show();
 	}
 
 	public void playAudioStimuli() {
-		if(mAudioStimuli != null){
+		if (mAudioStimuli != null) {
 			mAudioStimuli.release();
 			mAudioStimuli = null;
 		}
-		mAudioStimuli = MediaPlayer.create(getApplicationContext(),
-				mStimuli.get(mStimuliIndex).getAudioFileId());
+		mAudioStimuli = MediaPlayer.create(getApplicationContext(), mStimuli
+				.get(mStimuliIndex).getAudioFileId());
 		try {
 			mAudioStimuli.prepare();
 		} catch (IllegalStateException e) {
@@ -205,12 +221,14 @@ public class SubExperiment extends Activity {
 			e.printStackTrace();
 		}
 		mAudioStimuli.start();
-		mAudioStimuli.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-	        @Override
-	        public void onCompletion(MediaPlayer mp) {
-	            mp.release();
-	        }
-	    });
+		mAudioStimuli
+				.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+					@Override
+					public void onCompletion(MediaPlayer mp) {
+						mStimuli.get(mStimuliIndex).setAudioOffset(System.currentTimeMillis());
+						mp.release();
+					}
+				});
 
 	}
 
@@ -218,19 +236,19 @@ public class SubExperiment extends Activity {
 		mTouchAudio.start();
 
 	}
+
 	@Override
 	protected void onDestroy() {
-		if(mAudioStimuli != null){
+		if (mAudioStimuli != null) {
 			mAudioStimuli.release();
 			mAudioStimuli = null;
 		}
-		if(mTouchAudio != null){
+		if (mTouchAudio != null) {
 			mTouchAudio.release();
 			mTouchAudio = null;
 		}
-		
+
 		super.onDestroy();
 	}
-	
 
 }

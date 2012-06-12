@@ -38,8 +38,10 @@ public class TwoImageSubExperiment extends SubExperiment {
 		if (mStimuliIndex < 0) {
 			mStimuliIndex = 0;
 		} else {
+			recordStimuliReactionTime(mStimuliIndex);
 			mStimuliIndex += 1;
 		}
+		
 		if (mStimuliIndex >= mStimuli.size()) {
 			finishSubExperiment();
 			return;
