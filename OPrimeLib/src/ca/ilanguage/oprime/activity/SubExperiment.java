@@ -15,11 +15,17 @@ import android.content.res.Configuration;
 import android.graphics.drawable.Drawable;
 import android.media.MediaPlayer;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.DisplayMetrics;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.Animation.AnimationListener;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.TableRow;
 import android.widget.Toast;
 
 public class SubExperiment extends Activity {
@@ -35,6 +41,8 @@ public class SubExperiment extends Activity {
 	protected String TAG = "OPrime SubExperiment";
 	protected int width = 1;
 	protected int height = 1;
+	
+	Animation animationSlideInRight;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -44,7 +52,11 @@ public class SubExperiment extends Activity {
 		getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
 		height = displaymetrics.heightPixels;
 		width = displaymetrics.widthPixels;
-
+		animationSlideInRight = AnimationUtils.loadAnimation(this,
+				R.anim.slide_in_right);
+		animationSlideInRight.setDuration(1000);
+		animationSlideInRight
+				.setAnimationListener(animationSlideInRightListener);
 		/*
 		 * Prepare Stimuli
 		 */
@@ -73,6 +85,26 @@ public class SubExperiment extends Activity {
 
 	}
 
+	AnimationListener animationSlideInRightListener = new AnimationListener() {
+
+		@Override
+		public void onAnimationEnd(Animation animation) {
+			// TODO Auto-generated method stub
+		}
+
+		@Override
+		public void onAnimationRepeat(Animation animation) {
+			// TODO Auto-generated method stub
+
+		}
+
+		@Override
+		public void onAnimationStart(Animation animation) {
+			// TODO Auto-generated method stub
+
+		}
+	};
+
 	public void initalizeLayout() {
 		setContentView(R.layout.one_image);
 		nextStimuli();
@@ -99,6 +131,7 @@ public class SubExperiment extends Activity {
 		Drawable d = getResources().getDrawable(
 				mStimuli.get(mStimuliIndex).getImageFileId());
 		image.setImageDrawable(d);
+		image.startAnimation(animationSlideInRight);
 		mStimuli.get(mStimuliIndex).setStartTime(System.currentTimeMillis());
 		playAudioStimuli();
 	}
@@ -186,7 +219,7 @@ public class SubExperiment extends Activity {
 		}
 		// if in the top of the screen, ignore touch it was probably
 		// an attempt to hit the button
-		if ( me.getY() < 60 ) {
+		if (me.getY() < 60) {
 			return super.onTouchEvent(me);
 		}
 		Touch t = new Touch();

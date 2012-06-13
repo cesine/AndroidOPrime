@@ -1,7 +1,6 @@
 package ca.ilanguage.oprime.activity;
 
 import java.util.ArrayList;
-import java.util.Locale;
 
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -9,8 +8,6 @@ import android.util.Log;
 import android.widget.ImageView;
 
 import ca.ilanguage.oprime.R;
-import ca.ilanguage.oprime.content.OPrime;
-import ca.ilanguage.oprime.content.Stimulus;
 import ca.ilanguage.oprime.content.TwoImageStimulus;
 
 public class TwoImageSubExperiment extends SubExperiment {
@@ -52,12 +49,14 @@ public class TwoImageSubExperiment extends SubExperiment {
 					((TwoImageStimulus) mStimuli.get(mStimuliIndex))
 							.getLeftImageFileId());
 			image.setImageDrawable(d);
-
+			image.startAnimation(animationSlideInRight);
+			
 			ImageView rightimage = (ImageView) findViewById(R.id.rightimage);
 			d = getResources().getDrawable(
 					((TwoImageStimulus) mStimuli.get(mStimuliIndex))
 							.getRightImageFileId());
 			rightimage.setImageDrawable(d);
+			rightimage.startAnimation(animationSlideInRight);
 			mStimuli.get(mStimuliIndex).setStartTime(System.currentTimeMillis());
 			
 		} catch (Exception e) {
