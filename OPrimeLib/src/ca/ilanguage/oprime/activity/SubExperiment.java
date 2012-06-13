@@ -15,6 +15,7 @@ import android.content.res.Configuration;
 import android.graphics.drawable.Drawable;
 import android.media.MediaPlayer;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
@@ -32,10 +33,17 @@ public class SubExperiment extends Activity {
 	protected long mLastTouchTime = 0;
 	protected boolean mTakePicture = false;
 	protected String TAG = "OPrime SubExperiment";
+	protected int width = 1;
+	protected int height = 1;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+
+		DisplayMetrics displaymetrics = new DisplayMetrics();
+		getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
+		height = displaymetrics.heightPixels;
+		width = displaymetrics.widthPixels;
 
 		/*
 		 * Prepare Stimuli
@@ -176,9 +184,16 @@ public class SubExperiment extends Activity {
 		if (timeBetweenTouches < 300) {
 			return super.onTouchEvent(me);
 		}
+		// if in the top of the screen, ignore touch it was probably
+		// an attempt to hit the button
+		if ( me.getY() < 60 ) {
+			return super.onTouchEvent(me);
+		}
 		Touch t = new Touch();
 		t.x = me.getX();
 		t.y = me.getY();
+		t.width = width;
+		t.height = height;
 		t.time = System.currentTimeMillis();
 		recordTouchPoint(t, mStimuliIndex);
 		playTouch();
@@ -187,7 +202,7 @@ public class SubExperiment extends Activity {
 	}
 
 	public void recordStimuliReactionTime(int stimuli) {
-		if(mStimuliIndex >= mStimuli.size()){
+		if (mStimuliIndex >= mStimuli.size()) {
 			return;
 		}
 		long endtime = System.currentTimeMillis();
@@ -195,7 +210,7 @@ public class SubExperiment extends Activity {
 				endtime - mStimuli.get(stimuli).getStartTime());
 		mStimuli.get(stimuli).setReactionTimePostOffset(
 				endtime - mStimuli.get(stimuli).getAudioOffset());
-		
+
 	}
 
 	public void recordTouchPoint(Touch touch, int stimuli) {
@@ -225,14 +240,14 @@ public class SubExperiment extends Activity {
 				.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
 					@Override
 					public void onCompletion(MediaPlayer mp) {
-						if(mStimuliIndex < mStimuli.size()){
-							mStimuli.get(mStimuliIndex).setAudioOffset(System.currentTimeMillis());
+						if (mStimuliIndex < mStimuli.size()) {
+							mStimuli.get(mStimuliIndex).setAudioOffset(
+									System.currentTimeMillis());
 						}
 						mp.release();
 					}
 				});
 		mAudioStimuli.start();
-		
 
 	}
 
