@@ -231,6 +231,11 @@ public class SubExperiment extends Activity {
 		recordTouchPoint(t, mStimuliIndex);
 		playTouch();
 		mLastTouchTime = t.time;
+		/*
+		 * Auto advance to the next stimuli after recording the touch point. the
+		 * user can use teh arrows if they didnt mean to auto advacne.
+		 */
+		nextStimuli();
 		return super.onTouchEvent(me);
 	}
 
@@ -247,6 +252,9 @@ public class SubExperiment extends Activity {
 	}
 
 	public void recordTouchPoint(Touch touch, int stimuli) {
+		if (stimuli >= mStimuli.size()) {
+			return;
+		}
 		mStimuli.get(stimuli).touches.add(touch);
 		recordStimuliReactionTime(mStimuliIndex);
 		// Toast.makeText(getApplicationContext(), touch.x + ":" + touch.y,
