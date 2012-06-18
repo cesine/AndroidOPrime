@@ -213,7 +213,9 @@ public class SubExperiment extends Activity {
 
 		finish();
 	}
-
+	public void onExitClick(View v) {
+		finishSubExperiment();
+	}
 	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
 		if ((keyCode == KeyEvent.KEYCODE_BACK)) {

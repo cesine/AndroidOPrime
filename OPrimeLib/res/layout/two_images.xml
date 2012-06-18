@@ -37,6 +37,14 @@
                 android:src="@drawable/ic_play" >
             </ImageButton>
 
+             <ImageButton
+                android:id="@+id/buttonexit"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:onClick="onExitClick"
+                android:src="@drawable/ic_stop" >
+            </ImageButton>
+            
             <TextView
                 android:id="@+id/stimuli_number2"
                 android:layout_width="wrap_content"
