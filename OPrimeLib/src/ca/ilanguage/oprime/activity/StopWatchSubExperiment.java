@@ -30,6 +30,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.Chronometer;
+import android.widget.TextView;
 import ca.ilanguage.oprime.R;
 import ca.ilanguage.oprime.content.OPrime;
 import ca.ilanguage.oprime.content.Stimulus;
@@ -75,7 +76,19 @@ public class StopWatchSubExperiment extends Activity {
 			mStimuli = ids;
 		}
 		
+		TextView t = (TextView) findViewById(R.id.stimuli_number);
+		String displayStimuliLabel = mStimuli.get(0).getLabel();
+		if("".equals(displayStimuliLabel)){
+			int stimnumber = 1;
+			int stimtotal = 1;
+			displayStimuliLabel = stimnumber+"/"+stimtotal;
+		}
+		t.setText(displayStimuliLabel);
+		
     }
+    public void onNextClick(View v) {
+    	finishSubExperiment();
+	}
     @Override
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
 		if ((keyCode == KeyEvent.KEYCODE_BACK)) {
