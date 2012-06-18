@@ -24,10 +24,22 @@ public class TwoImageStimulus extends Stimulus {
 		this.leftImageFileId=imageid;
 		this.rightImageFileId=imageid;
 	}
+	public TwoImageStimulus(int imageid, String label) {
+		super(imageid, label);
+		this.leftImageFileId=imageid;
+		this.rightImageFileId=imageid;
+		this.label= label;
+	}
 	public TwoImageStimulus(int leftid, int rightid) {
 		super(leftid);
 		this.leftImageFileId=leftid;
 		this.rightImageFileId=rightid;
+	}
+	public TwoImageStimulus(int leftid, int rightid, String label) {
+		super(leftid, label);
+		this.leftImageFileId=leftid;
+		this.rightImageFileId=rightid;
+		this.label= label;
 	}
 	public TwoImageStimulus(String audioFilePath, String lImageFilePath,String rImageFilePath,
 			String videoFilePath, ArrayList<Touch> touches,

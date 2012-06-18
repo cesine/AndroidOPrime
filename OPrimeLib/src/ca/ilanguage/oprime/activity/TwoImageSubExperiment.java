@@ -6,6 +6,7 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import ca.ilanguage.oprime.R;
 import ca.ilanguage.oprime.content.TwoImageStimulus;
@@ -44,6 +45,15 @@ public class TwoImageSubExperiment extends SubExperiment {
 		}
 
 		try {
+			TextView t = (TextView) findViewById(R.id.stimuli_number2);
+			String displayStimuliLabel = mStimuli.get(mStimuliIndex).getLabel();
+			if("".equals(displayStimuliLabel)){
+				int stimnumber = mStimuliIndex+1;
+				int stimtotal = mStimuli.size();
+				displayStimuliLabel = stimnumber+"/"+stimtotal;
+			}
+			t.setText(displayStimuliLabel);
+			
 			ImageView image = (ImageView) findViewById(R.id.leftimage);
 			Drawable d = getResources().getDrawable(
 					((TwoImageStimulus) mStimuli.get(mStimuliIndex))
@@ -58,6 +68,7 @@ public class TwoImageSubExperiment extends SubExperiment {
 			rightimage.setImageDrawable(d);
 			rightimage.startAnimation(animationSlideInRight);
 			mStimuli.get(mStimuliIndex).setStartTime(System.currentTimeMillis());
+			
 			
 		} catch (Exception e) {
 			Log.e(TAG, "Error getting images out." + e.getMessage());

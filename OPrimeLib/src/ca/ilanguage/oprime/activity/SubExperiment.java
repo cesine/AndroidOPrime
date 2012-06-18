@@ -26,6 +26,7 @@ import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TableRow;
+import android.widget.TextView;
 import android.widget.Toast;
 
 public class SubExperiment extends Activity {
@@ -127,12 +128,22 @@ public class SubExperiment extends Activity {
 			return;
 		}
 
+		TextView t = (TextView) findViewById(R.id.stimuli_number);
+		String displayStimuliLabel = mStimuli.get(mStimuliIndex).getLabel();
+		if("".equals(displayStimuliLabel)){
+			int stimnumber = mStimuliIndex+1;
+			int stimtotal = mStimuli.size();
+			displayStimuliLabel = stimnumber+"/"+stimtotal;
+		}
+		t.setText(displayStimuliLabel);
+		
 		ImageView image = (ImageView) findViewById(R.id.onlyimage);
 		Drawable d = getResources().getDrawable(
 				mStimuli.get(mStimuliIndex).getImageFileId());
 		image.setImageDrawable(d);
 		image.startAnimation(animationSlideInRight);
 		mStimuli.get(mStimuliIndex).setStartTime(System.currentTimeMillis());
+		
 		playAudioStimuli();
 	}
 

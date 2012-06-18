@@ -46,6 +46,18 @@ public class Stimulus implements Serializable{
 		this.totalReactionTime = 0;
 		this.reactionTimePostOffset = 0;
 	}
+	public Stimulus(int imageid,String label) {
+		super();
+		this.audioFilePath = "";
+		this.audioFileId= R.raw.chime;
+		this.imageFilePath = "";
+		this.imageFileId = imageid;
+		this.videoFilePath = "";
+		this.touches = new ArrayList<Touch>();
+		this.totalReactionTime = 0;
+		this.reactionTimePostOffset = 0;
+		this.label= label;
+	}
 	
 	public Stimulus(String audioFilePath, String imageFilePath,
 			String videoFilePath) {

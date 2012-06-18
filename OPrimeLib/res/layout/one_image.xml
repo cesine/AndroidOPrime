@@ -36,12 +36,22 @@
                 android:onClick="onNextClick"
                 android:src="@drawable/ic_play" >
             </ImageButton>
+
+            <TextView
+                android:id="@+id/stimuli_number"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="#"
+                android:textColor="#000000"
+                android:textSize="20dip" >
+            </TextView>
         </TableRow>
 
         <TableRow
             android:id="@+id/tableRow1"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent" >
+
             <ImageView
                 android:id="@+id/onlyimage"
                 android:layout_width="0px"
