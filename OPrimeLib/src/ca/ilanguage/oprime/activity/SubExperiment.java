@@ -235,7 +235,7 @@ public class SubExperiment extends Activity {
 
 	public boolean onTouchEvent(MotionEvent me) {
 		long timeBetweenTouches = System.currentTimeMillis() - mLastTouchTime;
-		if (timeBetweenTouches < 300) {
+		if (timeBetweenTouches < 1000) {
 			return super.onTouchEvent(me);
 		}
 		// if in the top of the screen, ignore touch it was probably
