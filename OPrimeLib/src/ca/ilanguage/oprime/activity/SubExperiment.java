@@ -158,7 +158,15 @@ public class SubExperiment extends Activity {
 			mStimuliIndex = 0;
 			return;
 		}
-
+		TextView t = (TextView) findViewById(R.id.stimuli_number);
+		String displayStimuliLabel = mStimuli.get(mStimuliIndex).getLabel();
+		if("".equals(displayStimuliLabel)){
+			int stimnumber = mStimuliIndex+1;
+			int stimtotal = mStimuli.size();
+			displayStimuliLabel = stimnumber+"/"+stimtotal;
+		}
+		t.setText(displayStimuliLabel);
+		
 		ImageView image = (ImageView) findViewById(R.id.onlyimage);
 		Drawable d = getResources().getDrawable(
 				mStimuli.get(mStimuliIndex).getImageFileId());

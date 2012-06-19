@@ -87,6 +87,15 @@ public class TwoImageSubExperiment extends SubExperiment {
 			return;
 		}
 		try {
+			TextView t = (TextView) findViewById(R.id.stimuli_number2);
+			String displayStimuliLabel = mStimuli.get(mStimuliIndex).getLabel();
+			if("".equals(displayStimuliLabel)){
+				int stimnumber = mStimuliIndex+1;
+				int stimtotal = mStimuli.size();
+				displayStimuliLabel = stimnumber+"/"+stimtotal;
+			}
+			t.setText(displayStimuliLabel);
+			
 			ImageView image = (ImageView) findViewById(R.id.leftimage);
 			Drawable d = getResources().getDrawable(
 					((TwoImageStimulus) mStimuli.get(mStimuliIndex))
