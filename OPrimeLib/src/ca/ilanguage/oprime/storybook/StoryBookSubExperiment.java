@@ -166,7 +166,7 @@ public class StoryBookSubExperiment extends Activity {
 		}
 		@Override
 		public void playSound(){
-			MediaPlayer mediaPlayer = MediaPlayer.create(getApplicationContext(), R.raw.chime);
+			MediaPlayer mediaPlayer = MediaPlayer.create(getApplicationContext(), R.raw.ploep);
 			try {
 				mediaPlayer.prepare();
 			} catch (IllegalStateException e) {

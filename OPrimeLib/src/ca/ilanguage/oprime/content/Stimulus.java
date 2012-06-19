@@ -9,7 +9,7 @@ public class Stimulus implements Serializable{
 	
 	private static final long serialVersionUID = -4023355491498842498L;
 	protected String audioFilePath = "";
-	protected int audioFileId = R.raw.chime;
+	protected int audioFileId = R.raw.ploep;
 	protected String imageFilePath = "";
 	protected int imageFileId = R.drawable.androids_experimenter_kids;
 	protected String videoFilePath = "";
@@ -27,7 +27,7 @@ public class Stimulus implements Serializable{
 	public Stimulus() {
 		super();
 		this.audioFilePath = "";
-		this.audioFileId= R.raw.chime;
+		this.audioFileId= R.raw.ploep;
 		this.imageFilePath = "";
 		this.imageFileId = R.drawable.androids_experimenter_kids;
 		this.videoFilePath = "";
@@ -38,7 +38,7 @@ public class Stimulus implements Serializable{
 	public Stimulus(int imageid) {
 		super();
 		this.audioFilePath = "";
-		this.audioFileId= R.raw.chime;
+		this.audioFileId= R.raw.ploep;
 		this.imageFilePath = "";
 		this.imageFileId = imageid;
 		this.videoFilePath = "";
@@ -49,7 +49,7 @@ public class Stimulus implements Serializable{
 	public Stimulus(int imageid,String label) {
 		super();
 		this.audioFilePath = "";
-		this.audioFileId= R.raw.chime;
+		this.audioFileId= R.raw.ploep;
 		this.imageFilePath = "";
 		this.imageFileId = imageid;
 		this.videoFilePath = "";
