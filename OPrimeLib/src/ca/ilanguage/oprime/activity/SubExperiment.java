@@ -182,25 +182,31 @@ public class SubExperiment extends Activity {
 
 	/**
 	 * Forces the locale for the duration of the app to the language needed for
-	 * that version of the Bilingual Aphasia Test
+	 * that version of the Bilingual Aphasia Test. It accepts a variable in the
+	 * form en or en-US containing just the language code, or the language code
+	 * followed by a - and the country code.
 	 * 
 	 * @param lang
 	 * @return
 	 */
 	public String forceLocale(String lang) {
 		if (lang.equals(Locale.getDefault().getLanguage())) {
-			language = Locale.getDefault();
 			return Locale.getDefault().getDisplayLanguage();
 		}
 		Configuration config = getBaseContext().getResources()
 				.getConfiguration();
-		Locale locale = new Locale(lang);
+		Locale locale;
+		if (lang.contains("-")) {
+			String[] langCountrycode = lang.split("-");
+			locale = new Locale(langCountrycode[0], langCountrycode[1]);
+		} else {
+			locale = new Locale(lang);
+		}
 		Locale.setDefault(locale);
 		config.locale = locale;
 		getBaseContext().getResources().updateConfiguration(config,
 				getBaseContext().getResources().getDisplayMetrics());
 		language = Locale.getDefault();
-
 		return Locale.getDefault().getDisplayLanguage();
 	}
 
