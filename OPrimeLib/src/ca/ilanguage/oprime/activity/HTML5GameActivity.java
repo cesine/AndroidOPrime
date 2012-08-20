@@ -20,34 +20,36 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
 public class HTML5GameActivity extends Activity {
-	private String TAG = "HTML5GameActivity";
+	protected String TAG = "HTML5GameActivity";
 	public boolean D = false;
 
-	private String mOutputDir;
-	private String mInitialGameServerUrl;
-	private WebView mWebView;
-	private JavaScriptInterface mJavaScriptInterface;
+	protected String mOutputDir;
+	protected String mInitialGameServerUrl;
+	protected WebView mWebView;
+	protected JavaScriptInterface mJavaScriptInterface;
 
 	/** Called when the activity is first created. */
-	@SuppressLint("SetJavaScriptEnabled")
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.html5webview);
-
+		setUpVariables();
+		prepareWebView();
+	}
+	protected void setUpVariables(){
 		if (getIntent().getExtras().getString(OPrime.EXTRA_OUTPUT_DIR) != null) {
 			mOutputDir = getIntent().getExtras().getString(
 					OPrime.EXTRA_OUTPUT_DIR);
 		} else {
 			mOutputDir = OPrime.OUTPUT_DIRECTORY;
 		}
-
+		
 		if (getIntent().getExtras().getString(OPrime.EXTRA_TAG) != null) {
 			TAG = getIntent().getExtras().getString(OPrime.EXTRA_TAG);
 		}
-
+		
 		D = getIntent().getExtras().getBoolean(OPrime.EXTRA_DEBUG_MODE, false);
-
+		
 		mInitialGameServerUrl = "file:///android_asset/index.html";// "http://192.168.0.180:3001/";
 		if (getIntent().getExtras().getString(
 				OPrime.EXTRA_HTML5_SUB_EXPERIMENT_INITIAL_URL) != null) {
@@ -65,12 +67,15 @@ public class HTML5GameActivity extends Activity {
 			mJavaScriptInterface.setD(D);
 			mJavaScriptInterface.setOutputDir(mOutputDir);
 			if(D) Log.d(TAG, "Using a javascript interface sent by the caller.");
-
+			
 		} else {
 			mJavaScriptInterface = new JavaScriptInterface(
 					D, TAG, mOutputDir);
 			if(D) Log.d(TAG, "Using a default javascript interface.");
 		}
+	}
+	@SuppressLint("SetJavaScriptEnabled")
+	protected void prepareWebView(){
 		mWebView = (WebView) findViewById(R.id.html5WebView);
 		mWebView.addJavascriptInterface(mJavaScriptInterface, "Android");
 		mWebView.setWebViewClient(new MyWebViewClient());
@@ -81,14 +86,15 @@ public class HTML5GameActivity extends Activity {
 		webSettings.setDefaultZoom(WebSettings.ZoomDensity.FAR);
 		webSettings.setJavaScriptEnabled(true);
 		webSettings.setSaveFormData(true);
-
+		
 		webSettings.setDefaultTextEncodingName("utf-8");
 		webSettings.setAppCacheEnabled(true);
 		webSettings.setDomStorageEnabled(true);
-
+		
 		webSettings.setUserAgentString(webSettings.getUserAgentString() + " "
 				+ OPrime.USER_AGENT_STRING);
 		mWebView.loadUrl(mInitialGameServerUrl);
+		
 	}
 
 	class MyWebChromeClient extends WebChromeClient {
