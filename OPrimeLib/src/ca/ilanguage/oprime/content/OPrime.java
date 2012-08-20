@@ -29,7 +29,12 @@ public class OPrime {
 	public static final String INTENT_START_STOP_WATCH_SUB_EXPERIMENT = "ca.ilanguage.oprime.intent.action.START_STOP_WATCH_SUB_EXPERIMENT";
 	public static final String INTENT_START_STORY_BOOK_SUB_EXPERIMENT = "ca.ilanguage.oprime.intent.action.START_STORY_BOOK_SUB_EXPERIMENT";
 	
+	public static final String INTENT_START_HTML5_SUB_EXPERIMENT = "ca.ilanguage.oprime.intent.action.START_HTML5_SUB_EXPERIMENT";
+	public static final String EXTRA_HTML5_SUB_EXPERIMENT_INITIAL_URL = "subexperimenturl";
+
 	public static final String EXTRA_LANGUAGE ="language";
+	public static final String EXTRA_TAG ="tag";
+	public static final String EXTRA_DEBUG_MODE ="debug_mode";
 	public static final String EXTRA_PARTICIPANT_ID ="participant";
 	public static final String EXTRA_SUB_EXPERIMENT = "subexperiment";
 	public static final String EXTRA_SUB_EXPERIMENT_TITLE = "subexperimenttitle";
@@ -41,7 +46,7 @@ public class OPrime {
 	public static final String EXTRA_STIMULI_IMAGE_ID = "stimuliimageid";
 	public static final String EXTRA_TWO_PAGE_STORYBOOK = "twopagebook";
 
-	public static final String OUTPUT_DIRECTORY = "/sdcard/OPrime/video/";
+	public static final String OUTPUT_DIRECTORY = "/sdcard/OPrime/";
 
 	
 	
