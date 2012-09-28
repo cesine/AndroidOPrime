@@ -1,0 +1,20 @@
+{
+  "name": "OPrime HTML5 Experimentation Library",
+  "version": "1.0",
+  "description": "Test and debugging chrome extension",
+  "app": {
+    "launch": {
+      "local_path": "index.html"
+    }
+  },
+  "offline_enabled": true,
+  "permissions": [
+  	"unlimitedStorage"
+  ],
+  "icons": { 
+  	"16": "oprime16.png",
+    "48": "oprime48.png",
+    "128": "oprime128.png" 
+  }
+  
+}

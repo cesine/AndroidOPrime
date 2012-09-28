@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Test OPrime HTML5 Experimentation Library</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- Stylesheets -->
+<link rel="stylesheet" type="text/css" href="oprime.css">
+<!-- END Stylesheets -->
+
+</head>
+<body>
+
+	Show a Picture:
+	<img src="oprime128.png" />
+
+	<hr />
+
+	<button id="test_take_picture_button">Take a picture</button>
+	
+	<img id="result_image" src="" />
+
+	<hr />
+
+	<button id="test_play_audio_button">Play audio</button>
+	
+	<audio controls="controls" autoplay="autoplay" id="test_play_audio">
+		<source src="chime.mp3" type="audio/wav"></source>
+	</audio>
+
+	<hr />
+
+	<button id="test_record_audio_button">Record audio</button>
+
+	<audio controls="controls" id="result_audio">
+		<source src="" type="audio/wav"></source>
+	</audio>
+
+	<hr />
+
+  Test callbacks and default action for links
+  
+  <a href="non_existant_page.html" id="test_prevent_default">Prevent Default</a>
+
+	<script src="oprime.js"></script>
+	<script src="tests.js"></script>
+
+
+</body>
+</html>

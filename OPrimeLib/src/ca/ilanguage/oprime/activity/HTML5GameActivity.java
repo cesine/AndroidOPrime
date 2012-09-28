@@ -24,7 +24,7 @@ public class HTML5GameActivity extends Activity {
 	public boolean D = false;
 
 	protected String mOutputDir;
-	protected String mInitialGameServerUrl;
+	protected String mInitialAppServerUrl;
 	protected WebView mWebView;
 	protected JavaScriptInterface mJavaScriptInterface;
 
@@ -37,6 +37,16 @@ public class HTML5GameActivity extends Activity {
 		prepareWebView();
 	}
 	protected void setUpVariables(){
+		if(getIntent().getExtras() == null){
+			mOutputDir = OPrime.OUTPUT_DIRECTORY;
+			D = true;
+			mInitialAppServerUrl = "file:///android_asset/index.html";// "http://192.168.0.180:3001/";
+			mJavaScriptInterface = new JavaScriptInterface(
+					D, TAG, mOutputDir);
+			if(D) Log.d(TAG, "Using a default javascript interface.");
+			
+			return;
+		}
 		if (getIntent().getExtras().getString(OPrime.EXTRA_OUTPUT_DIR) != null) {
 			mOutputDir = getIntent().getExtras().getString(
 					OPrime.EXTRA_OUTPUT_DIR);
@@ -50,10 +60,10 @@ public class HTML5GameActivity extends Activity {
 		
 		D = getIntent().getExtras().getBoolean(OPrime.EXTRA_DEBUG_MODE, false);
 		
-		mInitialGameServerUrl = "file:///android_asset/index.html";// "http://192.168.0.180:3001/";
+		mInitialAppServerUrl = "file:///android_asset/index.html";// "http://192.168.0.180:3001/";
 		if (getIntent().getExtras().getString(
 				OPrime.EXTRA_HTML5_SUB_EXPERIMENT_INITIAL_URL) != null) {
-			mInitialGameServerUrl = getIntent().getExtras().getString(
+			mInitialAppServerUrl = getIntent().getExtras().getString(
 					OPrime.EXTRA_HTML5_SUB_EXPERIMENT_INITIAL_URL);
 		}
 		if (getIntent().getExtras().getSerializable(
@@ -93,7 +103,7 @@ public class HTML5GameActivity extends Activity {
 		
 		webSettings.setUserAgentString(webSettings.getUserAgentString() + " "
 				+ OPrime.USER_AGENT_STRING);
-		mWebView.loadUrl(mInitialGameServerUrl);
+		mWebView.loadUrl(mInitialAppServerUrl);
 		
 	}
 
