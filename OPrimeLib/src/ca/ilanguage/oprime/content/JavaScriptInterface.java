@@ -166,6 +166,18 @@ public class JavaScriptInterface implements Serializable {
 		}
 	}
 
+	public void playIntervalOfAudio(int startTime, int endTime) {
+		if (mMediaPlayer != null) {
+			if (mMediaPlayer.isPlaying()) {
+				mMediaPlayer.pause();
+			}
+			mMediaPlayer.seekTo(startTime);
+			mMediaPlayer.start();
+		} else {
+			this.showToast("Error dont know which file to play");
+		}
+	}
+
 	public String getAudioDir() {
 		// if its the sdcard, or a web url send that instead
 		return "file:///android_asset/";

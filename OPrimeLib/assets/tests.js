@@ -29,21 +29,43 @@ document.getElementById("test_play_audio_button").onclick = function(e) {
 }
 
 document.getElementById("test_play_audio_src_button").onclick = function(e) {
-  if( e.target.innerHTML != "Pause audio src attribute"){
-    OPrime.playAudioFile('test_audio_no_source');
+  if (e.target.innerHTML != "Pause audio src attribute") {
+    OPrime.playAudioFile('test_audio_no_source',function(){
+      //oncomplete change the text of the button to play
+      e.target.innerHTML = "Play audio src attribute";
+    });
     e.target.innerHTML = "Pause audio src attribute";
-  }else{
+  } else {
     OPrime.pauseAudioFile('test_audio_no_source');
     e.target.innerHTML = "Play audio src attribute";
   }
 }
 
 document.getElementById("test_stop_audio_src_button").onclick = function(e) {
-  OPrime.stopAudioFile('test_audio_no_source', function(){
-    document.getElementById("test_play_audio_src_button").innerHTML = "Play audio src attribute";
-  });
+  OPrime.stopAudioFile('test_audio_no_source');
+  document.getElementById("test_play_audio_src_button").innerHTML = "Play audio src attribute";
 }
 
 document.getElementById("test_play_audio_in_video_button").onclick = function(e) {
   OPrime.playAudioFile('test_video_tag');
+}
+
+document.getElementById("no_syllable").onclick = function(e) {
+  OPrime.playIntervalAudioFile('test_audio_no_source', e.target.min,
+      e.target.max);
+}
+
+document.getElementById("qata_syllable").onclick = function(e) {
+  OPrime.playIntervalAudioFile('test_audio_no_source', e.target.min,
+      e.target.max);
+}
+
+document.getElementById("tusu_syllable").onclick = function(e) {
+  OPrime.playIntervalAudioFile('test_audio_no_source', e.target.min,
+      e.target.max);
+}
+
+document.getElementById("wan_syllable").onclick = function(e) {
+  OPrime.playIntervalAudioFile('test_audio_no_source', e.target.min,
+      e.target.max);
 }

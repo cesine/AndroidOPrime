@@ -42,7 +42,8 @@ OPrime.publisher = {
             var removed = subscribers.splice(i, 1);
             OPrime.debug("Removed subscriber from " + type, removed);
           } else {
-            OPrime.debug(type + " keeping subscriber " + i, subscriber[i].context);
+            OPrime.debug(type + " keeping subscriber " + i,
+                subscriber[i].context);
           }
         } catch (e) {
           OPrime.debug("problem visiting Subscriber " + i)
@@ -67,8 +68,8 @@ OPrime.makePublisher = function(o) {
 OPrime.debugMode = true;
 
 OPrime.debug = function(message, message2) {
-  if(!message2){
-    message2 ="";
+  if (!message2) {
+    message2 = "";
   }
   if (this.debugMode) {
     console.log(message, message2);
@@ -111,7 +112,8 @@ OPrime.playAudioFile = function(divid, audioOffsetCallback, callingcontext) {
       OPrime.hub.unsubscribe("playbackCompleted", null, callingcontextself);
     }
   }
-  this.hub.subscribe("playbackCompleted", audioOffsetCallback, callingcontextself);
+  this.hub.subscribe("playbackCompleted", audioOffsetCallback,
+      callingcontextself);
 
   if (this.isAndroidApp()) {
     this.debug("Playing Audio via Android:" + audiourl + ":");
@@ -121,6 +123,8 @@ OPrime.playAudioFile = function(divid, audioOffsetCallback, callingcontext) {
     document.getElementById(divid).addEventListener(
         'ended',
         function() {
+          OPrime.debug("End audio  "
+              + document.getElementById(divid).currentTime);
           OPrime.hub.publish('playbackCompleted',
               'Audio playback has completed:' + Date.now());
         });
@@ -141,6 +145,10 @@ OPrime.pauseAudioFile = function(divid, callingcontext) {
   } else {
     this.debug("Pausing Audio via HTML5");
     document.getElementById(divid).pause();
+    if(document.getElementById(divid).currentTime > 0.05){
+      document.getElementById(divid).currentTime =  document.getElementById(divid).currentTime - 0.05;
+    }
+
   }
 }
 OPrime.stopAudioFile = function(divid, callback) {
@@ -150,9 +158,36 @@ OPrime.stopAudioFile = function(divid, callback) {
   } else {
     this.debug("Stopping Audio via HTML5");
     document.getElementById(divid).pause();
-    document.getElementById(divid).currentTime=0;
+    document.getElementById(divid).currentTime = 0;
   }
-  if(typeof callback == "function"){
+  if (typeof callback == "function") {
+    callback();
+  }
+}
+OPrime.playingInterval = false;
+OPrime.playIntervalAudioFile = function(divid, startime, endtime, callback) {
+  if (this.isAndroidApp()) {
+    this.debug("Playing Audio via Android from " + startime + " to " + endtime);
+    Android.playIntervalOfAudio(startime, endtime);
+  } else {
+    startime = parseFloat(startime, 10);
+    endtime = parseFloat(endtime, 10) ;
+    this.debug("Playing Audio via HTML5 from " + startime + " to " + endtime);
+    document.getElementById(divid).pause();
+    document.getElementById(divid).currentTime = startime;
+    OPrime.debug("Cueing audio to "
+        + document.getElementById(divid).currentTime);
+    document.getElementById(divid).play();
+    OPrime.playingInterval = true;
+    document.getElementById(divid).addEventListener("timeupdate", function() {
+      if (this.currentTime >= endtime && OPrime.playingInterval) {
+        OPrime.debug("CurrentTime: " + this.currentTime);
+        this.pause();
+        OPrime.playingInterval = false; /* workaround for not being able to remove events */
+      }
+    });
+  }
+  if (typeof callback == "function") {
     callback();
   }
 }
