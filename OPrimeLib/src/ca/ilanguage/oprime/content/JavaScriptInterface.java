@@ -213,9 +213,10 @@ public class JavaScriptInterface implements Serializable {
       }
       // If there is a background timer waiting for the previous audio interval
       // to finish, kill it
-      if (mListenForEndAudioInterval != null && !mListenForEndAudioInterval.isCancelled()) {
+      if (mListenForEndAudioInterval != null
+          && !mListenForEndAudioInterval.isCancelled()) {
         mListenForEndAudioInterval.cancel(true);
-//         mListenForEndAudioInterval = null;
+        // mListenForEndAudioInterval = null;
       }
       mMediaPlayer.seekTo(startTimeMS);
       mMediaPlayer
@@ -247,6 +248,20 @@ public class JavaScriptInterface implements Serializable {
             + urlstring);
       }
     }
+  }
+
+  public void startAudioRecordingService(String resultfilename) {
+    Intent intent;
+    intent = new Intent(OPrime.INTENT_START_AUDIO_RECORDING);
+    intent.putExtra(OPrime.EXTRA_RESULT_FILENAME, mOutputDir + resultfilename);
+    mUIParent.startService(intent);
+    // TODO publish started
+  }
+
+  public void stopAudioRecordingService(String resultfilename) {
+    Intent audio = new Intent(OPrime.INTENT_START_AUDIO_RECORDING);
+    mUIParent.stopService(audio);
+    // TODO publish completed
   }
 
   public String getAudioDir() {
@@ -286,7 +301,7 @@ public class JavaScriptInterface implements Serializable {
     }
 
     protected void onPostExecute(String result) {
-      if(mUIParent != null && mUIParent.mWebView != null){
+      if (mUIParent != null && mUIParent.mWebView != null) {
         Log.d(
             TAG,
             "\tPost execute LoadUrlToWebView task. Now trying to send a pubsub message to the webview.");
@@ -327,8 +342,9 @@ public class JavaScriptInterface implements Serializable {
     }
 
     protected void onPostExecute(String result) {
-      Log.d(TAG, "\t"+result + ": Stopped listening for audio interval at ... "
-          + mMediaPlayer.getCurrentPosition());
+      Log.d(TAG,
+          "\t" + result + ": Stopped listening for audio interval at ... "
+              + mMediaPlayer.getCurrentPosition());
     }
   }
 

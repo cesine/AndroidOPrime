@@ -6,15 +6,26 @@ document.getElementById("test_take_picture_button").onclick = function(e) {
 }
 
 document.getElementById("test_record_audio_button").onclick = function(e) {
-  OPrime.captureAudio("test_audio_recording.mp3", /* started */function(
-      audioUrl) {
-    OPrime.debug("\nRecording successfully started " + audioUrl);
-  }, /* Recording complete */function(audioUrl) {
-    OPrime.debug("Attaching sucessful recording to the result audio div "
-        + audioUrl);
-    document.getElementById("result_audio").src = audioUrl;
-    //TODO play audio
-  });
+  if (e.target.innerHTML != "Stop recording") {
+    OPrime.captureAudio("test_audio_recording.mp3", /* started */function(
+        audioUrl) {
+      OPrime.debug("\nRecording successfully started " + audioUrl);
+      e.target.innerHTML = "Stop recording";
+    }, /* Recording complete */function(audioUrl) {
+      OPrime.debug("Attaching sucessful recording to the result audio div "
+          + audioUrl);
+      document.getElementById("result_audio").src = audioUrl;
+      e.target.removeAttribute("disabled","disabled");
+      // TODO play audio
+    });
+  } else {
+    e.target.setAttribute("disabled","disabled");
+    OPrime.stopAndSaveAudio("test_audio_recording.mp3", /* stopped */function(
+        audioUrl) {
+      e.target.innerHTML = "Record audio";
+      OPrime.debug("\nRecording successfully stopped " + audioUrl);
+    });
+  }
 }
 document.getElementById("test_prevent_default").onclick = function(e) {
   e.preventDefault();

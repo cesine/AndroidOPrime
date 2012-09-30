@@ -27,7 +27,7 @@ OPrime.publisher = {
   visitSubscribers : function(action, type, arg, context) {
     var pubtype = type || 'any';
     var subscribers = this.subscribers[pubtype];
-    if(!subscribers || subscribers.length == 0){
+    if (!subscribers || subscribers.length == 0) {
       OPrime.debug("There were no subscribers.");
       return;
     }
@@ -51,7 +51,7 @@ OPrime.publisher = {
       OPrime.debug('Visited ' + subscribers.length + ' subscribers.');
 
     } else {
-      
+
       // count down so that subscribers index exists when we remove them
       for (i = maxUnsubscribe; i >= 0; i--) {
         try {
@@ -267,19 +267,52 @@ OPrime.captureAudio = function(resultfilename, callbackRecordingStarted,
   if (this.isAndroidApp()) {
     this.debug("Recording Audio via Android");
     Android.startAudioRecordingService(resultfilename);
-    // the android will publish if its successfully started
+    // the android will publish if its successfully stopped, and that it
+    // completed
   } else {
     this.debug("Recording Audio via HTML5: " + resultfilename);
     alert("Recording audio only works on Android, because it has a microphone, and your computer might not.\n\n Faking that it was sucessful")
     // fake publish it was sucessfully started
     this.hub.publish('audioRecordingSucessfullyStarted', resultfilename);
-    // fake publish it finished
+  }
+
+}
+OPrime.stopAndSaveAudio = function(resultfilename, callbackRecordingStopped,
+    callingcontext) {
+
+  /*
+   * verify started callback and subscribe it to
+   * audioRecordingSucessfullyStarted
+   */
+  var callingcontextself = callingcontext;
+  if (!callbackRecordingStopped) {
+    callbackRecordingStopped = function(message) {
+      OPrime.debug("In callbackRecordingStopped: " + message);
+      OPrime.hub.unsubscribe("audioRecordingSucessfullyStopped", null,
+          callingcontextself);
+    }
+  }
+  this.hub.unsubscribe("audioRecordingSucessfullyStopped", null,
+      callingcontextself);
+  this.hub.subscribe("audioRecordingSucessfullyStopped",
+      callbackRecordingStopped, callingcontextself);
+
+  /* start the recording */
+  if (this.isAndroidApp()) {
+    this.debug("Stopping Recording Audio via Android");
+    Android.stopAudioRecordingService(resultfilename);
+    // the android will publish if its successfully started
+  } else {
+    this.debug("Stopping Recording Audio via HTML5: " + resultfilename);
+    alert("Recording audio only works on Android, because it has a microphone, and your computer might not.\n\n Faking that stopped and saved sucessfully")
+    // fake publish it was sucessfully started
     resultfilename = "chime.mp3"
+    this.hub.publish('audioRecordingSucessfullyStopped', resultfilename);
+    // fake publish it finished
     this.hub.publish('audioRecordingCompleted', resultfilename);
   }
 
 }
-
 /*
  * Camera functions
  */
