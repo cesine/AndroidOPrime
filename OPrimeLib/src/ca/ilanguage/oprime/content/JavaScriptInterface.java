@@ -215,7 +215,7 @@ public class JavaScriptInterface implements Serializable {
       // to finish, kill it
       if (mListenForEndAudioInterval != null && !mListenForEndAudioInterval.isCancelled()) {
         mListenForEndAudioInterval.cancel(true);
-        // mListenForEndAudioInterval = null;
+//         mListenForEndAudioInterval = null;
       }
       mMediaPlayer.seekTo(startTimeMS);
       mMediaPlayer
@@ -286,10 +286,12 @@ public class JavaScriptInterface implements Serializable {
     }
 
     protected void onPostExecute(String result) {
-      Log.d(
-          TAG,
-          "\tPost execute LoadUrlToWebView task. Now trying to send a pubsub message to the webview.");
-      mUIParent.mWebView.loadUrl(mMessage);
+      if(mUIParent != null && mUIParent.mWebView != null){
+        Log.d(
+            TAG,
+            "\tPost execute LoadUrlToWebView task. Now trying to send a pubsub message to the webview.");
+        mUIParent.mWebView.loadUrl(mMessage);
+      }
     }
   }
 
