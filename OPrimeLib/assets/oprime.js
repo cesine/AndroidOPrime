@@ -25,28 +25,45 @@ OPrime.publisher = {
     this.visitSubscribers('publish', type, publication);
   },
   visitSubscribers : function(action, type, arg, context) {
-    var pubtype = type || 'any', subscribers = this.subscribers[pubtype], i, max = subscribers ? subscribers.length
-        : 0;
+    var pubtype = type || 'any';
+    var subscribers = this.subscribers[pubtype];
+    var i;
+    var maxUnsubscribe = subscribers ? subscribers.length - 1 : 0;
+    var maxPublish = subscribers ? subscribers.length : 0;
 
-    for (i = 0; i < max; i += 1) {
-      if (action === 'publish') {
+    if (action === 'publish') {
+      // count up so that older subscribers get the message first
+      for (i = 0; i < maxPublish; i++) {
         if (subscribers[i]) {
           // TODO there is a bug with the subscribers they are getting lost, and
           // it is trying to call fn of undefiend. this is a workaround until we
-          // figure out why subscribers are getting lost.
+          // figure out why subscribers are getting lost. Update: i changed the
+          // loop to count down and remove subscribers from the ends, now the
+          // size of subscribers isnt changing such that the subscriber at index
+          // i doesnt exist.
           subscribers[i].fn.call(subscribers[i].context, arg);
         }
-      } else {
+      }
+      OPrime.debug('Visited ' + subscribers.length + ' subscribers.');
+
+    } else {
+      // count down so that subscribers index exists when we remove them
+      for (i = maxUnsubscribe; i >= 0; i--) {
         try {
+          if (!subscribers[i].context) {
+            OPrime
+                .debug("This subscriber has no context. should we remove it? "
+                    + i);
+          }
           if (subscribers[i].context === context) {
             var removed = subscribers.splice(i, 1);
-            OPrime.debug("Removed subscriber from " + type, removed);
+            OPrime.debug("Removed subscriber " + i + " from " + type, removed);
           } else {
             OPrime.debug(type + " keeping subscriber " + i,
-                subscriber[i].context);
+                subscribers[i].context);
           }
         } catch (e) {
-          OPrime.debug("problem visiting Subscriber " + i)
+          OPrime.debug("problem visiting Subscriber " + i, subscribers)
         }
       }
     }
@@ -112,6 +129,7 @@ OPrime.playAudioFile = function(divid, audioOffsetCallback, callingcontext) {
       OPrime.hub.unsubscribe("playbackCompleted", null, callingcontextself);
     }
   }
+  this.hub.unsubscribe("playbackCompleted", null, callingcontextself);
   this.hub.subscribe("playbackCompleted", audioOffsetCallback,
       callingcontextself);
 
@@ -120,18 +138,20 @@ OPrime.playAudioFile = function(divid, audioOffsetCallback, callingcontext) {
     Android.playAudio(audiourl);
   } else {
     this.debug("Playing Audio via HTML5:" + audiourl + ":");
-    document.getElementById(divid).addEventListener(
-        'ended',
-        function() {
-          OPrime.debug("End audio  "
-              + document.getElementById(divid).currentTime);
-          OPrime.hub.publish('playbackCompleted',
-              'Audio playback has completed:' + Date.now());
-        });
+    document.getElementById(divid).removeEventListener('ended',
+        OPrime.audioEndListener);
+    OPrime.debug("\tRemoved previous endaudio event listeners for " + audiourl);
+    document.getElementById(divid).addEventListener('ended',
+        OPrime.audioEndListener);
     document.getElementById(divid).play();
   }
 }
-
+OPrime.audioEndListener = function() {
+  var audiourl = this.getAttribute("src")
+  OPrime.debug("End audio ", audiourl);
+  OPrime.hub.publish('playbackCompleted', 'Audio playback has completed:'
+      + Date.now());
+};
 OPrime.pauseAudioFile = function(divid, callingcontext) {
   if (!callingcontext) {
     callingcontext = window;
@@ -152,7 +172,13 @@ OPrime.pauseAudioFile = function(divid, callingcontext) {
 
   }
 }
-OPrime.stopAudioFile = function(divid, callback) {
+OPrime.stopAudioFile = function(divid, callback, callingcontext) {
+  if (!callingcontext) {
+    callingcontext = window;
+  }
+  var callingcontextself = callingcontext;
+  OPrime.hub.unsubscribe("playbackCompleted", null, callingcontextself);
+
   if (this.isAndroidApp()) {
     this.debug("Stopping Audio via Android");
     Android.stopAudio();

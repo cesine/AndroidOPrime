@@ -30,8 +30,8 @@ document.getElementById("test_play_audio_button").onclick = function(e) {
 
 document.getElementById("test_play_audio_src_button").onclick = function(e) {
   if (e.target.innerHTML != "Pause audio src attribute") {
-    OPrime.playAudioFile('test_audio_no_source',function(){
-      //oncomplete change the text of the button to play
+    OPrime.playAudioFile('test_audio_no_source', function() {
+      // oncomplete change the text of the button to play
       e.target.innerHTML = "Play audio src attribute";
     });
     e.target.innerHTML = "Pause audio src attribute";
@@ -50,22 +50,68 @@ document.getElementById("test_play_audio_in_video_button").onclick = function(e)
   OPrime.playAudioFile('test_video_tag');
 }
 
-document.getElementById("no_syllable").onclick = function(e) {
-  OPrime.playIntervalAudioFile('test_audio_no_source', e.target.min,
-      e.target.max);
-}
+// document.getElementById("no_syllable").onclick = function(e) {
+// OPrime.playIntervalAudioFile('test_audio_no_source', e.target.min,
+// e.target.max);
+// }
+//
+// document.getElementById("qata_syllable").onclick = function(e) {
+// OPrime.playIntervalAudioFile('test_audio_no_source', e.target.min,
+// e.target.max);
+// }
+//
+// document.getElementById("tusu_syllable").onclick = function(e) {
+// OPrime.playIntervalAudioFile('test_audio_no_source', e.target.min,
+// e.target.max);
+// }
+//
+// document.getElementById("wan_syllable").onclick = function(e) {
+// OPrime.playIntervalAudioFile('test_audio_no_source', e.target.min,
+// e.target.max);
+// window.userHistory["wan_syllable"] = window.userHistory["wan_syllable"] ||
+// [];
+// window.userHistory["wan_syllable"].push(JSON.stringify(new Date()));
+// }
 
-document.getElementById("qata_syllable").onclick = function(e) {
-  OPrime.playIntervalAudioFile('test_audio_no_source', e.target.min,
-      e.target.max);
-}
+var syllables = document.getElementsByClassName("syllable");
+for ( var s in syllables) {
+  syllables[s].onclick = function(e) {
+    OPrime.playIntervalAudioFile('test_audio_no_source', e.target.min,
+        e.target.max);
+    window.userHistory[e.target.value] = window.userHistory[e.target.value]
+        || [];
+    window.userHistory[e.target.value].push(JSON.stringify(new Date()));
+    window.saveUser();
+  }
 
-document.getElementById("tusu_syllable").onclick = function(e) {
-  OPrime.playIntervalAudioFile('test_audio_no_source', e.target.min,
-      e.target.max);
 }
+/*
+ * Test capturing user's playback of audio, and saving it and restoring it from
+ * localstorage
+ */
+var userHistory = localStorage.getItem("userHistory");
+if (userHistory) {
+  userHistory = JSON.parse(userHistory);
+  OPrime.debug("Welcome back userid "+userHistory.id);
+} else {
+  userHistory = {};
+  userHistory.id = Date.now();
+}
+OPrime.hub
+    .subscribe(
+        "playbackCompleted",
+        function() {
+          window.userHistory.completedEntireAudioFile = window.userHistory.completedEntireAudioFile
+              || [];
+          window.userHistory.completedEntireAudioFile.push(JSON
+              .stringify(new Date()));
+          window.saveUser(); 
+        }, userHistory);
 
-document.getElementById("wan_syllable").onclick = function(e) {
-  OPrime.playIntervalAudioFile('test_audio_no_source', e.target.min,
-      e.target.max);
-}
+window.saveUser = function() {
+  localStorage.setItem("userHistory", JSON.stringify(window.userHistory));
+  OPrime.debug(JSON.stringify(window.userHistory));
+};
+
+//Android WebView is not calling the onbeforeunload to save the userHistory.
+window.onbeforeunload = window.saveUser;
