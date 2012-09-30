@@ -25,20 +25,25 @@ public class JavaScriptInterface implements Serializable {
 	 * context after initialization. This allows this class to be serialized and
 	 * sent as an Extra for maximum modularity.
 	 * 
-	 * @param d Debug mode, true or false
-	 * @param tag The log TAG to be used in logging if in debug mode
-	 * @param outputDir The output directory if needed by this JSI
+	 * @param d
+	 *            Debug mode, true or false
+	 * @param tag
+	 *            The log TAG to be used in logging if in debug mode
+	 * @param outputDir
+	 *            The output directory if needed by this JSI
 	 */
-	public JavaScriptInterface(boolean d, String tag, String outputDir) {
+	public JavaScriptInterface(boolean d, String tag, String outputDir, Context context) {
 		D = d;
 		TAG = tag;
 		mOutputDir = outputDir;
+		mContext = context;
 		if (D)
 			Log.d(TAG, "Initializing the Javascript Interface (JSI).");
 		mAudioFileUrl = "";
 	}
 
-	public JavaScriptInterface() {
+	public JavaScriptInterface(Context context) {
+		mContext = context;
 		mOutputDir = OPrime.OUTPUT_DIRECTORY;
 		mAudioFileUrl = "";
 		Log.d(TAG, "Initializing the Javascript Interface (JSI).");
@@ -53,8 +58,12 @@ public class JavaScriptInterface implements Serializable {
 	}
 
 	public void playAudio(String urlstring) {
+		urlstring = urlstring.trim();
+		if(urlstring == null || urlstring == ""){
+			return;
+		}
 		if (D)
-			Log.d(TAG, "In the play Audio JSI " + urlstring);
+			Log.d(TAG, "In the play Audio JSI :" + urlstring+":");
 		if (!mAudioFileUrl.equals(urlstring)) {
 			/*
 			 * New audio file
@@ -66,87 +75,66 @@ public class JavaScriptInterface implements Serializable {
 				}
 				mMediaPlayer.release();
 				mMediaPlayer = null;
+			}else{
+				mMediaPlayer = new MediaPlayer();
 			}
-			mMediaPlayer = new MediaPlayer();
-			try {
-				if (urlstring.contains("android_asset")) {
-					/*
-					 * http://stackoverflow.com/questions/3289038/play-audio-
-					 * file-from-the-assets-directory
-					 */
-					AssetFileDescriptor afd = mContext.getAssets().openFd(
-							urlstring.replace("file:///android_asset/", ""));
-					mMediaPlayer.setDataSource(afd.getFileDescriptor(),
-							afd.getStartOffset(), afd.getLength());
-				} else {
-					mMediaPlayer.setDataSource(urlstring);
-				}
-				mMediaPlayer.prepareAsync();
-				mMediaPlayer
-						.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
-							public void onPrepared(MediaPlayer mp) {
-								mMediaPlayer.start();
-							}
-						});
-			} catch (IllegalArgumentException e) {
-				Log.e(TAG,
-						"There was a problem with the  sound " + e.getMessage());
-			} catch (IllegalStateException e) {
-				Log.e(TAG,
-						"There was a problem with the  sound " + e.getMessage());
-			} catch (IOException e) {
-				Log.e(TAG,
-						"There was a problem with the  sound " + e.getMessage());
-			}
-
+			
 		} else {
 			/*
 			 * Same audio file
 			 */
 			if (mMediaPlayer == null) {
 				mMediaPlayer = new MediaPlayer();
-				try {
-					if (urlstring.contains("android_asset")) {
-						/*
-						 * http://stackoverflow.com/questions/3289038/play-audio
-						 * -file-from-the-assets-directory
-						 */
-						AssetFileDescriptor afd = mContext.getAssets()
-								.openFd(urlstring.replace(
-										"file:///android_asset/", ""));
-						mMediaPlayer.setDataSource(afd.getFileDescriptor(),
-								afd.getStartOffset(), afd.getLength());
-					} else {
-						mMediaPlayer.setDataSource(urlstring);
-					}
-					mMediaPlayer.prepareAsync();
-					mMediaPlayer
-							.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
-								public void onPrepared(MediaPlayer mp) {
-									mMediaPlayer.start();
-								}
-							});
-				} catch (IllegalArgumentException e) {
-					Log.e(TAG,
-							"There was a problem with the  sound "
-									+ e.getMessage());
-				} catch (IllegalStateException e) {
-					Log.e(TAG,
-							"There was a problem with the  sound "
-									+ e.getMessage());
-				} catch (IOException e) {
-					Log.e(TAG,
-							"There was a problem with the  sound "
-									+ e.getMessage());
-				}
 			}
-			if (mMediaPlayer.isPlaying()) {
-				return;
-			} else {
-				mMediaPlayer.start();
-			}
+			mMediaPlayer.stop();
+			mMediaPlayer.reset();
+			
 		}
-
+		try {
+			if (urlstring.contains("android_asset")) {
+				
+				AssetFileDescriptor afd = mContext.getAssets()
+						.openFd(urlstring.replace(
+								"file:///android_asset/", ""));
+				mMediaPlayer.setDataSource(afd.getFileDescriptor(),
+						afd.getStartOffset(), afd.getLength());
+				afd.close();
+			} else if (urlstring.contains("sdcard")) {
+				mMediaPlayer.setDataSource(urlstring);
+			} else {
+				AssetFileDescriptor afd = mContext.getAssets().openFd(
+						urlstring);
+				mMediaPlayer.setDataSource(afd.getFileDescriptor(),
+						afd.getStartOffset(), afd.getLength());
+				afd.close();
+			}
+			mMediaPlayer
+					.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+						public void onPrepared(MediaPlayer mp) {
+							if (D)
+								Log.d(TAG, "Starting to play the audio.");
+							mMediaPlayer.start();
+						}
+					});
+			mMediaPlayer.prepareAsync();
+		} catch (IllegalArgumentException e) {
+			Log.e(TAG,
+					"There was a problem with the  sound "
+							+ e.getMessage());
+		} catch (IllegalStateException e) {
+			Log.e(TAG,
+					"There was a problem with the  sound "
+							+ e.getMessage());
+			mMediaPlayer.start();
+		} catch (IOException e) {
+			Log.e(TAG,
+					"There was a problem with the  sound "
+							+ e.getMessage());
+		}catch (Exception e) {
+			Log.e(TAG,
+					"There was a problem with the  sound " + e.getMessage());
+			e.printStackTrace();
+		}
 	}
 
 	public String getAudioDir() {
