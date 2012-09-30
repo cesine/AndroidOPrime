@@ -34,11 +34,12 @@ OPrime.playAudioFile = function(divid, audioOffsetCallback) {
   /*
    * Android 4 plays HTML5 audio
    */
+  var audiourl = document.getElementById(divid).getAttribute("src")
   if (this.isAndroidApp()) {
-    this.debug("Playing Audio via Android");
-    Android.playAudio(document.getElementById(divid).src);
+    this.debug("Playing Audio via Android:"+ audiourl+":");
+    Android.playAudio(audiourl);
   } else {
-    this.debug("Playing Audio via HTML5");
+    this.debug("Playing Audio via HTML5:"+ audiourl+":");
     document.getElementById(divid).play();
   }
 }

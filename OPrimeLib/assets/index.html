@@ -16,30 +16,55 @@
 	<hr />
 
 	<button id="test_take_picture_button">Take a picture</button>
-	
+
 	<img id="result_image" src="" />
 
 	<hr />
 
-	<button id="test_play_audio_button">Play audio</button>
-	
-	<audio controls="controls" autoplay="autoplay" id="test_play_audio">
-		<source src="chime.mp3" type="audio/wav"></source>
-	</audio>
-
-	<hr />
 
 	<button id="test_record_audio_button">Record audio</button>
 
 	<audio controls="controls" id="result_audio">
-		<source src="" type="audio/wav"></source>
+		<source src=""></source>
 	</audio>
 
 	<hr />
 
-  Test callbacks and default action for links
-  
-  <a href="non_existant_page.html" id="test_prevent_default">Prevent Default</a>
+	Test callbacks and default action for links
+
+	<a href="non_existant_page.html" id="test_prevent_default">Prevent
+		Default</a>
+
+
+	<hr />
+	Various statements of audio tag
+
+
+	<hr />
+
+	<button id="test_play_audio_button">Play audio source tag (Doesn't work in Android)</button>
+
+	<audio controls="controls"  id="test_play_audio">
+		<source src="chime.mp3" type="audio/mp3"></source>
+	</audio>
+
+	<hr />
+
+	<button id="test_play_audio_src_button">Play audio src
+		attribute</button>
+
+	<audio controls="controls" id="test_audio_no_source" src="chime.mp3">
+	</audio>
+
+	<hr />
+
+	<button id="test_play_audio_in_video_button">Play audio in
+		video tag workaround</button>
+
+	<video controls="controls" id="test_video_tag" src="ploep.wav">
+	</video>
+
+	<hr />
 
 	<script src="oprime.js"></script>
 	<script src="tests.js"></script>

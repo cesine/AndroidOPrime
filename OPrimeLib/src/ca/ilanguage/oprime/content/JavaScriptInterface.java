@@ -32,7 +32,8 @@ public class JavaScriptInterface implements Serializable {
 	 * @param outputDir
 	 *            The output directory if needed by this JSI
 	 */
-	public JavaScriptInterface(boolean d, String tag, String outputDir, Context context) {
+	public JavaScriptInterface(boolean d, String tag, String outputDir,
+			Context context) {
 		D = d;
 		TAG = tag;
 		mOutputDir = outputDir;
@@ -59,51 +60,37 @@ public class JavaScriptInterface implements Serializable {
 
 	public void playAudio(String urlstring) {
 		urlstring = urlstring.trim();
-		if(urlstring == null || urlstring == ""){
+		if (urlstring == null || urlstring == "") {
 			return;
 		}
 		if (D)
-			Log.d(TAG, "In the play Audio JSI :" + urlstring+":");
-		if (!mAudioFileUrl.equals(urlstring)) {
-			/*
-			 * New audio file
-			 */
-			mAudioFileUrl = urlstring;
-			if (mMediaPlayer != null) {
-				if (mMediaPlayer.isPlaying()) {
-					mMediaPlayer.stop();
-				}
-				mMediaPlayer.release();
-				mMediaPlayer = null;
-			}else{
-				mMediaPlayer = new MediaPlayer();
-			}
-			
-		} else {
+			Log.d(TAG, "In the play Audio JSI :" + urlstring + ":");
+		if (mAudioFileUrl.equals(urlstring)) {
 			/*
 			 * Same audio file
 			 */
-			if (mMediaPlayer == null) {
-				mMediaPlayer = new MediaPlayer();
-			}
-			mMediaPlayer.stop();
-			mMediaPlayer.reset();
-			
 		}
+		if (mMediaPlayer != null) {
+			if (mMediaPlayer.isPlaying()) {
+				mMediaPlayer.stop();
+			}
+			mMediaPlayer.release();
+			mMediaPlayer = null;
+		}
+		mMediaPlayer = new MediaPlayer();
 		try {
 			if (urlstring.contains("android_asset")) {
-				
-				AssetFileDescriptor afd = mContext.getAssets()
-						.openFd(urlstring.replace(
-								"file:///android_asset/", ""));
+
+				AssetFileDescriptor afd = mContext.getAssets().openFd(
+						urlstring.replace("file:///android_asset/", ""));
 				mMediaPlayer.setDataSource(afd.getFileDescriptor(),
 						afd.getStartOffset(), afd.getLength());
 				afd.close();
 			} else if (urlstring.contains("sdcard")) {
 				mMediaPlayer.setDataSource(urlstring);
 			} else {
-				AssetFileDescriptor afd = mContext.getAssets().openFd(
-						urlstring);
+				AssetFileDescriptor afd = mContext.getAssets()
+						.openFd(urlstring);
 				mMediaPlayer.setDataSource(afd.getFileDescriptor(),
 						afd.getStartOffset(), afd.getLength());
 				afd.close();
@@ -113,26 +100,31 @@ public class JavaScriptInterface implements Serializable {
 						public void onPrepared(MediaPlayer mp) {
 							if (D)
 								Log.d(TAG, "Starting to play the audio.");
-							mMediaPlayer.start();
+							mp.start();
+						}
+					});
+			mMediaPlayer
+					.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+						@Override
+						public void onCompletion(MediaPlayer mp) {
+							if (D)
+								Log.d(TAG,
+										"Audio playback is complete, releasing the audio.");
+							mMediaPlayer.release();
+							mMediaPlayer = null;
 						}
 					});
 			mMediaPlayer.prepareAsync();
+			mAudioFileUrl = urlstring;
 		} catch (IllegalArgumentException e) {
-			Log.e(TAG,
-					"There was a problem with the  sound "
-							+ e.getMessage());
+			Log.e(TAG, "There was a problem with the  sound " + e.getMessage());
 		} catch (IllegalStateException e) {
-			Log.e(TAG,
-					"There was a problem with the  sound "
-							+ e.getMessage());
+			Log.e(TAG, "There was a problem with the  sound " + e.getMessage());
 			mMediaPlayer.start();
 		} catch (IOException e) {
-			Log.e(TAG,
-					"There was a problem with the  sound "
-							+ e.getMessage());
-		}catch (Exception e) {
-			Log.e(TAG,
-					"There was a problem with the  sound " + e.getMessage());
+			Log.e(TAG, "There was a problem with the  sound " + e.getMessage());
+		} catch (Exception e) {
+			Log.e(TAG, "There was a problem with the  sound " + e.getMessage());
 			e.printStackTrace();
 		}
 	}
@@ -195,5 +187,6 @@ public class JavaScriptInterface implements Serializable {
 	public void setAudioFileUrl(String mAudioFileUrl) {
 		this.mAudioFileUrl = mAudioFileUrl;
 	}
+	
 
 }
