@@ -1,10 +1,11 @@
-This is code to run background Video and Audio recorder services for experimentaiton on Android tablets. 
+This is code to run background Video, Audio, Camera services for experimentation on Android tablets. 
+It contains classes for both pure Android experiments, and HTML5 experiments.
 
 
 The audience of this project:
 
-* open source programmers
-* researchers who program, or have a programmer in their team who can adapt the code to their needs
+* programmers
+* researchers who can/want to program, or have a programmer in their team who can adapt the code to their needs
 
 
 The next steps:
