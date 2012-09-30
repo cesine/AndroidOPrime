@@ -1,5 +1,6 @@
 package ca.ilanguage.oprime.content;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
 
@@ -251,6 +252,7 @@ public class JavaScriptInterface implements Serializable {
   }
 
   public void startAudioRecordingService(String resultfilename) {
+    new File(mOutputDir).mkdirs();
     Intent intent;
     intent = new Intent(OPrime.INTENT_START_AUDIO_RECORDING);
     intent.putExtra(OPrime.EXTRA_RESULT_FILENAME, mOutputDir + resultfilename);

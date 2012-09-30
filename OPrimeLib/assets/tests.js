@@ -36,6 +36,10 @@ document.getElementById("test_play_audio_button").onclick = function(e) {
   OPrime.playAudioFile('test_play_audio');
 }
 
+document.getElementById("test_recorded_audio_button").onclick = function(e) {
+  OPrime.playAudioFile('result_audio');
+}
+
 document.getElementById("test_play_audio_src_button").onclick = function(e) {
   if (e.target.innerHTML != "Pause audio src attribute") {
     OPrime.playAudioFile('test_audio_no_source', function() {
