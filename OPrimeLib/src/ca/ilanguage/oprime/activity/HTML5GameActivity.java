@@ -25,7 +25,7 @@ public class HTML5GameActivity extends Activity {
 
 	protected String mOutputDir;
 	protected String mInitialAppServerUrl;
-	protected WebView mWebView;
+	public WebView mWebView;
 	protected JavaScriptInterface mJavaScriptInterface;
 
 	/** Called when the activity is first created. */
@@ -42,7 +42,7 @@ public class HTML5GameActivity extends Activity {
 			D = true;
 			mInitialAppServerUrl = "file:///android_asset/index.html";// "http://192.168.0.180:3001/";
 			mJavaScriptInterface = new JavaScriptInterface(
-					D, TAG, mOutputDir, getApplicationContext());
+					D, TAG, mOutputDir, getApplicationContext(), this);
 			if(D) Log.d(TAG, "Using the OPrime default javascript interface.");
 
 			return;
@@ -76,11 +76,12 @@ public class HTML5GameActivity extends Activity {
 			mJavaScriptInterface.setTAG(TAG);
 			mJavaScriptInterface.setD(D);
 			mJavaScriptInterface.setOutputDir(mOutputDir);
+			mJavaScriptInterface.setUIParent(this);
 			if(D) Log.d(TAG, "Using a javascript interface sent by the caller.");
 			
 		} else {
 			mJavaScriptInterface = new JavaScriptInterface(
-					D, TAG, mOutputDir, getApplicationContext());
+					D, TAG, mOutputDir, getApplicationContext(), this);
 			if(D) Log.d(TAG, "Using a default javascript interface.");
 		}
 	}
@@ -104,7 +105,13 @@ public class HTML5GameActivity extends Activity {
 		webSettings.setUserAgentString(webSettings.getUserAgentString() + " "
 				+ OPrime.USER_AGENT_STRING);
 		mWebView.loadUrl(mInitialAppServerUrl);
+		mJavaScriptInterface.setUIParent(this);
+
 		
+	}
+	
+	public void loadUrlToWebView(String message){
+		mWebView.loadUrl(message);
 	}
 
 	class MyWebChromeClient extends WebChromeClient {

@@ -3,10 +3,13 @@ package ca.ilanguage.oprime.content;
 import java.io.IOException;
 import java.io.Serializable;
 
+import ca.ilanguage.oprime.activity.HTML5GameActivity;
+
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.AssetFileDescriptor;
 import android.media.MediaPlayer;
+import android.os.AsyncTask;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -19,7 +22,7 @@ public class JavaScriptInterface implements Serializable {
 	protected String mOutputDir;
 	public MediaPlayer mMediaPlayer;
 	protected String mAudioFileUrl;
-
+	public HTML5GameActivity mUIParent;
 	/**
 	 * Can pass in all or none of the parameters. Expects the caller to set the
 	 * context after initialization. This allows this class to be serialized and
@@ -33,7 +36,7 @@ public class JavaScriptInterface implements Serializable {
 	 *            The output directory if needed by this JSI
 	 */
 	public JavaScriptInterface(boolean d, String tag, String outputDir,
-			Context context) {
+			Context context, HTML5GameActivity UIParent) {
 		D = d;
 		TAG = tag;
 		mOutputDir = outputDir;
@@ -41,6 +44,7 @@ public class JavaScriptInterface implements Serializable {
 		if (D)
 			Log.d(TAG, "Initializing the Javascript Interface (JSI).");
 		mAudioFileUrl = "";
+		mUIParent = UIParent;
 	}
 
 	public JavaScriptInterface(Context context) {
@@ -110,8 +114,13 @@ public class JavaScriptInterface implements Serializable {
 							if (D)
 								Log.d(TAG,
 										"Audio playback is complete, releasing the audio.");
+							
 							mMediaPlayer.release();
 							mMediaPlayer = null;
+//							mUIParent.loadUrlToWebView();
+							LoadUrlToWebView v = new LoadUrlToWebView();
+							v.setMessage("javascript:OPrime.hub.publish('playbackCompleted','Audio playback has completed: '+Date.now());");
+							v.execute();
 						}
 					});
 			mMediaPlayer.prepareAsync();
@@ -146,6 +155,30 @@ public class JavaScriptInterface implements Serializable {
 		share.setType("text/plain");
 		share.putExtra(Intent.EXTRA_TEXT, message);
 		mContext.startActivity(Intent.createChooser(share, "Share with"));
+	}
+
+	public class LoadUrlToWebView extends
+			AsyncTask<Void, Void, String> {
+		private String mMessage;
+		@Override
+		protected String doInBackground(Void... params) {
+
+			String result = "";
+			return result;
+		}
+
+		protected void onPreExecute() {
+			Log.d(TAG, "In the Pre execute of the LoadUrlToWebView task.");
+		}
+
+		protected void setMessage(String message){
+			mMessage = message;
+		}
+		protected void onPostExecute(String result) {
+			Log.d(TAG,
+					"In the post execute of the LoadUrlToWebView task. Now trying to send data to the webview.");
+			mUIParent.mWebView.loadUrl(mMessage);
+		}
 	}
 
 	public Context getContext() {
@@ -186,6 +219,14 @@ public class JavaScriptInterface implements Serializable {
 
 	public void setAudioFileUrl(String mAudioFileUrl) {
 		this.mAudioFileUrl = mAudioFileUrl;
+	}
+
+	public HTML5GameActivity getUIParent() {
+		return mUIParent;
+	}
+
+	public void setUIParent(HTML5GameActivity mUIParent) {
+		this.mUIParent = mUIParent;
 	}
 	
 
