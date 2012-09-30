@@ -145,8 +145,9 @@ OPrime.pauseAudioFile = function(divid, callingcontext) {
   } else {
     this.debug("Pausing Audio via HTML5");
     document.getElementById(divid).pause();
-    if(document.getElementById(divid).currentTime > 0.05){
-      document.getElementById(divid).currentTime =  document.getElementById(divid).currentTime - 0.05;
+    if (document.getElementById(divid).currentTime > 0.05) {
+      document.getElementById(divid).currentTime = document
+          .getElementById(divid).currentTime - 0.05;
     }
 
   }
@@ -166,12 +167,15 @@ OPrime.stopAudioFile = function(divid, callback) {
 }
 OPrime.playingInterval = false;
 OPrime.playIntervalAudioFile = function(divid, startime, endtime, callback) {
+  startime = parseFloat(startime, 10);
+  endtime = parseFloat(endtime, 10);
   if (this.isAndroidApp()) {
     this.debug("Playing Audio via Android from " + startime + " to " + endtime);
-    Android.playIntervalOfAudio(startime, endtime);
+    startime = startime * 1000;
+    endtime = endtime * 1000;
+    var audiourl = document.getElementById(divid).getAttribute("src")
+    Android.playIntervalOfAudio(audiourl, startime, endtime);
   } else {
-    startime = parseFloat(startime, 10);
-    endtime = parseFloat(endtime, 10) ;
     this.debug("Playing Audio via HTML5 from " + startime + " to " + endtime);
     document.getElementById(divid).pause();
     document.getElementById(divid).currentTime = startime;
@@ -183,7 +187,10 @@ OPrime.playIntervalAudioFile = function(divid, startime, endtime, callback) {
       if (this.currentTime >= endtime && OPrime.playingInterval) {
         OPrime.debug("CurrentTime: " + this.currentTime);
         this.pause();
-        OPrime.playingInterval = false; /* workaround for not being able to remove events */
+        OPrime.playingInterval = false; /*
+                                         * workaround for not being able to
+                                         * remove events
+                                         */
       }
     });
   }
@@ -211,7 +218,7 @@ OPrime.capturePhoto = function(callback) {
 /*
  * Initialize the debugging output, taking control from the Android side.
  */
-OPrime.debug("Intializing OPrime library. \n" + "The user agent is "
+OPrime.debug("Intializing OPrime Javascript library. \n" + "The user agent is "
     + navigator.userAgent);
 
 if (OPrime.isAndroidApp()) {
