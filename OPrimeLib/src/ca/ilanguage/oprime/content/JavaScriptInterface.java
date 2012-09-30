@@ -256,12 +256,22 @@ public class JavaScriptInterface implements Serializable {
     intent.putExtra(OPrime.EXTRA_RESULT_FILENAME, mOutputDir + resultfilename);
     mUIParent.startService(intent);
     // TODO publish started
+    LoadUrlToWebView v = new LoadUrlToWebView();
+    v.setMessage("javascript:OPrime.hub.publish('audioRecordingSucessfullyStarted','"+resultfilename+"');");
+    v.execute();
   }
 
   public void stopAudioRecordingService(String resultfilename) {
     Intent audio = new Intent(OPrime.INTENT_START_AUDIO_RECORDING);
     mUIParent.stopService(audio);
     // TODO publish completed
+    LoadUrlToWebView v = new LoadUrlToWebView();
+    v.setMessage("javascript:OPrime.hub.publish('audioRecordingSucessfullyStopped','"+mOutputDir+resultfilename+"');");
+    v.execute();
+    //TODO add listener to be sure the file works(?)
+    LoadUrlToWebView t = new LoadUrlToWebView();
+    t.setMessage("javascript:OPrime.hub.publish('audioRecordingCompleted','"+mOutputDir+resultfilename+"');");
+    t.execute();
   }
 
   public String getAudioDir() {
