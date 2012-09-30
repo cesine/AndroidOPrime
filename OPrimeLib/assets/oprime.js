@@ -27,6 +27,10 @@ OPrime.publisher = {
   visitSubscribers : function(action, type, arg, context) {
     var pubtype = type || 'any';
     var subscribers = this.subscribers[pubtype];
+    if(!subscribers || subscribers.length == 0){
+      OPrime.debug("There were no subscribers.");
+      return;
+    }
     var i;
     var maxUnsubscribe = subscribers ? subscribers.length - 1 : 0;
     var maxPublish = subscribers ? subscribers.length : 0;
@@ -47,6 +51,7 @@ OPrime.publisher = {
       OPrime.debug('Visited ' + subscribers.length + ' subscribers.');
 
     } else {
+      
       // count down so that subscribers index exists when we remove them
       for (i = maxUnsubscribe; i >= 0; i--) {
         try {
@@ -224,11 +229,55 @@ OPrime.playIntervalAudioFile = function(divid, startime, endtime, callback) {
     callback();
   }
 }
-OPrime.captureAudio = function(callback) {
-  var resultUrl = "chime.mp3"
-  if (typeof callback == "function") {
-    return callback(resultUrl);
+OPrime.captureAudio = function(resultfilename, callbackRecordingStarted,
+    callbackRecordingCompleted, callingcontext) {
+
+  /*
+   * verify completed callback and subscribe it to audioRecordingCompleted
+   */
+  var callingcontextself = callingcontext;
+  if (!callbackRecordingCompleted) {
+    callbackRecordingCompleted = function(message) {
+      OPrime.debug("In callbackRecordingCompleted: " + message);
+      OPrime.hub.unsubscribe("audioRecordingCompleted", null,
+          callingcontextself);
+    }
   }
+  this.hub.unsubscribe("audioRecordingCompleted", null, callingcontextself);
+  this.hub.subscribe("audioRecordingCompleted", callbackRecordingCompleted,
+      callingcontextself);
+
+  /*
+   * verify started callback and subscribe it to
+   * audioRecordingSucessfullyStarted
+   */
+  if (!callbackRecordingStarted) {
+    callbackRecordingStarted = function(message) {
+      OPrime.debug("In callbackRecordingStarted: " + message);
+      OPrime.hub.unsubscribe("audioRecordingSucessfullyStarted", null,
+          callingcontextself);
+    }
+  }
+  this.hub.unsubscribe("audioRecordingSucessfullyStarted", null,
+      callingcontextself);
+  this.hub.subscribe("audioRecordingSucessfullyStarted",
+      callbackRecordingStarted, callingcontextself);
+
+  /* start the recording */
+  if (this.isAndroidApp()) {
+    this.debug("Recording Audio via Android");
+    Android.startAudioRecordingService(resultfilename);
+    // the android will publish if its successfully started
+  } else {
+    this.debug("Recording Audio via HTML5: " + resultfilename);
+    alert("Recording audio only works on Android, because it has a microphone, and your computer might not.\n\n Faking that it was sucessful")
+    // fake publish it was sucessfully started
+    this.hub.publish('audioRecordingSucessfullyStarted', resultfilename);
+    // fake publish it finished
+    resultfilename = "chime.mp3"
+    this.hub.publish('audioRecordingCompleted', resultfilename);
+  }
+
 }
 
 /*

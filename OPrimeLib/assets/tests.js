@@ -6,22 +6,19 @@ document.getElementById("test_take_picture_button").onclick = function(e) {
 }
 
 document.getElementById("test_record_audio_button").onclick = function(e) {
-  OPrime.captureAudio(function(audioUrl) {
+  OPrime.captureAudio("test_audio_recording.mp3", /* started */function(
+      audioUrl) {
+    OPrime.debug("\nRecording successfully started " + audioUrl);
+  }, /* Recording complete */function(audioUrl) {
+    OPrime.debug("Attaching sucessful recording to the result audio div "
+        + audioUrl);
     document.getElementById("result_audio").src = audioUrl;
-    return false;
+    //TODO play audio
   });
 }
 document.getElementById("test_prevent_default").onclick = function(e) {
   e.preventDefault();
-  OPrime.captureAudio(function(audioUrl) {
-    document.getElementById("result_audio").src = audioUrl;
-    if (this !== window) {
-      OPrime.bug("Loss of this.");
-    } else {
-      console.log("This is intact in callback.");
-    }
-    console.log(e);
-  });
+
 }
 
 document.getElementById("test_play_audio_button").onclick = function(e) {
@@ -92,7 +89,7 @@ for ( var s in syllables) {
 var userHistory = localStorage.getItem("userHistory");
 if (userHistory) {
   userHistory = JSON.parse(userHistory);
-  OPrime.debug("Welcome back userid "+userHistory.id);
+  OPrime.debug("Welcome back userid " + userHistory.id);
 } else {
   userHistory = {};
   userHistory.id = Date.now();
@@ -105,7 +102,7 @@ OPrime.hub
               || [];
           window.userHistory.completedEntireAudioFile.push(JSON
               .stringify(new Date()));
-          window.saveUser(); 
+          window.saveUser();
         }, userHistory);
 
 window.saveUser = function() {
@@ -113,5 +110,5 @@ window.saveUser = function() {
   OPrime.debug(JSON.stringify(window.userHistory));
 };
 
-//Android WebView is not calling the onbeforeunload to save the userHistory.
+// Android WebView is not calling the onbeforeunload to save the userHistory.
 window.onbeforeunload = window.saveUser;
