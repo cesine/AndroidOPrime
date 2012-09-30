@@ -128,10 +128,13 @@ OPrime.playAudioFile = function(divid, audioOffsetCallback, callingcontext) {
   }
 }
 
-OPrime.pauseAudioFile = function(divid) {
-  /*
-   * Android 4 plays HTML5 audio
-   */
+OPrime.pauseAudioFile = function(divid, callingcontext) {
+  if (!callingcontext) {
+    callingcontext = window;
+  }
+  var callingcontextself = callingcontext;
+  OPrime.hub.unsubscribe("playbackCompleted", null, callingcontextself);
+
   if (this.isAndroidApp()) {
     this.debug("Pausing Audio via Android");
     Android.pauseAudio();
@@ -140,7 +143,19 @@ OPrime.pauseAudioFile = function(divid) {
     document.getElementById(divid).pause();
   }
 }
-
+OPrime.stopAudioFile = function(divid, callback) {
+  if (this.isAndroidApp()) {
+    this.debug("Stopping Audio via Android");
+    Android.stopAudio();
+  } else {
+    this.debug("Stopping Audio via HTML5");
+    document.getElementById(divid).pause();
+    document.getElementById(divid).currentTime=0;
+  }
+  if(typeof callback == "function"){
+    callback();
+  }
+}
 OPrime.captureAudio = function(callback) {
   var resultUrl = "chime.mp3"
   if (typeof callback == "function") {

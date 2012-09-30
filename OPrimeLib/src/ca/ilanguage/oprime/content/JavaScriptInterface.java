@@ -21,8 +21,10 @@ public class JavaScriptInterface implements Serializable {
 	protected Context mContext;
 	protected String mOutputDir;
 	public MediaPlayer mMediaPlayer;
+	public int mCurrentAudioPosition;
 	protected String mAudioFileUrl;
 	public HTML5GameActivity mUIParent;
+
 	/**
 	 * Can pass in all or none of the parameters. Expects the caller to set the
 	 * context after initialization. This allows this class to be serialized and
@@ -58,7 +60,18 @@ public class JavaScriptInterface implements Serializable {
 		if (mMediaPlayer != null) {
 			if (mMediaPlayer.isPlaying()) {
 				mMediaPlayer.pause();
+				mCurrentAudioPosition = mMediaPlayer.getCurrentPosition();
 			}
+		}
+	}
+
+	public void stopAudio() {
+		if (mMediaPlayer != null) {
+			if (mMediaPlayer.isPlaying()) {
+				mMediaPlayer.stop();
+			}
+			mMediaPlayer.release();
+			mMediaPlayer = null;
 		}
 	}
 
@@ -73,13 +86,28 @@ public class JavaScriptInterface implements Serializable {
 			/*
 			 * Same audio file
 			 */
-		}
-		if (mMediaPlayer != null) {
-			if (mMediaPlayer.isPlaying()) {
-				mMediaPlayer.stop();
+			if (mMediaPlayer != null) {
+				if (mMediaPlayer.isPlaying()) {
+					mMediaPlayer.pause();
+					mCurrentAudioPosition = mMediaPlayer.getCurrentPosition();
+					return;
+				} else {
+					mMediaPlayer.seekTo(mCurrentAudioPosition);
+					mMediaPlayer.start();
+					return;
+				}
 			}
-			mMediaPlayer.release();
-			mMediaPlayer = null;
+		} else {
+			/*
+			 * New audio file
+			 */
+			if (mMediaPlayer != null) {
+				if (mMediaPlayer.isPlaying()) {
+					mMediaPlayer.stop();
+				}
+				mMediaPlayer.release();
+				mMediaPlayer = null;
+			}
 		}
 		mMediaPlayer = new MediaPlayer();
 		try {
@@ -114,10 +142,10 @@ public class JavaScriptInterface implements Serializable {
 							if (D)
 								Log.d(TAG,
 										"Audio playback is complete, releasing the audio.");
-							
+
 							mMediaPlayer.release();
 							mMediaPlayer = null;
-//							mUIParent.loadUrlToWebView();
+							// mUIParent.loadUrlToWebView();
 							LoadUrlToWebView v = new LoadUrlToWebView();
 							v.setMessage("javascript:OPrime.hub.publish('playbackCompleted','Audio playback has completed: '+Date.now());");
 							v.execute();
@@ -157,9 +185,9 @@ public class JavaScriptInterface implements Serializable {
 		mContext.startActivity(Intent.createChooser(share, "Share with"));
 	}
 
-	public class LoadUrlToWebView extends
-			AsyncTask<Void, Void, String> {
+	public class LoadUrlToWebView extends AsyncTask<Void, Void, String> {
 		private String mMessage;
+
 		@Override
 		protected String doInBackground(Void... params) {
 
@@ -171,9 +199,10 @@ public class JavaScriptInterface implements Serializable {
 			Log.d(TAG, "In the Pre execute of the LoadUrlToWebView task.");
 		}
 
-		protected void setMessage(String message){
+		protected void setMessage(String message) {
 			mMessage = message;
 		}
+
 		protected void onPostExecute(String result) {
 			Log.d(TAG,
 					"In the post execute of the LoadUrlToWebView task. Now trying to send data to the webview.");
@@ -228,6 +257,5 @@ public class JavaScriptInterface implements Serializable {
 	public void setUIParent(HTML5GameActivity mUIParent) {
 		this.mUIParent = mUIParent;
 	}
-	
 
 }
