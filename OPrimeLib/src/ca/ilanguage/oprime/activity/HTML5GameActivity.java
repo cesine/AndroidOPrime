@@ -41,7 +41,7 @@ public class HTML5GameActivity extends Activity {
     if (getIntent().getExtras() == null) {
       mOutputDir = OPrime.OUTPUT_DIRECTORY;
       D = true;
-      mInitialAppServerUrl = "file:///android_asset/index.html";// "http://192.168.0.180:3001/";
+      mInitialAppServerUrl = "file:///android_asset/OPrimeTest.html";// "http://192.168.0.180:3001/";
       mJavaScriptInterface = new JavaScriptInterface(D, TAG, mOutputDir,
           getApplicationContext(), this);
       if (D)
@@ -61,7 +61,7 @@ public class HTML5GameActivity extends Activity {
 
     D = getIntent().getExtras().getBoolean(OPrime.EXTRA_DEBUG_MODE, false);
 
-    mInitialAppServerUrl = "file:///android_asset/index.html";// "http://192.168.0.180:3001/";
+    mInitialAppServerUrl = "file:///android_asset/OPrimeTest.html";// "http://192.168.0.180:3001/";
     if (getIntent().getExtras().getString(
         OPrime.EXTRA_HTML5_SUB_EXPERIMENT_INITIAL_URL) != null) {
       mInitialAppServerUrl = getIntent().getExtras().getString(
