@@ -43,7 +43,7 @@ public class HTML5GameActivity extends Activity {
       D = true;
       mInitialAppServerUrl = "file:///android_asset/OPrimeTest.html";// "http://192.168.0.180:3001/";
       mJavaScriptInterface = new JavaScriptInterface(D, TAG, mOutputDir,
-          getApplicationContext(), this);
+          getApplicationContext(), this, "");
       if (D)
         Log.d(TAG, "Using the OPrime default javascript interface.");
 
@@ -82,7 +82,7 @@ public class HTML5GameActivity extends Activity {
 
     } else {
       mJavaScriptInterface = new JavaScriptInterface(D, TAG, mOutputDir,
-          getApplicationContext(), this);
+          getApplicationContext(), this, "");
       if (D)
         Log.d(TAG, "Using a default javascript interface.");
     }
