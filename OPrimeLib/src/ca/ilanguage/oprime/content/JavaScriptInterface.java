@@ -103,11 +103,13 @@ public class JavaScriptInterface implements Serializable {
       return;
     }
     if (D)
-      Log.d(TAG, "In the play Audio JSI :" + urlstring + ":");
-    if (mAudioPlaybackFileUrl.equals(urlstring)) {
+      Log.d(TAG, "In the play Audio JSI :" + urlstring + ": playing:"+mAudioPlaybackFileUrl+":");
+    if (mAudioPlaybackFileUrl.contains(urlstring)) {
       /*
        * Same audio file
        */
+      if (D)
+        Log.d(TAG, "Resuming play of the same file :" + mAudioPlaybackFileUrl + ":");
       if (mMediaPlayer != null) {
         if (mMediaPlayer.isPlaying()) {
           mMediaPlayer.pause();
@@ -123,6 +125,8 @@ public class JavaScriptInterface implements Serializable {
       /*
        * New audio file
        */
+      if (D)
+        Log.d(TAG, "Playing new file from the beginning :" + mAudioPlaybackFileUrl + ":");
       if (mMediaPlayer != null) {
         if (mMediaPlayer.isPlaying()) {
           mMediaPlayer.stop();
