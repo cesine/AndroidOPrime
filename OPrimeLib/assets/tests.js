@@ -15,11 +15,13 @@ document.getElementById("test_record_audio_button").onclick = function(e) {
       OPrime.debug("Attaching sucessful recording to the result audio div "
           + audioUrl);
       document.getElementById("result_audio").src = audioUrl;
-      e.target.removeAttribute("disabled","disabled");
-      // TODO play audio
+      e.target.removeAttribute("disabled", "disabled");
+      // Play recorded audio
+      OPrime.playAudioFile('result_audio');
+
     });
   } else {
-    e.target.setAttribute("disabled","disabled");
+    e.target.setAttribute("disabled", "disabled");
     OPrime.stopAndSaveAudio("test_audio_recording.mp3", /* stopped */function(
         audioUrl) {
       e.target.innerHTML = "Record audio";
@@ -61,29 +63,6 @@ document.getElementById("test_stop_audio_src_button").onclick = function(e) {
 document.getElementById("test_play_audio_in_video_button").onclick = function(e) {
   OPrime.playAudioFile('test_video_tag');
 }
-
-// document.getElementById("no_syllable").onclick = function(e) {
-// OPrime.playIntervalAudioFile('test_audio_no_source', e.target.min,
-// e.target.max);
-// }
-//
-// document.getElementById("qata_syllable").onclick = function(e) {
-// OPrime.playIntervalAudioFile('test_audio_no_source', e.target.min,
-// e.target.max);
-// }
-//
-// document.getElementById("tusu_syllable").onclick = function(e) {
-// OPrime.playIntervalAudioFile('test_audio_no_source', e.target.min,
-// e.target.max);
-// }
-//
-// document.getElementById("wan_syllable").onclick = function(e) {
-// OPrime.playIntervalAudioFile('test_audio_no_source', e.target.min,
-// e.target.max);
-// window.userHistory["wan_syllable"] = window.userHistory["wan_syllable"] ||
-// [];
-// window.userHistory["wan_syllable"].push(JSON.stringify(new Date()));
-// }
 
 var syllables = document.getElementsByClassName("syllable");
 for ( var s in syllables) {

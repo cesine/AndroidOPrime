@@ -257,22 +257,26 @@ public class JavaScriptInterface implements Serializable {
     intent = new Intent(OPrime.INTENT_START_AUDIO_RECORDING);
     intent.putExtra(OPrime.EXTRA_RESULT_FILENAME, mOutputDir + resultfilename);
     mUIParent.startService(intent);
-    // TODO publish started
+    // Publish audio recording started
     LoadUrlToWebView v = new LoadUrlToWebView();
-    v.setMessage("javascript:OPrime.hub.publish('audioRecordingSucessfullyStarted','"+resultfilename+"');");
+    v.setMessage("javascript:OPrime.hub.publish('audioRecordingSucessfullyStarted','"
+        + resultfilename + "');");
     v.execute();
   }
 
   public void stopAudioRecordingService(String resultfilename) {
     Intent audio = new Intent(OPrime.INTENT_START_AUDIO_RECORDING);
     mUIParent.stopService(audio);
-    // TODO publish completed
+    // Publish stopped audio
     LoadUrlToWebView v = new LoadUrlToWebView();
-    v.setMessage("javascript:OPrime.hub.publish('audioRecordingSucessfullyStopped','"+mOutputDir+resultfilename+"');");
+    v.setMessage("javascript:OPrime.hub.publish('audioRecordingSucessfullyStopped','"
+        + mOutputDir + resultfilename + "');");
     v.execute();
-    //TODO add listener to be sure the file works(?)
+    // TODO add broadcast and listener from audio service to be sure the file
+    // works(?)
     LoadUrlToWebView t = new LoadUrlToWebView();
-    t.setMessage("javascript:OPrime.hub.publish('audioRecordingCompleted','"+mOutputDir+resultfilename+"');");
+    t.setMessage("javascript:OPrime.hub.publish('audioRecordingCompleted','"
+        + mOutputDir + resultfilename + "');");
     t.execute();
   }
 
