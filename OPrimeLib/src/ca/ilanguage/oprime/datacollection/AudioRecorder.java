@@ -4,6 +4,7 @@ import java.io.IOException;
 
 import ca.ilanguage.oprime.activity.OPrimeLib;
 import ca.ilanguage.oprime.content.OPrime;
+import android.annotation.SuppressLint;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -19,6 +20,7 @@ import android.os.IBinder;
 
 import ca.ilanguage.oprime.R;
 
+@SuppressLint({ "NewApi" })
 public class AudioRecorder extends Service {
 	
 	protected static String TAG = "AudioRecorder";
@@ -42,7 +44,7 @@ public class AudioRecorder extends Service {
 
 
 
-	@Override
+  @Override
 	public void onCreate() {
 		super.onCreate();
 		if (audioFileUpdateReceiver == null){
@@ -66,7 +68,7 @@ public class AudioRecorder extends Service {
 			builder.setContentIntent(mContentIntent)
 			            .setSmallIcon(mAuBlogIconId)
 			            .setLargeIcon(BitmapFactory.decodeResource(res, R.drawable.ic_oprime))
-			            .setTicker("hi ticker")
+			            .setTicker(res.getString(R.string.app_name))
 			            .setWhen(System.currentTimeMillis())
 			            .setAutoCancel(true)
 			            .setContentTitle(res.getString(R.string.app_name))
