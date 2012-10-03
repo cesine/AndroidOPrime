@@ -339,17 +339,15 @@ public class JavaScriptInterface implements Serializable {
 
   public void takeAPicture(String resultfilename){
     new File(mOutputDir).mkdirs();
-    if (mTakeAPictureFileUrl != null) {
-      return;
-    }
+    
     if (D)
-      Log.d(TAG, "This is what the audiofile looked like:" + resultfilename);
+      Log.d(TAG, "This is what the image file looked like:" + resultfilename);
     String tempurlstring = "";
     tempurlstring = resultfilename.replaceFirst("/", "").replaceFirst("file:",
         "");
     mTakeAPictureFileUrl = mOutputDir + tempurlstring;
     if (D)
-      Log.d(TAG, "This is what the audiofile looks like:" + mTakeAPictureFileUrl);
+      Log.d(TAG, "This is what the image file looks like:" + mTakeAPictureFileUrl);
 
     // Publish picture taking started
     LoadUrlToWebView v = new LoadUrlToWebView();
@@ -360,7 +358,7 @@ public class JavaScriptInterface implements Serializable {
     Intent intent;
     intent = new Intent(OPrime.INTENT_TAKE_PICTURE);
     intent.putExtra(OPrime.EXTRA_RESULT_FILENAME, mTakeAPictureFileUrl);
-    mUIParent.startService(intent);
+    mUIParent.startActivityForResult(intent, OPrime.PICTURE_TAKEN);
   }
   
   public void showToast(String toast) {

@@ -230,7 +230,9 @@ OPrime.playIntervalAudioFile = function(divid, startime, endtime, callback) {
 }
 OPrime.captureAudio = function(resultfilename, callbackRecordingStarted,
     callbackRecordingCompleted, callingcontext) {
-
+  if (!callingcontext) {
+    callingcontext = window;
+  }
   /*
    * verify completed callback and subscribe it to audioRecordingCompleted
    */
@@ -315,9 +317,11 @@ OPrime.stopAndSaveAudio = function(resultfilename, callbackRecordingStopped,
 /*
  * Camera functions
  */
-OPrime.capturePhoto = function(resultfilename, callbackPictureCaptureStarted,
+OPrime.capturePhoto = function(resultfilename, callbackPictureCaptureStarted, callbackPictureCaptureCompleted,
     callingcontext) {
-
+  if (!callingcontext) {
+    callingcontext = window;
+  }
   /*
    * verify completed callback and subscribe it to audioRecordingCompleted
    */
@@ -329,27 +333,36 @@ OPrime.capturePhoto = function(resultfilename, callbackPictureCaptureStarted,
           callingcontextself);
     };
   }
+  if (!callbackPictureCaptureCompleted) {
+    callbackPictureCaptureCompleted = function(message) {
+      OPrime.debug("In callbackPictureCaptureCompleted: " + message);
+      OPrime.hub.unsubscribe("pictureCaptureSucessfullyCompleted", null,
+          callingcontextself);
+    };
+  }
+  /* unsubscribe this context from the chanel incase the user calls it many times on teh same item, only fire the last event */
   this.hub.unsubscribe("pictureCaptureSucessfullyStarted", null,
       callingcontextself);
+  this.hub.unsubscribe("pictureCaptureSucessfullyCompleted", null,
+      callingcontextself);
+  /* subscribe the caller's functions to the channels */
   this.hub.subscribe("pictureCaptureSucessfullyStarted",
       callbackPictureCaptureStarted, callingcontextself);
+  this.hub.subscribe("pictureCaptureSucessfullyCompleted",
+      callbackPictureCaptureCompleted, callingcontextself);
 
-  /* start the recording */
+  /* start the picture taking */
   if (this.isAndroidApp()) {
     this.debug("Starting picture capture via Android");
-    Android.stopAudioRecordingService(resultfilename);
-    // the android will publish if its successfully started
+    Android.takeAPicture(resultfilename);
+    // the android will publish if its successfully started and completed
   } else {
     this.debug("Starting picture capture via HTML5: " + resultfilename);
-    alert("Taking a picture only works on Android, because it has a camera, and your computer might not.\n\n Faking that taken a picture and saved sucessfully")
+    alert("Taking a picture only works on Android, because it has a camera, and your computer might not.\n\n Faking that taken a picture and saved sucessfully");
     // fake publish it was sucessfully started
-    resultfilename = "happyface.jpg"
+    resultfilename = "happyface.jpg";
     this.hub.publish('pictureCaptureSucessfullyStarted', resultfilename);
-  }
-
-  var resultUrl = "oprime48.png"
-  if (typeof callback == "function") {
-    return callback(resultUrl);
+    this.hub.publish('pictureCaptureSucessfullyCompleted', resultfilename);
   }
 };
 
