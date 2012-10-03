@@ -27,7 +27,10 @@ public class JavaScriptInterface implements Serializable {
   protected Handler mHandler;
   public ListenForEndAudioInterval mListenForEndAudioInterval;
   public int mCurrentAudioPosition;
-  protected String mAudioFileUrl;
+  protected String mAssetsPrefix;
+  protected String mAudioPlaybackFileUrl;
+  protected String mAudioRecordFileUrl;
+  protected String mTakeAPictureFileUrl;
   public HTML5GameActivity mUIParent;
 
   /**
@@ -36,29 +39,40 @@ public class JavaScriptInterface implements Serializable {
    * sent as an Extra for maximum modularity.
    * 
    * @param d
-   *          Debug mode, true or false
+   *          Whether or not the app should log out
    * @param tag
-   *          The log TAG to be used in logging if in debug mode
+   *          The TAG for the logging
    * @param outputDir
-   *          The output directory if needed by this JSI
+   *          usually on the sdcard where users can see the files, not in the
+   *          data dirs (problems opening the files in a webview if you choose
+   *          the data dirs)
+   * @param context
+   *          usually getApplicationContext()
+   * @param UIParent
+   *          The UI where UI events can happen ie, sending info back to the
+   *          webview (usually: this)
+   * @param assetsPrefix
+   *          the folders deep in the assets dir to get to the base where the
+   *          chrome extension is.(example: release/)
    */
   public JavaScriptInterface(boolean d, String tag, String outputDir,
-      Context context, HTML5GameActivity UIParent) {
+      Context context, HTML5GameActivity UIParent, String assetsPrefix) {
     D = d;
     TAG = tag;
     mOutputDir = outputDir;
     mContext = context;
     if (D)
       Log.d(TAG, "Initializing the Javascript Interface (JSI).");
-    mAudioFileUrl = "";
+    mAudioPlaybackFileUrl = "";
     mUIParent = UIParent;
+    mAssetsPrefix = assetsPrefix;
     mHandler = new Handler();
   }
 
   public JavaScriptInterface(Context context) {
     mContext = context;
     mOutputDir = OPrime.OUTPUT_DIRECTORY;
-    mAudioFileUrl = "";
+    mAudioPlaybackFileUrl = "";
     if (D)
       Log.d(TAG, "Initializing the Javascript Interface (JSI).");
     mHandler = new Handler();
@@ -90,11 +104,13 @@ public class JavaScriptInterface implements Serializable {
       return;
     }
     if (D)
-      Log.d(TAG, "In the play Audio JSI :" + urlstring + ":");
-    if (mAudioFileUrl.equals(urlstring)) {
+      Log.d(TAG, "In the play Audio JSI :" + urlstring + ": playing:"+mAudioPlaybackFileUrl+":");
+    if (mAudioPlaybackFileUrl.contains(urlstring)) {
       /*
        * Same audio file
        */
+      if (D)
+        Log.d(TAG, "Resuming play of the same file :" + mAudioPlaybackFileUrl + ":");
       if (mMediaPlayer != null) {
         if (mMediaPlayer.isPlaying()) {
           mMediaPlayer.pause();
@@ -110,6 +126,8 @@ public class JavaScriptInterface implements Serializable {
       /*
        * New audio file
        */
+      if (D)
+        Log.d(TAG, "Playing new file from the beginning :" + mAudioPlaybackFileUrl + ":");
       if (mMediaPlayer != null) {
         if (mMediaPlayer.isPlaying()) {
           mMediaPlayer.stop();
@@ -144,16 +162,27 @@ public class JavaScriptInterface implements Serializable {
     mMediaPlayer = new MediaPlayer();
     try {
       if (urlstring.contains("android_asset")) {
-
+        String tempurlstring = urlstring.replace("file:///android_asset/", "");
+        mAudioPlaybackFileUrl = tempurlstring;
         AssetFileDescriptor afd = mContext.getAssets().openFd(
-            urlstring.replace("file:///android_asset/", ""));
+            mAudioPlaybackFileUrl);
         mMediaPlayer.setDataSource(afd.getFileDescriptor(),
             afd.getStartOffset(), afd.getLength());
         afd.close();
       } else if (urlstring.contains("sdcard")) {
-        mMediaPlayer.setDataSource(urlstring);
+        mAudioPlaybackFileUrl = urlstring;
+        mMediaPlayer.setDataSource(mAudioPlaybackFileUrl);
       } else {
-        AssetFileDescriptor afd = mContext.getAssets().openFd(urlstring);
+        if (D)
+          Log.d(TAG, "This is what the audiofile looked like:" + urlstring);
+        String tempurlstring = urlstring.replaceFirst("/", mAssetsPrefix);
+        mAudioPlaybackFileUrl = tempurlstring;
+        if (D)
+          Log.d(TAG, "This is what the audiofile looks like:"
+              + mAudioPlaybackFileUrl);
+
+        AssetFileDescriptor afd = mContext.getAssets().openFd(
+            mAudioPlaybackFileUrl);
         mMediaPlayer.setDataSource(afd.getFileDescriptor(),
             afd.getStartOffset(), afd.getLength());
         afd.close();
@@ -165,7 +194,7 @@ public class JavaScriptInterface implements Serializable {
           if (cueTo == 0 && endAt == 0) {
             mMediaPlayer.start();
           } else {
-            playIntervalOfAudio(urlstring, cueTo, endAt);
+            playIntervalOfAudio(mAudioPlaybackFileUrl, cueTo, endAt);
           }
         }
       });
@@ -180,22 +209,25 @@ public class JavaScriptInterface implements Serializable {
               mMediaPlayer = null;
               // mUIParent.loadUrlToWebView();
               LoadUrlToWebView v = new LoadUrlToWebView();
-              v.setMessage("javascript:OPrime.hub.publish('playbackCompleted','Audio playback has completed: '+Date.now());");
+              v.setMessage("javascript:OPrime.hub.publish('playbackCompleted','"
+                  + mAudioPlaybackFileUrl + "');");
               v.execute();
             }
           });
       mMediaPlayer.prepareAsync();
-      mAudioFileUrl = urlstring;
     } catch (IllegalArgumentException e) {
-      Log.e(TAG, "There was a problem with the  sound " + e.getMessage());
+      Log.e(TAG, "There was a problem with the sound " + e.getMessage());
+      e.printStackTrace();
     } catch (IllegalStateException e) {
       Log.e(
           TAG,
-          "There was a problem with the  sound, starting anyway"
+          "There was a problem with the sound, starting anyway"
               + e.getMessage());
       mMediaPlayer.start();// TODO check why this is still here.
     } catch (IOException e) {
       Log.e(TAG, "There was a problem with the  sound " + e.getMessage());
+      e.printStackTrace();
+
     } catch (Exception e) {
       Log.e(TAG, "There was a problem with the  sound " + e.getMessage());
       e.printStackTrace();
@@ -253,38 +285,82 @@ public class JavaScriptInterface implements Serializable {
 
   public void startAudioRecordingService(String resultfilename) {
     new File(mOutputDir).mkdirs();
+    if (mAudioRecordFileUrl != null) {
+      return;
+    }
+    if (D)
+      Log.d(TAG, "This is what the audiofile looked like:" + resultfilename);
+    String tempurlstring = "";
+    tempurlstring = resultfilename.replaceFirst("/", "").replaceFirst("file:",
+        "");
+    mAudioRecordFileUrl = mOutputDir + tempurlstring;
+    if (D)
+      Log.d(TAG, "This is what the audiofile looks like:" + mAudioRecordFileUrl);
+
     Intent intent;
     intent = new Intent(OPrime.INTENT_START_AUDIO_RECORDING);
-    intent.putExtra(OPrime.EXTRA_RESULT_FILENAME, mOutputDir + resultfilename);
+    intent.putExtra(OPrime.EXTRA_RESULT_FILENAME, mAudioRecordFileUrl);
     mUIParent.startService(intent);
     // Publish audio recording started
     LoadUrlToWebView v = new LoadUrlToWebView();
     v.setMessage("javascript:OPrime.hub.publish('audioRecordingSucessfullyStarted','"
-        + resultfilename + "');");
+        + mAudioRecordFileUrl + "');");
     v.execute();
   }
 
   public void stopAudioRecordingService(String resultfilename) {
+    // TODO could do some checking to see if the same file the HTML5 wants us to
+    // stop is similarly named to the one in the Java
+    // if(mAudioRecordFileUrl.contains(resultfilename))
+    if (mAudioRecordFileUrl == null) {
+      return;
+    }
     Intent audio = new Intent(OPrime.INTENT_START_AUDIO_RECORDING);
     mUIParent.stopService(audio);
     // Publish stopped audio
     LoadUrlToWebView v = new LoadUrlToWebView();
     v.setMessage("javascript:OPrime.hub.publish('audioRecordingSucessfullyStopped','"
-        + mOutputDir + resultfilename + "');");
+        + mAudioRecordFileUrl + "');");
     v.execute();
     // TODO add broadcast and listener from audio service to be sure the file
     // works(?)
     LoadUrlToWebView t = new LoadUrlToWebView();
     t.setMessage("javascript:OPrime.hub.publish('audioRecordingCompleted','"
-        + mOutputDir + resultfilename + "');");
+        + mAudioRecordFileUrl + "');");
     t.execute();
+    // null out the audio file to be sure this is called once per audio file.
+    mAudioRecordFileUrl = null;
   }
 
   public String getAudioDir() {
     // if its the sdcard, or a web url send that instead
-    return "file:///android_asset/";
+    return mOutputDir;// "file:///android_asset/";
   }
 
+  public void takeAPicture(String resultfilename){
+    new File(mOutputDir).mkdirs();
+    
+    if (D)
+      Log.d(TAG, "This is what the image file looked like:" + resultfilename);
+    String tempurlstring = "";
+    tempurlstring = resultfilename.replaceFirst("/", "").replaceFirst("file:",
+        "");
+    mTakeAPictureFileUrl = mOutputDir + tempurlstring;
+    if (D)
+      Log.d(TAG, "This is what the image file looks like:" + mTakeAPictureFileUrl);
+
+    // Publish picture taking started
+    LoadUrlToWebView v = new LoadUrlToWebView();
+    v.setMessage("javascript:OPrime.hub.publish('pictureCaptureSucessfullyStarted','"
+        + mTakeAPictureFileUrl + "');");
+    v.execute();
+
+    Intent intent;
+    intent = new Intent(OPrime.INTENT_TAKE_PICTURE);
+    intent.putExtra(OPrime.EXTRA_RESULT_FILENAME, mTakeAPictureFileUrl);
+    mUIParent.startActivityForResult(intent, OPrime.PICTURE_TAKEN);
+  }
+  
   public void showToast(String toast) {
     Toast.makeText(mContext, toast, Toast.LENGTH_LONG).show();
     if (D)
@@ -397,11 +473,11 @@ public class JavaScriptInterface implements Serializable {
   }
 
   public String getAudioFileUrl() {
-    return mAudioFileUrl;
+    return mAudioPlaybackFileUrl;
   }
 
-  public void setAudioFileUrl(String mAudioFileUrl) {
-    this.mAudioFileUrl = mAudioFileUrl;
+  public void setAudioFileUrl(String mAudioPlaybackFileUrl) {
+    this.mAudioPlaybackFileUrl = mAudioPlaybackFileUrl;
   }
 
   public HTML5GameActivity getUIParent() {
@@ -410,6 +486,14 @@ public class JavaScriptInterface implements Serializable {
 
   public void setUIParent(HTML5GameActivity mUIParent) {
     this.mUIParent = mUIParent;
+  }
+
+  public String getAssetsPrefix() {
+    return mAssetsPrefix;
+  }
+
+  public void setAssetsPrefix(String mAssetsPrefix) {
+    this.mAssetsPrefix = mAssetsPrefix;
   }
 
 }

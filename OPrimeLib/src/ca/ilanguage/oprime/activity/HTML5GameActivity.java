@@ -3,10 +3,12 @@ package ca.ilanguage.oprime.activity;
 import ca.ilanguage.oprime.R;
 import ca.ilanguage.oprime.content.OPrime;
 import ca.ilanguage.oprime.content.JavaScriptInterface;
+import ca.ilanguage.oprime.content.SubExperimentBlock;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.net.http.SslError;
 import android.os.Bundle;
@@ -43,7 +45,7 @@ public class HTML5GameActivity extends Activity {
       D = true;
       mInitialAppServerUrl = "file:///android_asset/OPrimeTest.html";// "http://192.168.0.180:3001/";
       mJavaScriptInterface = new JavaScriptInterface(D, TAG, mOutputDir,
-          getApplicationContext(), this);
+          getApplicationContext(), this, "");
       if (D)
         Log.d(TAG, "Using the OPrime default javascript interface.");
 
@@ -82,7 +84,7 @@ public class HTML5GameActivity extends Activity {
 
     } else {
       mJavaScriptInterface = new JavaScriptInterface(D, TAG, mOutputDir,
-          getApplicationContext(), this);
+          getApplicationContext(), this, "");
       if (D)
         Log.d(TAG, "Using a default javascript interface.");
     }
@@ -116,6 +118,24 @@ public class HTML5GameActivity extends Activity {
     mWebView.loadUrl(message);
   }
 
+
+  protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+    switch (requestCode) {
+    case OPrime.PICTURE_TAKEN:
+      if (data != null) {
+        String pictureFilePath = data.getExtras().getString(
+            OPrime.EXTRA_RESULT_FILENAME);
+        mWebView
+            .loadUrl("javascript:OPrime.hub.publish('pictureCaptureSucessfullyCompleted','"
+                + pictureFilePath + "');");
+        if (D)
+          Log.d(TAG, "In the result for PICTURE_TAKEN. " + pictureFilePath);
+      }
+    default:
+      break;
+    }
+  }
+  
   class MyWebChromeClient extends WebChromeClient {
     @Override
     public boolean onConsoleMessage(ConsoleMessage cm) {
