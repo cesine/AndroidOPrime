@@ -40,7 +40,7 @@ public class TakePicture extends Activity {
 	    {
 	        ContentValues values = new ContentValues();
 	        values.put(Media.TITLE, mImageFilename);
-	        values.put(Media.DESCRIPTION, "Image Captured as part of Bilingual Aphasia Test");
+	        values.put(Media.DESCRIPTION, "Image Captured an Android using OPrime");
 
 	        myPicture = getContentResolver().insert(Media.EXTERNAL_CONTENT_URI, values);
 	        Intent i = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);

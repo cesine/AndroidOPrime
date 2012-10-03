@@ -28,7 +28,7 @@ OPrime.publisher = {
     var pubtype = type || 'any';
     var subscribers = this.subscribers[pubtype];
     if (!subscribers || subscribers.length == 0) {
-      OPrime.debug("There were no subscribers.");
+      OPrime.debug(pubtype+": There were no subscribers.");
       return;
     }
     var i;
@@ -240,7 +240,7 @@ OPrime.captureAudio = function(resultfilename, callbackRecordingStarted,
       OPrime.debug("In callbackRecordingCompleted: " + message);
       OPrime.hub.unsubscribe("audioRecordingCompleted", null,
           callingcontextself);
-    }
+    };
   }
   this.hub.unsubscribe("audioRecordingCompleted", null, callingcontextself);
   this.hub.subscribe("audioRecordingCompleted", callbackRecordingCompleted,
@@ -255,7 +255,7 @@ OPrime.captureAudio = function(resultfilename, callbackRecordingStarted,
       OPrime.debug("In callbackRecordingStarted: " + message);
       OPrime.hub.unsubscribe("audioRecordingSucessfullyStarted", null,
           callingcontextself);
-    }
+    };
   }
   this.hub.unsubscribe("audioRecordingSucessfullyStarted", null,
       callingcontextself);
@@ -275,7 +275,7 @@ OPrime.captureAudio = function(resultfilename, callbackRecordingStarted,
     this.hub.publish('audioRecordingSucessfullyStarted', resultfilename);
   }
 
-}
+};
 OPrime.stopAndSaveAudio = function(resultfilename, callbackRecordingStopped,
     callingcontext) {
 
@@ -289,7 +289,7 @@ OPrime.stopAndSaveAudio = function(resultfilename, callbackRecordingStopped,
       OPrime.debug("In callbackRecordingStopped: " + message);
       OPrime.hub.unsubscribe("audioRecordingSucessfullyStopped", null,
           callingcontextself);
-    }
+    };
   }
   this.hub.unsubscribe("audioRecordingSucessfullyStopped", null,
       callingcontextself);
@@ -311,16 +311,47 @@ OPrime.stopAndSaveAudio = function(resultfilename, callbackRecordingStopped,
     this.hub.publish('audioRecordingCompleted', resultfilename);
   }
 
-}
+};
 /*
  * Camera functions
  */
-OPrime.capturePhoto = function(callback) {
+OPrime.capturePhoto = function(resultfilename, callbackPictureCaptureStarted,
+    callingcontext) {
+
+  /*
+   * verify completed callback and subscribe it to audioRecordingCompleted
+   */
+  var callingcontextself = callingcontext;
+  if (!callbackPictureCaptureStarted) {
+    callbackPictureCaptureStarted = function(message) {
+      OPrime.debug("In callbackPictureCaptureStarted: " + message);
+      OPrime.hub.unsubscribe("pictureCaptureSucessfullyStarted", null,
+          callingcontextself);
+    };
+  }
+  this.hub.unsubscribe("pictureCaptureSucessfullyStarted", null,
+      callingcontextself);
+  this.hub.subscribe("pictureCaptureSucessfullyStarted",
+      callbackPictureCaptureStarted, callingcontextself);
+
+  /* start the recording */
+  if (this.isAndroidApp()) {
+    this.debug("Starting picture capture via Android");
+    Android.stopAudioRecordingService(resultfilename);
+    // the android will publish if its successfully started
+  } else {
+    this.debug("Starting picture capture via HTML5: " + resultfilename);
+    alert("Taking a picture only works on Android, because it has a camera, and your computer might not.\n\n Faking that taken a picture and saved sucessfully")
+    // fake publish it was sucessfully started
+    resultfilename = "happyface.jpg"
+    this.hub.publish('pictureCaptureSucessfullyStarted', resultfilename);
+  }
+
   var resultUrl = "oprime48.png"
   if (typeof callback == "function") {
     return callback(resultUrl);
   }
-}
+};
 
 /*
  * Initialize the debugging output, taking control from the Android side.

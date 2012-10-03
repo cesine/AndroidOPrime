@@ -30,6 +30,7 @@ public class JavaScriptInterface implements Serializable {
   protected String mAssetsPrefix;
   protected String mAudioPlaybackFileUrl;
   protected String mAudioRecordFileUrl;
+  protected String mTakeAPictureFileUrl;
   public HTML5GameActivity mUIParent;
 
   /**
@@ -336,6 +337,32 @@ public class JavaScriptInterface implements Serializable {
     return mOutputDir;// "file:///android_asset/";
   }
 
+  public void takeAPicture(String resultfilename){
+    new File(mOutputDir).mkdirs();
+    if (mTakeAPictureFileUrl != null) {
+      return;
+    }
+    if (D)
+      Log.d(TAG, "This is what the audiofile looked like:" + resultfilename);
+    String tempurlstring = "";
+    tempurlstring = resultfilename.replaceFirst("/", "").replaceFirst("file:",
+        "");
+    mTakeAPictureFileUrl = mOutputDir + tempurlstring;
+    if (D)
+      Log.d(TAG, "This is what the audiofile looks like:" + mTakeAPictureFileUrl);
+
+    // Publish picture taking started
+    LoadUrlToWebView v = new LoadUrlToWebView();
+    v.setMessage("javascript:OPrime.hub.publish('pictureCaptureSucessfullyStarted','"
+        + mTakeAPictureFileUrl + "');");
+    v.execute();
+
+    Intent intent;
+    intent = new Intent(OPrime.INTENT_TAKE_PICTURE);
+    intent.putExtra(OPrime.EXTRA_RESULT_FILENAME, mTakeAPictureFileUrl);
+    mUIParent.startService(intent);
+  }
+  
   public void showToast(String toast) {
     Toast.makeText(mContext, toast, Toast.LENGTH_LONG).show();
     if (D)
