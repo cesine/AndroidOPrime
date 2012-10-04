@@ -33,6 +33,7 @@
         </activity>
         <activity
             android:name="ca.ilanguage.oprime.activity.SubExperiment"
+            android:exported="false"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="ca.ilanguage.oprime.intent.action.START_SUB_EXPERIMENT" />
@@ -42,6 +43,7 @@
         </activity>
         <activity
             android:name="ca.ilanguage.oprime.activity.TwoImageSubExperiment"
+            android:exported="false"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="ca.ilanguage.oprime.intent.action.START_TWO_IMAGE_SUB_EXPERIMENT" />
@@ -51,6 +53,7 @@
         </activity>
         <activity
             android:name="ca.ilanguage.oprime.activity.StopWatchSubExperiment"
+            android:exported="false"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="ca.ilanguage.oprime.intent.action.START_STOP_WATCH_SUB_EXPERIMENT" />
@@ -60,6 +63,7 @@
         </activity>
         <activity
             android:name="ca.ilanguage.oprime.datacollection.TakePicture"
+            android:exported="false"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="ca.ilanguage.oprime.intent.action.TAKE_PICTURE" />
@@ -69,6 +73,7 @@
         </activity>
         <activity
             android:name=".storybook.StoryBookSubExperiment"
+            android:exported="false"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="ca.ilanguage.oprime.intent.action.START_STORY_BOOK_SUB_EXPERIMENT" />
@@ -79,6 +84,7 @@
         <activity
             android:name=".activity.HTML5GameActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
+            android:exported="false"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -93,6 +99,7 @@
         </activity>
         <activity
             android:name="ca.ilanguage.oprime.datacollection.VideoRecorder"
+            android:exported="false"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="ca.ilanguage.oprime.intent.action.START_VIDEO_RECORDING_SERVICE" />

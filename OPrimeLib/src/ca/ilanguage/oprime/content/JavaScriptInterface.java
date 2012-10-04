@@ -416,6 +416,9 @@ public class JavaScriptInterface implements Serializable {
         try {
           // wait some period
           Thread.sleep(100);
+          if (mMediaPlayer == null) {
+              return "No media playing";
+            }
           currentPos = mMediaPlayer.getCurrentPosition();
         } catch (InterruptedException e) {
           return "Cancelled";
@@ -434,9 +437,15 @@ public class JavaScriptInterface implements Serializable {
     }
 
     protected void onPostExecute(String result) {
+    	String currentPosition;
+    	if (mMediaPlayer == null){
+    		currentPosition = "";
+    	}else{
+    		currentPosition = "" + mMediaPlayer.getCurrentPosition();
+    	}
       Log.d(TAG,
           "\t" + result + ": Stopped listening for audio interval at ... "
-              + mMediaPlayer.getCurrentPosition());
+              + currentPosition);
     }
   }
 
