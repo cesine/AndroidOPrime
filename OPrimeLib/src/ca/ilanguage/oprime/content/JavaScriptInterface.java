@@ -4,7 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
 
-import ca.ilanguage.oprime.activity.HTML5GameActivity;
+import ca.ilanguage.oprime.activity.HTML5Activity;
 
 import android.content.Context;
 import android.content.Intent;
@@ -31,7 +31,7 @@ public class JavaScriptInterface implements Serializable {
   protected String mAudioPlaybackFileUrl;
   protected String mAudioRecordFileUrl;
   protected String mTakeAPictureFileUrl;
-  public HTML5GameActivity mUIParent;
+  public HTML5Activity mUIParent;
 
   /**
    * Can pass in all or none of the parameters. Expects the caller to set the
@@ -56,7 +56,7 @@ public class JavaScriptInterface implements Serializable {
    *          chrome extension is.(example: release/)
    */
   public JavaScriptInterface(boolean d, String tag, String outputDir,
-      Context context, HTML5GameActivity UIParent, String assetsPrefix) {
+      Context context, HTML5Activity UIParent, String assetsPrefix) {
     D = d;
     TAG = tag;
     mOutputDir = outputDir;
@@ -100,7 +100,7 @@ public class JavaScriptInterface implements Serializable {
 
   public void playAudio(String urlstring) {
     urlstring = urlstring.trim();
-    if (urlstring == null || urlstring == "") {
+    if (urlstring == null ||  "".equals(urlstring.trim())) {
       return;
     }
     if (D)
@@ -284,6 +284,11 @@ public class JavaScriptInterface implements Serializable {
   }
 
   public void startAudioRecordingService(String resultfilename) {
+    if("".equals(resultfilename.trim())){
+      if (D)
+        Log.d(TAG, "The resultfilename in startAudioRecordingService was empty.");
+      return;
+    }
     new File(mOutputDir).mkdirs();
     if (mAudioRecordFileUrl != null) {
       return;
@@ -396,7 +401,7 @@ public class JavaScriptInterface implements Serializable {
       if (mUIParent != null && mUIParent.mWebView != null) {
         Log.d(
             TAG,
-            "\tPost execute LoadUrlToWebView task. Now trying to send a pubsub message to the webview.");
+            "\tPost execute LoadUrlToWebView task. Now trying to send a pubsub message to the webview."+mMessage);
         mUIParent.mWebView.loadUrl(mMessage);
       }
     }
@@ -489,11 +494,11 @@ public class JavaScriptInterface implements Serializable {
     this.mAudioPlaybackFileUrl = mAudioPlaybackFileUrl;
   }
 
-  public HTML5GameActivity getUIParent() {
+  public HTML5Activity getUIParent() {
     return mUIParent;
   }
 
-  public void setUIParent(HTML5GameActivity mUIParent) {
+  public void setUIParent(HTML5Activity mUIParent) {
     this.mUIParent = mUIParent;
   }
 
