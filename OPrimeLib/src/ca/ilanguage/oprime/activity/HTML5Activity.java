@@ -11,14 +11,21 @@ import android.content.Intent;
 import android.content.res.Configuration;
 import android.net.http.SslError;
 import android.os.Bundle;
+import android.text.InputType;
 import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
 import android.webkit.ConsoleMessage;
+import android.webkit.JsPromptResult;
 import android.webkit.JsResult;
 import android.webkit.SslErrorHandler;
 import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.EditText;
+import android.widget.TextView;
+import android.widget.Toast;
 
 public class HTML5Activity extends Activity {
   protected String TAG = "HTML5GameActivity";
@@ -94,7 +101,9 @@ public class HTML5Activity extends Activity {
     mWebView = (WebView) findViewById(R.id.html5WebView);
     mWebView.addJavascriptInterface(mJavaScriptInterface, "Android");
     mWebView.setWebViewClient(new MyWebViewClient());
-    mWebView.setWebChromeClient(new MyWebChromeClient());
+    MyWebChromeClient customChromeClient = new MyWebChromeClient();
+    customChromeClient.setParentActivity(this);
+    mWebView.setWebChromeClient(customChromeClient);
     mWebView.setScrollBarStyle(WebView.SCROLLBARS_OUTSIDE_OVERLAY);
     WebSettings webSettings = mWebView.getSettings();
     webSettings.setBuiltInZoomControls(true);
@@ -117,7 +126,6 @@ public class HTML5Activity extends Activity {
     mWebView.loadUrl(message);
   }
 
-
   protected void onActivityResult(int requestCode, int resultCode, Intent data) {
     switch (requestCode) {
     case OPrime.PICTURE_TAKEN:
@@ -134,15 +142,25 @@ public class HTML5Activity extends Activity {
       break;
     }
   }
-  
+
   class MyWebChromeClient extends WebChromeClient {
+    public Activity mParentActivity;
+    
+    public Activity getParentActivity() {
+      return mParentActivity;
+    }
+
+    public void setParentActivity(Activity mParentActivity) {
+      this.mParentActivity = mParentActivity;
+    }
+
     @Override
     public boolean onConsoleMessage(ConsoleMessage cm) {
       if (D)
-        Log.d(TAG, cm.message() 
-//            + " -- From line " + cm.lineNumber() + " of "
-//            + cm.sourceId()
-            );
+        Log.d(TAG, cm.message()
+        // + " -- From line " + cm.lineNumber() + " of "
+        // + cm.sourceId()
+        );
       return true;
     }
 
@@ -160,7 +178,76 @@ public class HTML5Activity extends Activity {
               }).setCancelable(false).create().show();
 
       return true;
+    }
+
+    @Override
+    public boolean onJsPrompt(WebView view, String url, String message,
+        String defaultValue, final JsPromptResult result) {
+//      new AlertDialog.Builder(HTML5Activity.this)
+//          .setTitle("")
+//          .setMessage(message)
+//          .setNeutralButton(android.R.string.cancel,
+//              new AlertDialog.OnClickListener() {
+//                public void onClick(DialogInterface dialog, int which) {
+//                  result.cancel();
+//                }
+//              })
+//          .setPositiveButton(android.R.string.ok,
+//              new AlertDialog.OnClickListener() {
+//                public void onClick(DialogInterface dialog, int which) {
+//                  result.confirm();
+//                }
+//              }).setCancelable(false).create().show();
+
+      
+      
+      
+   // get prompts.xml view
+      LayoutInflater li = LayoutInflater.from(mParentActivity);
+      View promptsView = li.inflate(R.layout.dialog_edit_text, null);
+
+      AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(mParentActivity);
+
+      // set prompts.xml to alertdialog builder
+      alertDialogBuilder.setView(promptsView);
+
+      final EditText userInput = (EditText) promptsView
+          .findViewById(R.id.editTextDialogUserInput);
+
+      if(message.toLowerCase().endsWith("number")){
+        userInput.setInputType(InputType.TYPE_CLASS_NUMBER);
+      }
+      TextView prompt = (TextView) promptsView.findViewById(R.id.prompt);
+      prompt.setText(message);
+      // set dialog message
+      alertDialogBuilder
+          .setCancelable(false)
+          .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+              // get user input and set it to result
+              // edit text
+              Toast.makeText(getApplicationContext(),
+                  userInput.getText().toString(),
+                  Toast.LENGTH_LONG).show();
+              result.confirm(userInput.getText().toString());
+            }
+          })
+          .setNegativeButton("Cancel",
+              new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int id) {
+                  result.cancel();
+                }
+              });
+
+      // create alert dialog
+      AlertDialog alertDialog = alertDialogBuilder.create();
+
+      // show it
+      alertDialog.show();
+      
+      return true;
     };
+
   }
 
   class MyWebViewClient extends WebViewClient {
@@ -178,9 +265,10 @@ public class HTML5Activity extends Activity {
       mJavaScriptInterface.mMediaPlayer.stop();
       mJavaScriptInterface.mMediaPlayer.release();
     }
-    if (mJavaScriptInterface.mListenForEndAudioInterval != null && !mJavaScriptInterface.mListenForEndAudioInterval.isCancelled()) {
+    if (mJavaScriptInterface.mListenForEndAudioInterval != null
+        && !mJavaScriptInterface.mListenForEndAudioInterval.isCancelled()) {
       mJavaScriptInterface.mListenForEndAudioInterval.cancel(true);
-//      mJavaScriptInterface.mListenForEndAudioInterval  = null;
+      // mJavaScriptInterface.mListenForEndAudioInterval = null;
     }
     super.onDestroy();
   }
