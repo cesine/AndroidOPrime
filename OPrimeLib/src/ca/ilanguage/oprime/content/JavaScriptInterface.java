@@ -1,6 +1,8 @@
 package ca.ilanguage.oprime.content;
 
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Serializable;
 
@@ -100,17 +102,19 @@ public class JavaScriptInterface implements Serializable {
 
   public void playAudio(String urlstring) {
     urlstring = urlstring.trim();
-    if (urlstring == null ||  "".equals(urlstring.trim())) {
+    if (urlstring == null || "".equals(urlstring.trim())) {
       return;
     }
     if (D)
-      Log.d(TAG, "In the play Audio JSI :" + urlstring + ": playing:"+mAudioPlaybackFileUrl+":");
+      Log.d(TAG, "In the play Audio JSI :" + urlstring + ": playing:"
+          + mAudioPlaybackFileUrl + ":");
     if (mAudioPlaybackFileUrl.contains(urlstring)) {
       /*
        * Same audio file
        */
       if (D)
-        Log.d(TAG, "Resuming play of the same file :" + mAudioPlaybackFileUrl + ":");
+        Log.d(TAG, "Resuming play of the same file :" + mAudioPlaybackFileUrl
+            + ":");
       if (mMediaPlayer != null) {
         if (mMediaPlayer.isPlaying()) {
           mMediaPlayer.pause();
@@ -127,7 +131,8 @@ public class JavaScriptInterface implements Serializable {
        * New audio file
        */
       if (D)
-        Log.d(TAG, "Playing new file from the beginning :" + mAudioPlaybackFileUrl + ":");
+        Log.d(TAG, "Playing new file from the beginning :"
+            + mAudioPlaybackFileUrl + ":");
       if (mMediaPlayer != null) {
         if (mMediaPlayer.isPlaying()) {
           mMediaPlayer.stop();
@@ -284,9 +289,10 @@ public class JavaScriptInterface implements Serializable {
   }
 
   public void startAudioRecordingService(String resultfilename) {
-    if("".equals(resultfilename.trim())){
+    if ("".equals(resultfilename.trim())) {
       if (D)
-        Log.d(TAG, "The resultfilename in startAudioRecordingService was empty.");
+        Log.d(TAG,
+            "The resultfilename in startAudioRecordingService was empty.");
       return;
     }
     new File(mOutputDir).mkdirs();
@@ -342,9 +348,9 @@ public class JavaScriptInterface implements Serializable {
     return mOutputDir;// "file:///android_asset/";
   }
 
-  public void takeAPicture(String resultfilename){
+  public void takeAPicture(String resultfilename) {
     new File(mOutputDir).mkdirs();
-    
+
     if (D)
       Log.d(TAG, "This is what the image file looked like:" + resultfilename);
     String tempurlstring = "";
@@ -352,7 +358,8 @@ public class JavaScriptInterface implements Serializable {
         "");
     mTakeAPictureFileUrl = mOutputDir + tempurlstring;
     if (D)
-      Log.d(TAG, "This is what the image file looks like:" + mTakeAPictureFileUrl);
+      Log.d(TAG, "This is what the image file looks like:"
+          + mTakeAPictureFileUrl);
 
     // Publish picture taking started
     LoadUrlToWebView v = new LoadUrlToWebView();
@@ -365,6 +372,17 @@ public class JavaScriptInterface implements Serializable {
     intent.putExtra(OPrime.EXTRA_RESULT_FILENAME, mTakeAPictureFileUrl);
     mUIParent.startActivityForResult(intent, OPrime.PICTURE_TAKEN);
   }
+  
+  public void saveStringToFile(String contents, String filename, String path){
+    
+    WriteStringToFile w = new WriteStringToFile();
+    w.setContents(contents);
+    w.setFilename(filename);
+    w.setOutputdir(path);
+    w.execute();
+    
+  }
+  
   
   public void showToast(String toast) {
     Toast.makeText(mContext, toast, Toast.LENGTH_LONG).show();
@@ -393,7 +411,7 @@ public class JavaScriptInterface implements Serializable {
     protected void onPreExecute() {
     }
 
-    protected void setMessage(String message) {
+    public void setMessage(String message) {
       mMessage = message;
     }
 
@@ -401,7 +419,8 @@ public class JavaScriptInterface implements Serializable {
       if (mUIParent != null && mUIParent.mWebView != null) {
         Log.d(
             TAG,
-            "\tPost execute LoadUrlToWebView task. Now trying to send a pubsub message to the webview."+mMessage);
+            "\tPost execute LoadUrlToWebView task. Now trying to send a pubsub message to the webview."
+                + mMessage);
         mUIParent.mWebView.loadUrl(mMessage);
       }
     }
@@ -422,8 +441,8 @@ public class JavaScriptInterface implements Serializable {
           // wait some period
           Thread.sleep(100);
           if (mMediaPlayer == null) {
-              return "No media playing";
-            }
+            return "No media playing";
+          }
           currentPos = mMediaPlayer.getCurrentPosition();
         } catch (InterruptedException e) {
           return "Cancelled";
@@ -442,15 +461,64 @@ public class JavaScriptInterface implements Serializable {
     }
 
     protected void onPostExecute(String result) {
-    	String currentPosition;
-    	if (mMediaPlayer == null){
-    		currentPosition = "";
-    	}else{
-    		currentPosition = "" + mMediaPlayer.getCurrentPosition();
-    	}
-      Log.d(TAG,
-          "\t" + result + ": Stopped listening for audio interval at ... "
-              + currentPosition);
+      String currentPosition;
+      if (mMediaPlayer == null) {
+        currentPosition = "";
+      } else {
+        currentPosition = "" + mMediaPlayer.getCurrentPosition();
+      }
+      Log.d(TAG, "\t" + result
+          + ": Stopped listening for audio interval at ... " + currentPosition);
+    }
+  }
+
+  public class WriteStringToFile extends AsyncTask<Void, Void, String> {
+    private String contents;
+    private String filename;
+    private String outputdir;
+
+    public void setContents(String contents) {
+      this.contents = contents;
+    }
+
+    public void setFilename(String filename) {
+      this.filename = filename;
+    }
+
+    public void setOutputdir(String outputdir) {
+      this.outputdir = outputdir;
+    }
+
+    @Override
+    protected String doInBackground(Void... params) {
+      if("".equals(outputdir)){
+        outputdir = mOutputDir;
+      }
+      
+      (new File(outputdir)).mkdirs();
+      
+      File outfile = new File(outputdir + "/" + filename);
+
+      try {
+        BufferedWriter buf = new BufferedWriter(new FileWriter(outfile, false));
+        buf.append(contents);
+        buf.newLine();
+        buf.close();
+        return "File written: "+filename;
+      } catch (IOException inte) {
+        Log.d(TAG, "There was an error writing to the file."+ inte.getMessage());
+        return "File write error: "+filename;
+      }
+      
+    }
+
+    protected void onPreExecute() {
+    }
+
+    protected void onPostExecute(String result) {
+      if(D) Log.d(TAG, "\t" + result + ": Wrote string to file");
+      if(D) Toast.makeText(mContext, result, Toast.LENGTH_LONG).show();
+
     }
   }
 

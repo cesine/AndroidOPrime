@@ -1,8 +1,11 @@
 package ca.ilanguage.oprime.activity;
 
+import java.util.ArrayList;
+
 import ca.ilanguage.oprime.R;
 import ca.ilanguage.oprime.content.OPrime;
 import ca.ilanguage.oprime.content.JavaScriptInterface;
+import ca.ilanguage.oprime.content.PageUrlGetPair;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -35,6 +38,7 @@ public class HTML5Activity extends Activity {
   protected String mInitialAppServerUrl;
   public WebView mWebView;
   protected JavaScriptInterface mJavaScriptInterface;
+  protected String mWebAppBaseDir;
 
   /** Called when the activity is first created. */
   @Override
@@ -145,7 +149,7 @@ public class HTML5Activity extends Activity {
 
   class MyWebChromeClient extends WebChromeClient {
     public Activity mParentActivity;
-    
+
     public Activity getParentActivity() {
       return mParentActivity;
     }
@@ -183,30 +187,28 @@ public class HTML5Activity extends Activity {
     @Override
     public boolean onJsPrompt(WebView view, String url, String message,
         String defaultValue, final JsPromptResult result) {
-//      new AlertDialog.Builder(HTML5Activity.this)
-//          .setTitle("")
-//          .setMessage(message)
-//          .setNeutralButton(android.R.string.cancel,
-//              new AlertDialog.OnClickListener() {
-//                public void onClick(DialogInterface dialog, int which) {
-//                  result.cancel();
-//                }
-//              })
-//          .setPositiveButton(android.R.string.ok,
-//              new AlertDialog.OnClickListener() {
-//                public void onClick(DialogInterface dialog, int which) {
-//                  result.confirm();
-//                }
-//              }).setCancelable(false).create().show();
+      // new AlertDialog.Builder(HTML5Activity.this)
+      // .setTitle("")
+      // .setMessage(message)
+      // .setNeutralButton(android.R.string.cancel,
+      // new AlertDialog.OnClickListener() {
+      // public void onClick(DialogInterface dialog, int which) {
+      // result.cancel();
+      // }
+      // })
+      // .setPositiveButton(android.R.string.ok,
+      // new AlertDialog.OnClickListener() {
+      // public void onClick(DialogInterface dialog, int which) {
+      // result.confirm();
+      // }
+      // }).setCancelable(false).create().show();
 
-      
-      
-      
-   // get prompts.xml view
+      // get prompts.xml view
       LayoutInflater li = LayoutInflater.from(mParentActivity);
       View promptsView = li.inflate(R.layout.dialog_edit_text, null);
 
-      AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(mParentActivity);
+      AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
+          mParentActivity);
 
       // set prompts.xml to alertdialog builder
       alertDialogBuilder.setView(promptsView);
@@ -214,47 +216,72 @@ public class HTML5Activity extends Activity {
       final EditText userInput = (EditText) promptsView
           .findViewById(R.id.editTextDialogUserInput);
 
-      if(message.toLowerCase().endsWith("number")){
+      if (message.toLowerCase().endsWith("number")) {
         userInput.setInputType(InputType.TYPE_CLASS_NUMBER);
       }
       TextView prompt = (TextView) promptsView.findViewById(R.id.prompt);
       prompt.setText(message);
       // set dialog message
-      alertDialogBuilder
-          .setCancelable(false)
+      alertDialogBuilder.setCancelable(false)
           .setPositiveButton("OK", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
               // get user input and set it to result
               // edit text
               Toast.makeText(getApplicationContext(),
-                  userInput.getText().toString(),
-                  Toast.LENGTH_LONG).show();
+                  userInput.getText().toString(), Toast.LENGTH_LONG).show();
               result.confirm(userInput.getText().toString());
             }
-          })
-          .setNegativeButton("Cancel",
-              new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialog, int id) {
-                  result.cancel();
-                }
-              });
+          }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+              result.cancel();
+            }
+          });
 
       // create alert dialog
       AlertDialog alertDialog = alertDialogBuilder.create();
 
       // show it
       alertDialog.show();
-      
+
       return true;
     };
 
   }
 
   class MyWebViewClient extends WebViewClient {
+    protected String anchor;
 
     public void onReceivedSslError(WebView view, SslErrorHandler handler,
         SslError error) {
       handler.proceed();
+    }
+
+    @Override
+    public boolean shouldOverrideUrlLoading(WebView view, String url) {
+      if (D)
+        Log.d(TAG, "URL: " + url);
+      if (D)
+        Log.d(TAG, "Overrode Url loading in WebViewClient");
+      String[] twoParts = url.split("#");
+      if (twoParts.length == 2) {
+        addUrlHistory(twoParts[0], twoParts[1]);
+        this.anchor = twoParts[1];
+      } else {
+        if (twoParts[0].contains("html")) {
+          addUrlHistory(twoParts[0], "");
+        } else {
+          return false;
+        }
+      }
+      view.loadUrl(twoParts[0]);
+      return false;
+    }
+
+    public void onPageFinished(WebView view, String url) {
+      if (this.anchor != null) {
+        view.loadUrl("javascript:window.location.hash='" + this.anchor + "'");
+        this.anchor = null;
+      }
     }
 
   }
@@ -285,4 +312,51 @@ public class HTML5Activity extends Activity {
      * Doing nothing makes the current redraw properly
      */
   }
+
+  @Deprecated
+  private void addUrlHistory(String filename, String getstring) {
+    Log.i(TAG, "\tURL count before adding was: " + mUrlHistory.size());
+    /*
+     * If the user goes to the main page, reset the history
+     */
+    if (filename.replaceAll("file://" + mWebAppBaseDir + "/", "").equals(
+        "index.html")) {
+      mUrlHistory = null;
+      mUrlHistory = new ArrayList<PageUrlGetPair>();
+      mUrlHistory.add(new PageUrlGetPair(filename, getstring));
+      return;
+    }
+    /*
+     * If the history is short, just add the new Url
+     */
+    if (mUrlHistory.size() < 2) {
+      mUrlHistory.add(new PageUrlGetPair(filename, getstring));
+      return;
+    }
+    String justfilename = filename.replaceAll("file://" + mWebAppBaseDir
+        + "views/", "");
+    String previousfilename = mUrlHistory.get(mUrlHistory.size() - 1)
+        .getFilename().replaceAll("file://" + mWebAppBaseDir + "views/", "");
+    Log.d(TAG, "\t" + justfilename + " vs " + previousfilename);
+    /*
+     * If this filename and the previous don't match, just add the new Url
+     */
+    if (!justfilename.equals(previousfilename)) {
+      mUrlHistory.add(new PageUrlGetPair(filename, getstring));
+      return;
+    }
+    /*
+     * If this is effectively the same page as the previous page, replace the
+     * previous page with this page so that the javascript can pull out these
+     * new parameters from the top of the url list
+     */
+    mUrlHistory.get(mUrlHistory.size() - 1).setFilename(filename);
+    mUrlHistory.get(mUrlHistory.size() - 1).setGetString(getstring);
+    return;
+
+  }
+
+  @Deprecated
+  private ArrayList<PageUrlGetPair> mUrlHistory = new ArrayList<PageUrlGetPair>();
+
 }
