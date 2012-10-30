@@ -118,6 +118,12 @@ public class HTML5Activity extends Activity {
     webSettings.setDefaultTextEncodingName("utf-8");
     webSettings.setAppCacheEnabled(true);
     webSettings.setDomStorageEnabled(true);
+    webSettings.setDatabasePath("/data/data/"
+        + getApplicationContext().getPackageName() + "/databases/");
+    Log.d(TAG,
+        "Turning on dom storage enabled webSettings.setDomStorageEnabled "
+            + "/data/data/" + getApplicationContext().getPackageName()
+            + "/databases/");
 
     webSettings.setUserAgentString(webSettings.getUserAgentString() + " "
         + OPrime.USER_AGENT_STRING);
@@ -160,12 +166,38 @@ public class HTML5Activity extends Activity {
 
     @Override
     public boolean onConsoleMessage(ConsoleMessage cm) {
+      if(cm.message() == null){
+        return true;
+      }
       if (D)
         Log.d(TAG, cm.message()
         // + " -- From line " + cm.lineNumber() + " of "
         // + cm.sourceId()
         );
+      
+      /*
+       * Handle SOAP servers refusal to connect by telling user the entire error.
+       */
+      if(cm.message().startsWith("XMLHttpRequest cannot load")){
+        new AlertDialog.Builder(HTML5Activity.this)
+        .setTitle("")
+        .setMessage(cm.message()+"\nPlease contact the server administrator.")
+        .setPositiveButton(android.R.string.ok,
+            new AlertDialog.OnClickListener() {
+              public void onClick(DialogInterface dialog, int which) {
+                return ;
+              }
+            }).setCancelable(false).create().show();
+      }
       return true;
+    }
+    
+    @Override
+    public boolean onJsBeforeUnload(WebView view, String url, String message,
+        JsResult result) {
+      view.loadUrl("javascript:saveApp()");
+
+      return super.onJsBeforeUnload(view, url, message, result);
     }
 
     @Override
@@ -278,7 +310,10 @@ public class HTML5Activity extends Activity {
     }
 
     public void onPageFinished(WebView view, String url) {
+
       if (this.anchor != null) {
+        if (D)
+          Log.i(TAG, "\tURL anchor/parameters: " + this.anchor);
         view.loadUrl("javascript:window.location.hash='" + this.anchor + "'");
         this.anchor = null;
       }
