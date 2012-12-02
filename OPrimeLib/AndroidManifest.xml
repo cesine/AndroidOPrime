@@ -82,7 +82,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".activity.HTML5GameActivity"
+            android:name=".activity.HTML5Activity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:exported="false"
             android:label="@string/app_name" >
@@ -108,14 +108,18 @@
             </intent-filter>
         </activity>
 
-        <service android:name="ca.ilanguage.oprime.datacollection.SubExperimentToJson" >
+        <service
+            android:name="ca.ilanguage.oprime.datacollection.SubExperimentToJson"
+            android:exported="false" >
             <intent-filter>
                 <action android:name="ca.ilanguage.oprime.intent.action.SAVE_SUB_EXPERIMENT_JSON" />
 
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </service>
-        <service android:name="ca.ilanguage.oprime.datacollection.AudioRecorder" >
+        <service
+            android:name="ca.ilanguage.oprime.datacollection.AudioRecorder"
+            android:exported="false" >
             <intent-filter>
                 <action android:name="ca.ilanguage.oprime.intent.action.START_AUDIO_RECORDING_SERVICE" />
 
