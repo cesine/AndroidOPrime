@@ -1,14 +1,3 @@
-This is code to run background Video, Audio, Camera services for experimentation on Android tablets. 
-It contains classes for both pure Android experiments, and HTML5 experiments.
+See https://github.com/iLanguage/OPrime for active development
 
-
-The audience of this project:
-
-* programmers
-* researchers who can/want to program, or have a programmer in their team who can adapt the code to their needs
-
-
-The next steps:
-
-To encourage us  you can "watch" our project, "fork" the code, and even send us "pull requests" if you want to contribute your modifications.
-
+This project just contains previous version history.
